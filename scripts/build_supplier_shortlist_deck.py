@@ -612,8 +612,8 @@ SECTIONS = [
                 "url": "https://www.aogubio.com/dietary-supplement/",
                 "product": "OEM multivitamin capsule (B12, Mg-glycinate, "
                            "K2 MK-7, D3, B-complex blend)",
-                "product_name": "Vitamin & Amino Acid Series",
-                "product_url": "https://www.aogubio.com/amino-acid-vitamin-series/",
+                "product_name": "Vitamin B12 Methylcobalamin",
+                "product_url": "https://www.aogubio.com/supply-food-grade-vitamin-b12-methylcobalamin-powder-product/",
                 "moq": 100,
                 "unit_cost_usd": 1.75,
                 "total_moq_cost_usd": 175,
