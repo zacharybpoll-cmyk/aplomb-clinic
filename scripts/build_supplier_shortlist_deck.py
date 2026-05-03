@@ -43,7 +43,7 @@ SCORE_MID = RGBColor(0xF7, 0xF1, 0xE6)  # 60-79 (paper)
 SCORE_LOW = RGBColor(0xE5, 0xDD, 0xCC)  # < 60 (slightly darker rule)
 
 SERIF = "Cormorant Garamond"
-SANS = "Avenir Next"
+SANS = "IBM Plex Sans"  # Aplomb brand body font (BRAND.md §3)
 
 OUT = Path(
     "/Users/zacharypoll/Desktop/Documents/Claude Code/aplomb.clinic/"
