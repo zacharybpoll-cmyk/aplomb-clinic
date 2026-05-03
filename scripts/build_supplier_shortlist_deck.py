@@ -207,12 +207,12 @@ def _score_color(score):
 
 def add_supplier_matrix(slide, x, y, w, h, suppliers):
     """suppliers: list of dicts with keys
-       name, url, product, moq, unit_cost_usd, total_moq_cost_usd,
-       alleviation_score, notes"""
-    headers = ["Company", "Website", "Product", "MOQ",
+       name, url, product, product_name, product_url, moq, unit_cost_usd,
+       total_moq_cost_usd, alleviation_score, notes"""
+    headers = ["Company", "Website", "Product", "Product page", "MOQ",
                "$/unit", "Total MOQ$", "Score", "Notes"]
     # Column widths in inches, must sum to 12.0 for the 12.0" wide table
-    col_widths_in = [1.30, 1.55, 2.05, 0.65, 0.85, 1.00, 0.75, 3.85]
+    col_widths_in = [1.10, 1.20, 1.80, 1.55, 0.55, 0.75, 0.95, 0.65, 3.45]
     n_cols = len(headers)
     n_rows = len(suppliers) + 1
     tbl_shape = slide.shapes.add_table(n_rows, n_cols, x, y, w, h)
@@ -242,20 +242,23 @@ def add_supplier_matrix(slide, x, y, w, h, suppliers):
         if len(domain) > 28:
             domain = domain[:26] + "…"
         _set_cell_text(tbl.cell(row, 1), domain, size=8, hyperlink=sup["url"])
-        _set_cell_text(tbl.cell(row, 2), sup["product"], size=8)
-        _set_cell_text(tbl.cell(row, 3), str(sup["moq"]), size=8.5,
+        _set_cell_text(tbl.cell(row, 2), sup["product"], size=7.5)
+        # Product page — short SKU/service name, hyperlinked to product URL
+        _set_cell_text(tbl.cell(row, 3), sup["product_name"], size=8,
+                       hyperlink=sup["product_url"])
+        _set_cell_text(tbl.cell(row, 4), str(sup["moq"]), size=8.5,
                        align=PP_ALIGN.CENTER)
-        _set_cell_text(tbl.cell(row, 4), f"${sup['unit_cost_usd']:.2f}",
+        _set_cell_text(tbl.cell(row, 5), f"${sup['unit_cost_usd']:.2f}",
                        size=8.5, align=PP_ALIGN.RIGHT)
-        _set_cell_text(tbl.cell(row, 5), f"${sup['total_moq_cost_usd']:,.0f}",
+        _set_cell_text(tbl.cell(row, 6), f"${sup['total_moq_cost_usd']:,.0f}",
                        size=8.5, align=PP_ALIGN.RIGHT)
         # Score cell with color tint
-        score_cell = tbl.cell(row, 6)
+        score_cell = tbl.cell(row, 7)
         score_cell.fill.solid()
         score_cell.fill.fore_color.rgb = _score_color(sup["alleviation_score"])
         _set_cell_text(score_cell, str(sup["alleviation_score"]),
                        size=10, bold=True, align=PP_ALIGN.CENTER)
-        _set_cell_text(tbl.cell(row, 7), sup["notes"], size=7.5)
+        _set_cell_text(tbl.cell(row, 8), sup["notes"], size=7.5)
 
     return tbl
 
@@ -298,6 +301,8 @@ SECTIONS = [
                 "url": "https://www.cellular-cosmetics.com/",
                 "product": "Peptide serum w/ Matrixyl 3000 + Synthe'6, "
                            "shelf-ready, dropper-bottle filled",
+                "product_name": "Anti-Age Peptide Serum",
+                "product_url": "https://www.cellular-cosmetics.com/products/anti-age-peptide-serum-private-label-skin-care",
                 "moq": 10,
                 "unit_cost_usd": 25.00,
                 "total_moq_cost_usd": 250,
@@ -311,6 +316,8 @@ SECTIONS = [
                 "url": "https://atalieneskincare.com/",
                 "product": "4-peptide anti-aging serum + HA + botanicals; "
                            "USA-filled, esthetician-grade",
+                "product_name": "Plant-EGF Peptide + HA Serum",
+                "product_url": "https://atalieneskincare.com/collections/serums/products/plant-egf-anti-wrinkle-serum-with-hyaluronic-acid",
                 "moq": 12,
                 "unit_cost_usd": 27.50,
                 "total_moq_cost_usd": 330,
@@ -324,6 +331,8 @@ SECTIONS = [
                 "url": "https://www.pravadaprivatelabel.com/",
                 "product": "Peptide+ Firming Serum (5 unnamed peptides); "
                            "70% organic; R&D customization",
+                "product_name": "Peptide Complex Serum",
+                "product_url": "https://www.pravadaprivatelabel.com/products/peptide-complex-serum",
                 "moq": 50,
                 "unit_cost_usd": 39.00,
                 "total_moq_cost_usd": 1950,
@@ -368,6 +377,8 @@ SECTIONS = [
                 "url": "https://pharmaloz.com/",
                 "product": "Custom zinc + xylitol lozenge — 35-yr "
                            "US lozenge CDMO; cGMP; PA-based",
+                "product_name": "Lozenge CDMO Capabilities",
+                "product_url": "https://pharmaloz.com/capabilities",
                 "moq": 100,
                 "unit_cost_usd": 2.50,
                 "total_moq_cost_usd": 250,
@@ -382,6 +393,8 @@ SECTIONS = [
                 "url": "https://www.alibaba.com/showroom/oral-care-manufacturers.html",
                 "product": "OEM zinc lozenge / xylitol mint, "
                            "private-label packaging",
+                "product_name": "Oral Care OEM Listings",
+                "product_url": "https://www.alibaba.com/supplier/oral-care-manufacturers-supplier-for-wholesale.html",
                 "moq": 100,
                 "unit_cost_usd": 1.50,
                 "total_moq_cost_usd": 150,
@@ -396,6 +409,8 @@ SECTIONS = [
                 "url": "https://www.alibaba.com/supplier/breath-spray-wholesaler.html",
                 "product": "Breath spray (xylitol + mint) + zinc "
                            "lozenge OEM; private label",
+                "product_name": "Llrn Storefront — Oral Care",
+                "product_url": "https://llrncare.en.alibaba.com/",
                 "moq": 100,
                 "unit_cost_usd": 1.00,
                 "total_moq_cost_usd": 100,
@@ -440,6 +455,8 @@ SECTIONS = [
                 "url": "https://voxnutrition.com/",
                 "product": "Custom biotin + marine collagen capsule; "
                            "NSF + FDA + cGMP + Organic certified",
+                "product_name": "Hair, Skin & Nails Capsule",
+                "product_url": "https://www.voxnutrition.com/product/hair-skin-nails/",
                 "moq": 50,
                 "unit_cost_usd": 4.50,
                 "total_moq_cost_usd": 225,
@@ -454,6 +471,8 @@ SECTIONS = [
                 "url": "https://aurinutra.com/custom-supplement-manufacturing-services-in-new-york/",
                 "product": "Beauty stack: biotin + marine collagen + "
                            "hyaluronic acid capsule, custom",
+                "product_name": "Capsule Manufacturing",
+                "product_url": "https://aurinutra.com/capsules/",
                 "moq": 100,
                 "unit_cost_usd": 3.00,
                 "total_moq_cost_usd": 300,
@@ -468,6 +487,8 @@ SECTIONS = [
                 "url": "https://customnutra.com/",
                 "product": "Biotin + collagen capsule (250+ stock "
                            "blends); custom B-vitamin add-on",
+                "product_name": "Hair, Skin & Nail PL Catalog",
+                "product_url": "https://customnutra.com/product-category/private-label/goal/hair-nails/",
                 "moq": 48,
                 "unit_cost_usd": 2.50,
                 "total_moq_cost_usd": 120,
@@ -510,9 +531,11 @@ SECTIONS = [
         "suppliers": [
             {
                 "name": "ING Pharmaceutical",
-                "url": "https://www.ingpharmaceutical.com/products/nausea-relief-softgels-white-label-ginger-magnesium-vitamin-b6-private-label-softgels-manufacturer",
+                "url": "https://www.ingpharmaceutical.com/",
                 "product": "Nausea Relief Softgel — Ginger Root 67mg "
                            "+ B6 1.4mg + Mg carbonate (ready formula)",
+                "product_name": "Nausea Relief Softgel",
+                "product_url": "https://www.ingpharmaceutical.com/products/nausea-relief-softgels-white-label-ginger-magnesium-vitamin-b6-private-label-softgels-manufacturer",
                 "moq": 100,
                 "unit_cost_usd": 2.50,
                 "total_moq_cost_usd": 250,
@@ -527,6 +550,8 @@ SECTIONS = [
                 "url": "https://www.alibaba.com/showroom/gingerbon-candy.html",
                 "product": "Vietnamese ginger candy chew, private-label "
                            "wrap; B6 add-on possible on custom run",
+                "product_name": "Gingerbon Candy Wholesale",
+                "product_url": "https://www.alibaba.com/showroom/gingerbon-candy.html",
                 "moq": 100,
                 "unit_cost_usd": 2.40,
                 "total_moq_cost_usd": 240,
@@ -541,6 +566,8 @@ SECTIONS = [
                 "url": "https://www.alibaba.com/showroom/ginger-chew.html",
                 "product": "Private-label ginger chew, custom B6 + "
                            "ginger blend; 66 suppliers in category",
+                "product_name": "Ginger Chew OEM Listings",
+                "product_url": "https://www.alibaba.com/showroom/ginger-chew.html",
                 "moq": 100,
                 "unit_cost_usd": 2.00,
                 "total_moq_cost_usd": 200,
@@ -585,6 +612,8 @@ SECTIONS = [
                 "url": "https://www.aogubio.com/dietary-supplement/",
                 "product": "OEM multivitamin capsule (B12, Mg-glycinate, "
                            "K2 MK-7, D3, B-complex blend)",
+                "product_name": "Vitamin & Amino Acid Series",
+                "product_url": "https://www.aogubio.com/amino-acid-vitamin-series/",
                 "moq": 100,
                 "unit_cost_usd": 1.75,
                 "total_moq_cost_usd": 175,
@@ -599,6 +628,8 @@ SECTIONS = [
                 "url": "https://www.nutribl.com/",
                 "product": "Stock multivitamin capsule (120+ blends "
                            "with B-complex, Mg, D3); private label",
+                "product_name": "Vitamin B-Complex Daily 120ct",
+                "product_url": "https://www.nutribl.com/p-951-vitamin-b-complex-daily-120-capsules-320ml-flat-postal.aspx",
                 "moq": 10,
                 "unit_cost_usd": 3.50,
                 "total_moq_cost_usd": 35,
@@ -613,6 +644,8 @@ SECTIONS = [
                 "url": "https://customnutra.com/",
                 "product": "Multivitamin capsule (250+ stock blends "
                            "incl. B-complex + Mg + electrolytes)",
+                "product_name": "Multivitamins PL Catalog",
+                "product_url": "https://customnutra.com/product-category/private-label/vitamins/multivitamins/",
                 "moq": 48,
                 "unit_cost_usd": 2.25,
                 "total_moq_cost_usd": 108,
