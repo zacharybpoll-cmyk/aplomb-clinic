@@ -473,8 +473,8 @@ SECTIONS = [
                 "url": "https://aurinutra.com/custom-supplement-manufacturing-services-in-new-york/",
                 "product": "Beauty stack: biotin + marine collagen + "
                            "hyaluronic acid capsule, custom",
-                "product_name": "Capsule Manufacturing",
-                "product_url": "https://aurinutra.com/capsules/",
+                "product_name": "Custom Beauty-from-Within Formulation",
+                "product_url": "https://aurinutra.com/formulation/",
                 "moq": 100,
                 "unit_cost_usd": 3.00,
                 "total_moq_cost_usd": 300,
