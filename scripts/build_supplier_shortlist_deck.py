@@ -373,39 +373,6 @@ SECTIONS = [
         ],
         "suppliers": [
             {
-                "name": "Pharmaloz Manufacturing",
-                "url": "https://pharmaloz.com/",
-                "product": "Custom zinc + xylitol lozenge — 35-yr "
-                           "US lozenge CDMO; cGMP; PA-based",
-                "product_name": "Lozenge CDMO Capabilities",
-                "product_url": "https://pharmaloz.com/capabilities",
-                "moq": 100,
-                "unit_cost_usd": 2.50,
-                "total_moq_cost_usd": 250,
-                "alleviation_score": 84,
-                "notes": "RFQ — published MOQ is by quote; pilot run of "
-                         "100 negotiable. ProPhase Labs subsidiary, "
-                         "FDA-registered, organic + kosher cert. Premium "
-                         "US option.",
-            },
-            {
-                "name": "Per Os Biosciences",
-                "url": "https://www.peros-bio.com/",
-                "product": "Compressed lozenge / chewable tablet "
-                           "CDMO — direct-compression zinc + xylitol; "
-                           "FDA cGMP, Kosher (Star-K)",
-                "product_name": "Contract Manufacturing — Lozenges",
-                "product_url": "https://www.peros-bio.com/about-us/",
-                "moq": 100,
-                "unit_cost_usd": 2.40,
-                "total_moq_cost_usd": 240,
-                "alleviation_score": 75,
-                "notes": "Maryland-based; 28K sqft allergen-free "
-                         "facility. Custom dental & dietary-supplement "
-                         "lozenge formulation in-house. RFQ pilot run; "
-                         "MOQ negotiable for niche launches.",
-            },
-            {
                 "name": "BLIS Technologies",
                 "url": "https://blis.co.nz/",
                 "product": "Private-label S. salivarius K12 "
@@ -467,22 +434,6 @@ SECTIONS = [
                          "7–10 day turnaround. Only US supplier with "
                          "publicly stated <100 MOQ for biotin+collagen "
                          "blend. Best-in-class certifications.",
-            },
-            {
-                "name": "Auri Nutra",
-                "url": "https://aurinutra.com/custom-supplement-manufacturing-services-in-new-york/",
-                "product": "Beauty stack: biotin + marine collagen + "
-                           "hyaluronic acid capsule, custom",
-                "product_name": "Custom Beauty-from-Within Formulation",
-                "product_url": "https://aurinutra.com/formulation/",
-                "moq": 100,
-                "unit_cost_usd": 3.00,
-                "total_moq_cost_usd": 300,
-                "alleviation_score": 68,
-                "notes": "NY cGMP facility; startup-friendly. Beauty "
-                         "category specialty (collagen/biotin/HA). MOQ "
-                         "100 passes gate; total >$250 — relies on "
-                         "MOQ leg of the OR test.",
             },
             {
                 "name": "Custom Nutra",
@@ -679,7 +630,7 @@ def slide_01_title():
     ]], align=PP_ALIGN.RIGHT)
 
     add_text(s, Inches(0.6), Inches(2.0), Inches(8), Inches(0.4),
-             ["MVP supplier shortlist · 5 side effects · 15 vendors"],
+             ["MVP supplier shortlist · 5 side effects · 12 stock-formula vendors"],
              font=SANS, size=11, color=MUTED)
 
     add_rich(s, Inches(0.6), Inches(2.4), Inches(11), Inches(2.5), [
@@ -690,9 +641,9 @@ def slide_01_title():
     ], leading=1.05)
 
     add_text(s, Inches(0.6), Inches(5.2), Inches(11), Inches(1.0),
-             ["Three white-label suppliers per side effect — every one passes",
-              "the MOQ ≤100 / total MOQ <$250 gate so we can test market pull",
-              "before committing capital."],
+             ["Stock-formula private-label SKUs only — every row links",
+              "to a specific published product page so the MOQ ≤100 /",
+              "total <$250 gate is grounded in real catalog data."],
              font=SANS, size=14, color=MUTED, leading=1.4)
 
     add_rect(s, Inches(0.6), Inches(6.2), Inches(7.5), Inches(0.55), fill=PAPER)
@@ -829,14 +780,16 @@ def build_supplier_slide(section, page_num):
     s = add_blank_slide()
     add_chapter_chrome(s, section["eyebrow"])
 
+    n = len(section["suppliers"])
+    title_suffix = "shortlisted suppliers" if n != 1 else "shortlisted supplier"
     add_rich(s, Inches(0.6), Inches(0.85), Inches(12), Inches(1.2), [
-        [{"t": f"{section['title']} — top 3 suppliers",
+        [{"t": f"{section['title']} — {n} {title_suffix}",
           "font": SERIF, "size": 30, "color": INK}],
     ], leading=1.05)
 
     add_text(s, Inches(0.6), Inches(1.65), Inches(12), Inches(0.4),
-             ["All three pass the MOQ ≤100 / total <$250 gate. "
-              "Score = weighted alleviation effectiveness for this specific side effect."],
+             ["Stock-formula private-label SKUs only. MOQ + total cost "
+              "verified against each supplier's published page."],
              font=SANS, size=10, color=MUTED)
 
     # Matrix
