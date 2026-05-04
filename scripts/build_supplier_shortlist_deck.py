@@ -382,43 +382,45 @@ SECTIONS = [
                 "moq": 100,
                 "unit_cost_usd": 2.50,
                 "total_moq_cost_usd": 250,
-                "alleviation_score": 78,
+                "alleviation_score": 84,
                 "notes": "RFQ — published MOQ is by quote; pilot run of "
                          "100 negotiable. ProPhase Labs subsidiary, "
                          "FDA-registered, organic + kosher cert. Premium "
                          "US option.",
             },
             {
-                "name": "Hanyutang (Alibaba)",
-                "url": "https://www.alibaba.com/showroom/oral-care-manufacturers.html",
-                "product": "OEM zinc lozenge / xylitol mint, "
-                           "private-label packaging",
-                "product_name": "Oral Care OEM Listings",
-                "product_url": "https://www.alibaba.com/supplier/oral-care-manufacturers-supplier-for-wholesale.html",
+                "name": "Per Os Biosciences",
+                "url": "https://www.peros-bio.com/",
+                "product": "Compressed lozenge / chewable tablet "
+                           "CDMO — direct-compression zinc + xylitol; "
+                           "FDA cGMP, Kosher (Star-K)",
+                "product_name": "Contract Manufacturing — Lozenges",
+                "product_url": "https://www.peros-bio.com/about-us/",
                 "moq": 100,
-                "unit_cost_usd": 1.50,
-                "total_moq_cost_usd": 150,
-                "alleviation_score": 65,
-                "notes": "China — accepts MOQ 100 at slightly higher "
-                         "unit price. Verify specific seller via "
-                         "Alibaba; multiple Hanyutang-branded sellers "
-                         "exist in this category.",
+                "unit_cost_usd": 2.40,
+                "total_moq_cost_usd": 240,
+                "alleviation_score": 75,
+                "notes": "Maryland-based; 28K sqft allergen-free "
+                         "facility. Custom dental & dietary-supplement "
+                         "lozenge formulation in-house. RFQ pilot run; "
+                         "MOQ negotiable for niche launches.",
             },
             {
-                "name": "Llrn Personal Care",
-                "url": "https://www.alibaba.com/supplier/breath-spray-wholesaler.html",
-                "product": "Breath spray (xylitol + mint) + zinc "
-                           "lozenge OEM; private label",
-                "product_name": "Llrn Storefront — Oral Care",
-                "product_url": "https://llrncare.en.alibaba.com/",
+                "name": "BLIS Technologies",
+                "url": "https://blis.co.nz/",
+                "product": "Private-label S. salivarius K12 "
+                           "lozenge — root-cause oral probiotic with "
+                           "halitosis clinical evidence",
+                "product_name": "K12 FreshBreath Lozenge (Private Label)",
+                "product_url": "https://blis.co.nz/finished-goods/freshbreath-lozenge/",
                 "moq": 100,
-                "unit_cost_usd": 1.00,
-                "total_moq_cost_usd": 100,
-                "alleviation_score": 60,
-                "notes": "Shenzhen-based oral-care OEM. Lowest cash "
-                         "outlay. Format leans spray/mint; lozenge "
-                         "available on custom run. Verify zinc/xylitol "
-                         "spec sheet before order.",
+                "unit_cost_usd": 2.00,
+                "total_moq_cost_usd": 200,
+                "alleviation_score": 82,
+                "notes": "NZ; only finished-goods private-label "
+                         "K12 program. 1.25B CFU peppermint lozenge, "
+                         "40-ct blister pack. RFQ MOQ; positioned as "
+                         "the root-cause SKU in our 3-supplier slate.",
             },
         ],
     },
