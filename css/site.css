@@ -1748,11 +1748,14 @@
   }
   .about-hero-img {
     background: var(--bg);
-    display: flex; align-items: center; justify-content: center;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 36px;
     padding: 64px 48px;
   }
-  /* Constrain to native size (founder portrait is 400x400)
-     so the image isn't upscaled and blurred. */
+  /* Source is 1024x1024 (HD upscale via BFL Flux Kontext);
+     display capped at 340px so it sits comfortably in the column
+     and stays crisp at retina sizes. */
   .about-hero-img img {
     width: 100%;
     max-width: 340px;
@@ -1786,20 +1789,20 @@
     margin-top: 8px;
   }
 
-  /* Credentials strip (institution wordmarks) on About page */
+  /* Credentials strip (institution wordmarks) — sits under the
+     founder portrait inside .about-hero-img on the About page. */
   .creds {
-    margin-top: 48px;
-    padding-top: 32px;
-    border-top: 1px solid var(--rule);
+    width: 100%;
+    max-width: 480px;
   }
   .creds-label {
     font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--amber); margin-bottom: 24px;
+    color: var(--amber); margin-bottom: 20px; text-align: center;
   }
   .creds-row {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 28px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px 32px;
     align-items: start;
   }
   .cred {
