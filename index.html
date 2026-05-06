@@ -60,9 +60,11 @@
     <h2>The GLP-1 works. <em>The side effects are devastating.</em><br>APLOMB. exists for the side effects nobody is treating.</h2>
   </section>
 
-  <!-- § 02 Biology — what GLP-1 actually does to four systems -->
+  <!-- § 02 Biology — what GLP-1 actually does to five systems (auto-advancing carousel) -->
   <section class="bio-short">
-    <div class="bio-mech">
+    <div class="bio-carousel" data-bio-carousel>
+      <div class="bio-track-viewport">
+      <div class="bio-track" data-bio-track>
 
       <div class="bio-card">
         <h3>Ozempic face. Fat-compartment lipolysis and dermal-signaling change.</h3>
@@ -119,6 +121,7 @@
 
       <div class="bio-card simple">
         <h3>Bad breath. Hyposalivation, ketosis, and gastric stasis.</h3>
+        <img class="bio-card-img" src="assets/breath-mech.jpg" alt="Botanical illustration triptych: a sprig of peppermint with concentric ripples, an open apothecary tin of lozenges, and a stylized stomach with rising vapor — the three converging mechanisms of GLP-1 oral malodor.">
         <p>GLP-1s reduce salivary flow, raise circulating acetone in the early-ketosis window, and slow gastric emptying enough that fermentation produces volatile sulfur compounds. ADA reporting puts roughly thirty percent of users self-reporting bad breath; clinical reviews confirm the three converging mechanisms. It is not a hygiene problem. It is a physiology one.</p>
         <div class="consequence">What partners notice but won't say: a metallic, fruity, or sour edge to the breath that sugar-free mints don't fix because mints don't address salivary flow, acetone, or gastric fermentation. <strong>The mechanism is the only intervention that holds.</strong></div>
         <div class="bio-card-links">
@@ -127,13 +130,17 @@
         </div>
       </div>
 
+      </div>
+      </div>
+      <div class="bio-dots" data-bio-dots aria-label="Carousel position">
+        <button type="button" data-bio-dot="0" aria-label="Show Ozempic face card" class="is-active"></button>
+        <button type="button" data-bio-dot="1" aria-label="Show nutrient depletion card"></button>
+        <button type="button" data-bio-dot="2" aria-label="Show hair loss card"></button>
+        <button type="button" data-bio-dot="3" aria-label="Show nausea card"></button>
+        <button type="button" data-bio-dot="4" aria-label="Show bad breath card"></button>
+      </div>
+      <div class="bio-counter" data-bio-counter><span data-bio-current>1</span><span class="bio-counter-sep"> / </span><span>5</span></div>
     </div>
-  </section>
-
-  <!-- v2 · First six months urgency band -->
-  <section class="first-six">
-    <h2>The first six months on a GLP-1 are when most of the volume change happens.</h2>
-    <p>Begin APLOMB. now and you preserve what you have. Begin in month seven and you are working from a deficit that may need a filler to undo. <strong>The window is short.</strong> The mid-face you walk in with is the mid-face the drug works against the fastest.</p>
   </section>
 
   <!-- § 02 Product rail A — Serum -->
@@ -875,6 +882,83 @@
 
   loadCart();
   renderCart();
+
+  // ---------- Mechanism-cards carousel ----------
+  // Auto-advance every 3s. Click anywhere on the carousel to advance + pause
+  // (auto-advance does not resume; clicks always advance). Click a dot to jump
+  // to that slide (also pauses).
+  (function () {
+    const root = document.querySelector('[data-bio-carousel]');
+    if (!root) return;
+    const track = root.querySelector('[data-bio-track]');
+    const cards = track.querySelectorAll('.bio-card');
+    const dots = root.querySelectorAll('[data-bio-dot]');
+    const counter = root.querySelector('[data-bio-current]');
+    const total = cards.length;
+    let index = 0;
+    let timer = null;
+    let paused = false;
+
+    function render() {
+      track.style.transform = 'translateX(-' + (index * 100) + '%)';
+      dots.forEach((d, i) => d.classList.toggle('is-active', i === index));
+      if (counter) counter.textContent = String(index + 1);
+    }
+
+    function next() {
+      index = (index + 1) % total;
+      render();
+    }
+
+    function startAuto() {
+      if (timer) return;
+      timer = setInterval(next, 3000);
+    }
+    function stopAuto() {
+      if (!timer) return;
+      clearInterval(timer);
+      timer = null;
+    }
+
+    function pause() {
+      if (paused) return;
+      paused = true;
+      stopAuto();
+      root.classList.add('is-paused');
+    }
+
+    // Single click handler for the whole carousel.
+    root.addEventListener('click', function (e) {
+      // Dot clicks jump to specific slide.
+      const dot = e.target.closest('[data-bio-dot]');
+      if (dot) {
+        index = parseInt(dot.dataset.bioDot, 10) || 0;
+        pause();
+        render();
+        return;
+      }
+      // Don't hijack clicks on links/buttons inside the cards.
+      if (e.target.closest('a, button')) return;
+      pause();
+      next();
+    });
+
+    // Pause auto-advance when the carousel scrolls out of view to save work.
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (paused) continue;
+          if (entry.isIntersecting) startAuto();
+          else stopAuto();
+        }
+      }, { threshold: 0.2 });
+      io.observe(root);
+    } else {
+      startAuto();
+    }
+
+    render();
+  })();
 })();
 </script>
 </body>

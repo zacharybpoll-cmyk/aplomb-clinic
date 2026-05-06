@@ -197,6 +197,71 @@
     display: grid; grid-template-columns: 1fr; gap: 32px;
     max-width: 1080px; margin: 0 auto;
   }
+
+  /* Carousel wrapper for the 5 mechanism cards */
+  .bio-carousel {
+    position: relative;
+    max-width: 1080px;
+    margin: 0 auto;
+    cursor: pointer;
+    user-select: none;
+  }
+  .bio-carousel::after {
+    /* subtle hint that the surface is interactive */
+    content: "";
+    position: absolute; inset: 0;
+    pointer-events: none;
+    transition: box-shadow 0.2s ease;
+  }
+  .bio-carousel:hover::after { box-shadow: inset 0 0 0 1px rgba(122, 61, 20, 0.08); }
+  .bio-track-viewport {
+    overflow: hidden;
+  }
+  .bio-track {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
+  .bio-track .bio-card {
+    flex: 0 0 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .bio-dots {
+    display: flex; justify-content: center; gap: 12px;
+    margin-top: 28px;
+  }
+  .bio-dots button {
+    width: 10px; height: 10px;
+    border: 1px solid var(--amber);
+    background: transparent;
+    border-radius: 999px;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .bio-dots button.is-active {
+    background: var(--amber);
+    transform: scale(1.15);
+  }
+  .bio-dots button:hover { background: var(--amber-light); }
+  .bio-counter {
+    position: absolute;
+    top: 18px; right: 8px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .bio-counter [data-bio-current] {
+    color: var(--amber); font-weight: 600;
+  }
+  .bio-carousel.is-paused .bio-counter::after {
+    content: " · paused";
+    color: var(--muted);
+  }
   .bio-card {
     padding: 48px 44px; background: var(--bg);
     border-left: 2px solid var(--amber);
@@ -435,7 +500,8 @@
     color: rgba(247, 241, 230, 0.6); max-width: 400px; margin-top: 16px; line-height: 1.5;
   }
   .foot-col .pill { color: var(--amber-light); margin-bottom: 20px; }
-  .foot-link { font-size: 14px; margin-bottom: 10px; color: rgba(247, 241, 230, 0.85); }
+  .foot-link { display: block; font-size: 14px; margin-bottom: 10px; color: rgba(247, 241, 230, 0.85); }
+  .foot-link:hover { color: var(--amber-light); }
   .foot-legal {
     display: flex; flex-direction: column; gap: 14px; align-items: flex-start;
     font-size: 11px; color: rgba(247, 241, 230, 0.5); line-height: 1.6;
