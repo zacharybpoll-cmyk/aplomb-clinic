@@ -4,1520 +4,12 @@
 <meta charset="utf-8">
 <title>APLOMB. For women on GLP-1.</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="APLOMB. is the side-effect line for women on Ozempic, Wegovy, Mounjaro or Zepbound. For the side effects nobody is selling you a solution to: face volume loss, nutrient depletion, hair thinning, and nausea.">
+<meta name="description" content="APLOMB. is the side-effect line for women on GLP-1 medications. Five products for the side effects nobody is selling you a solution to: face volume loss, nutrient depletion, hair loss, nausea, and bad breath.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="assets/aplomb-mark.svg">
-<style>
-  :root {
-    --bg: #efe8dc;
-    --ink: #1a1512;
-    --paper: #f7f1e6;
-    --amber: #7a3d14;
-    --amber-light: #d9a06b;
-    --rule: #d9cfbd;
-    --muted: #6b5d4c;
-    --serif: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
-    --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  }
-  *, *::before, *::after { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: var(--bg); }
-  body {
-    overscroll-behavior: none;
-    font-family: var(--sans);
-    color: var(--ink);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  img { display: block; max-width: 100%; }
-  button { font: inherit; cursor: pointer; }
-  a { color: inherit; text-decoration: none; }
-
-  *, *::before, *::after { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
-  body { overflow-x: clip; }
-  img { max-width: 100%; }
-  .site { width: 100%; max-width: 1440px; margin: 0 auto; background: var(--paper); overflow-x: clip; }
-
-  .pill {
-    font-family: var(--sans);
-    font-size: 10px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  /* Nav */
-  .nav {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 26px 72px; border-bottom: 1px solid var(--rule);
-    background: var(--paper);
-  }
-  .logo { display: inline-flex; align-items: center; gap: 10px; font-family: var(--serif); font-size: 28px; font-weight: 500; letter-spacing: -0.02em; font-style: italic; line-height: 1; }
-  .logo .mark { width: 12px; height: 32px; color: var(--amber); flex-shrink: 0; display: block; }
-  .logo .word { font-style: italic; }
-  .logo .dot { color: var(--amber); font-style: normal; }
-  .nav-links { display: flex; gap: 38px; font-size: 13px; }
-  .nav-right { display: flex; gap: 22px; align-items: center; font-size: 13px; }
-  .bag { padding: 8px 14px; border: 1px solid var(--ink); }
-
-  /* Hero */
-  .hero { position: relative; border-bottom: 1px solid var(--rule); background: var(--bg); }
-  .hero-grid { display: grid; grid-template-columns: 1fr 1.15fr; min-height: 780px; }
-  .hero-text { padding: 96px 72px 88px; display: flex; flex-direction: column; justify-content: center; }
-  .hero h1 {
-    font-family: var(--serif); font-size: 96px; line-height: 0.95;
-    font-weight: 400; letter-spacing: -0.03em; margin: 0 0 32px;
-  }
-  .hero h1 em { color: var(--amber); font-weight: 400; }
-  .hero-tag {
-    font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--amber);
-    margin: 0 0 24px; letter-spacing: 0.005em;
-  }
-  .hero-lede {
-    font-family: var(--serif); font-size: 22px; line-height: 1.45;
-    font-style: italic; color: var(--muted); max-width: 540px; margin: 0 0 36px;
-  }
-  .cta-row { display: flex; gap: 14px; margin-bottom: 40px; flex-wrap: wrap; }
-  .btn {
-    font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase;
-    padding: 18px 32px; border: none;
-  }
-  .btn-dark { background: var(--ink); color: var(--paper); }
-  .btn-outline {
-    background: transparent; color: var(--ink);
-    border: 1px solid var(--ink); padding: 17px 32px;
-  }
-  .hero-sub {
-    display: flex; gap: 48px; padding-top: 28px; border-top: 1px solid var(--rule);
-  }
-  .hero-sub-n { font-family: var(--serif); font-size: 28px; font-weight: 500; }
-  .hero-sub-l {
-    font-size: 11px; letter-spacing: 0.08em; color: var(--muted);
-    margin-top: 4px; max-width: 180px;
-  }
-  .hero-img { position: relative; overflow: hidden; }
-  .hero-img img {
-    width: 100%; height: 100%; object-fit: cover;
-    position: absolute; inset: 0;
-  }
-  .img-caption {
-    position: absolute; bottom: 24px; right: 24px; color: var(--paper);
-    background: rgba(26, 21, 18, 0.7); padding: 10px 14px;
-    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-  }
-
-  /* Ticker */
-  .ticker {
-    display: flex; justify-content: space-between;
-    padding: 16px 72px; font-size: 11px; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--muted);
-    border-bottom: 1px solid var(--rule); background: var(--paper);
-  }
-
-  /* Gap — single chapter */
-  .gap {
-    padding: 120px 140px; border-bottom: 1px solid var(--rule);
-    text-align: center;
-  }
-  .gap h2 {
-    font-family: var(--serif); font-size: 58px; line-height: 1.08;
-    font-weight: 400; letter-spacing: -0.02em; margin: 22px auto 28px;
-    max-width: 960px;
-  }
-  .gap h2 em { color: var(--amber); font-style: italic; }
-  .gap h2 { margin-bottom: 0; }
-
-  /* Product rail */
-  .rail {
-    display: grid; grid-template-columns: 1fr 1fr;
-    border-bottom: 1px solid var(--rule);
-  }
-  .rail.reverse .rail-img { order: 2; }
-  .rail.reverse .rail-body { order: 1; border-left: none; border-right: 1px solid var(--rule); }
-  .rail-img { background: var(--paper); position: relative; min-height: 720px; }
-  .rail-img img { width: 100%; height: 100%; object-fit: contain; object-position: center center; position: absolute; inset: 0; }
-  .rail-body {
-    padding: 110px 80px; background: var(--paper);
-    border-left: 1px solid var(--rule);
-  }
-  .rail-body h2 {
-    font-family: var(--serif); font-size: 62px; line-height: 1.02;
-    font-weight: 400; letter-spacing: -0.025em; margin: 22px 0 28px;
-  }
-  .rail-body h2 em { color: var(--amber); font-style: italic; }
-  .rail-lede {
-    font-family: var(--serif); font-size: 21px; line-height: 1.5;
-    font-style: italic; color: var(--muted); margin: 0 0 36px;
-  }
-  .rail-pulls { list-style: none; padding: 0; margin: 0 0 36px; }
-  .rail-pulls li {
-    padding: 18px 0; border-top: 1px solid var(--rule);
-    display: grid; grid-template-columns: 180px 1fr; gap: 20px;
-  }
-  .rail-pulls li:last-child { border-bottom: 1px solid var(--rule); }
-  .rail-pull-name {
-    font-family: var(--serif); font-size: 22px; font-weight: 500; font-style: italic;
-  }
-  .rail-pull-desc { font-size: 14px; line-height: 1.55; color: var(--muted); }
-  .rail-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
-  .rail-price {
-    font-family: var(--serif); font-size: 32px; font-weight: 500; margin: 0 0 6px;
-  }
-  .rail-price-sub { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-left: 12px; }
-  .rail-price-meta { font-size: 13px; color: var(--ink); margin: 0 0 6px; line-height: 1.5; }
-  .rail-price-meta strong { font-weight: 600; }
-  .rail-price-offer { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); margin: 0 0 18px; }
-  .rail-link {
-    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--amber); padding: 18px 0; border-bottom: 1px solid var(--amber);
-  }
-  .disclaimer {
-    font-size: 11px; letter-spacing: 0.06em; color: var(--muted);
-    margin-top: 24px; line-height: 1.6;
-  }
-
-  /* Biology short */
-  .bio-short {
-    padding: 64px 140px 120px; border-bottom: 1px solid var(--rule);
-    background: var(--paper);
-  }
-  /* Gap section flows directly into the bio cards — drop its bottom border */
-  .gap { border-bottom: none; padding-bottom: 72px; }
-  .bio-mech {
-    display: grid; grid-template-columns: 1fr; gap: 32px;
-    max-width: 1080px; margin: 0 auto;
-  }
-  .bio-card {
-    padding: 48px 44px; background: var(--bg);
-    border-left: 2px solid var(--amber);
-  }
-  .bio-card-img {
-    width: 100%; height: 280px; object-fit: cover;
-    margin: 4px 0 24px; display: block;
-  }
-  .bio-card.simple { padding-bottom: 36px; }
-  .bio-card.simple p { font-size: 15px; line-height: 1.65; }
-  .bio-card-num {
-    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--amber); margin-bottom: 18px;
-  }
-  .bio-card h3 {
-    font-family: var(--serif); font-size: 30px; line-height: 1.15;
-    font-weight: 500; letter-spacing: -0.005em; margin: 0 0 20px;
-  }
-  .bio-card p { font-size: 15px; line-height: 1.65; color: var(--ink); margin: 0 0 22px; }
-  .bio-more { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--amber); }
-
-  /* Before/after compare visual — inline mid-face comparison */
-  .compare-slider {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 2px; margin: 28px 0 26px;
-    background: var(--rule);
-  }
-  .compare-slider figure { margin: 0; background: var(--paper); padding: 0; position: relative; }
-  .compare-slider figure img {
-    width: 100%; height: 220px; object-fit: cover; display: block;
-  }
-  .compare-slider figcaption {
-    font-family: var(--sans); font-size: 10px;
-    letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--muted); padding: 12px 14px 0;
-    display: flex; justify-content: space-between; align-items: baseline;
-  }
-  .compare-slider figcaption span.stat {
-    color: var(--amber); font-weight: 600; letter-spacing: 0.05em;
-  }
-  .compare-slider figure.before figcaption { padding-bottom: 12px; }
-  .compare-slider figure.after figcaption { padding-bottom: 12px; }
-
-  /* Consequence block under Mechanism 02 */
-  .consequence {
-    font-family: var(--serif); font-size: 17px; line-height: 1.5;
-    font-style: italic; color: var(--ink);
-    padding: 18px 20px; background: var(--paper);
-    border-left: 2px solid var(--amber); margin: 4px 0 24px;
-  }
-  .consequence strong { color: var(--amber); font-style: normal; font-weight: 500; }
-
-  /* Founder */
-  .founder {
-    display: grid; grid-template-columns: 1fr 1.1fr;
-    border-bottom: 1px solid var(--rule); min-height: 640px;
-  }
-  .founder-img { position: relative; background: var(--bg); }
-  .founder-img img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-  .founder-body { padding: 100px 80px; background: var(--paper); border-left: 1px solid var(--rule); }
-  .founder-body h2 {
-    font-family: var(--serif); font-size: 50px; line-height: 1.05;
-    font-weight: 400; letter-spacing: -0.02em; margin: 22px 0 28px;
-  }
-  .founder-body h2 em { color: var(--amber); font-style: italic; }
-  .founder-prose p {
-    font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0 0 18px;
-  }
-  .founder-tribute {
-    font-family: var(--serif); font-size: 17px; line-height: 1.55;
-    font-style: italic; color: var(--muted);
-    border-left: 2px solid var(--amber);
-    padding: 6px 0 6px 20px;
-    margin: 0 0 32px;
-  }
-  .founder-prose .pullquote {
-    font-family: var(--serif); font-size: 22px; line-height: 1.4;
-    font-style: italic; color: var(--amber);
-    margin: 28px 0; padding: 0 0 0 24px; border-left: 2px solid var(--amber);
-  }
-  .founder-prose .lossy-intro {
-    font-family: var(--serif); font-size: 22px; line-height: 1.45;
-    color: var(--ink); margin: 0 0 26px; font-weight: 400;
-  }
-  .founder-prose .lossy-intro em { font-style: italic; color: var(--amber); font-weight: 500; }
-  .founder-prose .lossy-list {
-    list-style: none; margin: 0 0 28px; padding: 0;
-    display: grid; gap: 18px;
-  }
-  .founder-prose .lossy-list li {
-    display: grid; grid-template-columns: 36px 1fr; gap: 16px;
-    padding: 16px 0; border-top: 1px solid var(--rule);
-    font-size: 15px; line-height: 1.62; color: var(--ink);
-  }
-  .founder-prose .lossy-list li:last-child { border-bottom: 1px solid var(--rule); }
-  .founder-prose .lossy-list strong { color: var(--ink); font-weight: 600; }
-  .founder-prose .lossy-num {
-    font-family: var(--serif); font-size: 22px; line-height: 1;
-    color: var(--amber); font-style: italic;
-    padding-top: 2px;
-  }
-  .founder-prose .lossy-close {
-    font-family: var(--serif); font-size: 22px; line-height: 1.45;
-    color: var(--ink); margin: 0;
-  }
-  .founder-prose .lossy-close strong { color: var(--amber); font-weight: 600; font-style: italic; }
-
-  /* Voices — what the field is saying */
-  .voices {
-    padding: 110px 80px; background: var(--bg);
-    border-bottom: 1px solid var(--rule);
-  }
-  .voices-head { max-width: 920px; margin: 0 auto 72px; text-align: center; }
-  .voices-head .pill { display: inline-block; }
-  .voices-head h2 {
-    font-family: var(--serif); font-size: 50px; line-height: 1.08;
-    font-weight: 400; letter-spacing: -0.02em; margin: 22px 0 18px;
-  }
-  .voices-head h2 em { color: var(--amber); font-style: italic; }
-  .voices-head p {
-    font-size: 16px; line-height: 1.6; color: var(--muted);
-    max-width: 640px; margin: 0 auto;
-  }
-  .voices-grid {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 28px;
-    max-width: 1280px; margin: 0 auto;
-  }
-  .voice-card {
-    background: var(--paper); padding: 36px 32px;
-    border: 1px solid var(--rule);
-    display: flex; flex-direction: column; gap: 24px;
-    position: relative;
-  }
-  .voice-card .topic {
-    font-family: var(--sans); font-size: 11px; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--amber); font-weight: 600;
-  }
-  .voice-card blockquote {
-    font-family: var(--serif); font-size: 22px; line-height: 1.4;
-    color: var(--ink); margin: 0; font-weight: 400; flex: 1;
-  }
-  .voice-card blockquote::before { content: "\201C"; font-size: 32px; color: var(--amber); margin-right: 4px; line-height: 0; }
-  .voice-card blockquote em { color: var(--amber); font-style: italic; }
-  .voice-card .by { display: flex; flex-direction: column; gap: 4px; padding-top: 16px; border-top: 1px solid var(--rule); }
-  .voice-card .by-name { font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--ink); }
-  .voice-card .by-cred { font-family: var(--sans); font-size: 12px; color: var(--muted); line-height: 1.5; }
-  .voice-card .by-source { font-family: var(--sans); font-size: 11px; color: var(--muted); margin-top: 6px; font-style: italic; }
-  .voice-card .by-source a { color: var(--amber); text-decoration: none; }
-  .voice-card .by-source a:hover { text-decoration: underline; }
-
-  .voices-stats {
-    margin-top: 80px; padding-top: 60px; border-top: 1px solid var(--rule);
-    max-width: 1280px; margin-left: auto; margin-right: auto;
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 36px;
-  }
-  .voices-stat { text-align: left; }
-  .voices-stat .figure {
-    font-family: var(--serif); font-size: 56px; line-height: 1; color: var(--amber);
-    font-weight: 400; letter-spacing: -0.02em; margin-bottom: 14px;
-  }
-  .voices-stat .label {
-    font-family: var(--sans); font-size: 14px; line-height: 1.55; color: var(--ink);
-    margin-bottom: 10px;
-  }
-  .voices-stat .src {
-    font-family: var(--sans); font-size: 11px; color: var(--muted); font-style: italic;
-  }
-  .voices-stat .src a { color: var(--amber); text-decoration: none; }
-
-  /* Evidence standards */
-  .standards {
-    padding: 110px 120px; border-bottom: 1px solid var(--rule);
-    background: var(--paper);
-  }
-  .standards-head { text-align: center; margin-bottom: 60px; }
-  .standards-head h2 {
-    font-family: var(--serif); font-size: 50px; line-height: 1.08;
-    font-weight: 400; letter-spacing: -0.02em; margin: 22px 0;
-  }
-  .standards-head h2 em { color: var(--amber); font-style: italic; }
-  .standards-head p {
-    font-family: var(--serif); font-size: 19px; color: var(--muted);
-    max-width: 720px; margin: 0 auto; font-style: italic; line-height: 1.55;
-  }
-  .standards-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
-  .standards-col {
-    padding: 44px 40px; background: var(--bg);
-  }
-  .standards-col.say { border-left: 2px solid var(--amber); }
-  .standards-col.dont { border-left: 2px solid var(--ink); background: var(--ink); color: var(--paper); }
-  .standards-col h3 {
-    font-family: var(--serif); font-size: 28px; font-weight: 500;
-    margin: 0 0 22px; font-style: italic;
-  }
-  .standards-col.dont h3 { color: var(--amber-light); }
-  .standards-col ul { margin: 0; padding: 0; list-style: none; }
-  .standards-col li {
-    padding: 14px 0; border-top: 1px solid rgba(26,21,18,0.1);
-    font-size: 14px; line-height: 1.55;
-  }
-  .standards-col.dont li { border-top-color: rgba(247,241,230,0.12); }
-  .standards-col li:first-child { border-top: none; }
-
-  /* Final CTA */
-  .cta {
-    padding: 140px 72px 120px; text-align: center;
-    background: var(--paper); border-bottom: 1px solid var(--rule);
-  }
-  .cta .hero-tag { margin-bottom: 22px; }
-  .cta h2 {
-    font-family: var(--serif); font-size: 84px; line-height: 1.0;
-    font-weight: 400; letter-spacing: -0.025em; margin: 0 0 28px;
-  }
-  .cta h2 em { color: var(--amber); font-style: italic; }
-  .cta-lede {
-    font-family: var(--serif); font-size: 22px; font-style: italic;
-    color: var(--muted); max-width: 720px; margin: 0 auto 44px;
-  }
-  .cta-row-dual {
-    display: flex; justify-content: center; gap: 16px; margin-bottom: 18px;
-  }
-  .cta-sub {
-    font-size: 12px; letter-spacing: 0.1em; color: var(--muted);
-    text-transform: uppercase; margin-top: 22px;
-  }
-
-  /* Footer */
-  .foot { background: var(--ink); color: var(--paper); padding: 80px 72px 40px; }
-  .foot-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 56px; margin-bottom: 60px; }
-  .foot-logo { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 6px; font-family: var(--serif); font-size: 26px; font-style: italic; line-height: 1; }
-  .foot-logo .mark { width: 14px; height: 38px; color: var(--amber-light); display: block; }
-  .foot-logo .word { font-style: italic; }
-  .foot-logo .dot { color: var(--amber-light); font-style: normal; }
-  .foot-tag {
-    font-family: var(--serif); font-style: italic; font-size: 17px;
-    color: rgba(247, 241, 230, 0.6); max-width: 400px; margin-top: 16px; line-height: 1.5;
-  }
-  .foot-col .pill { color: var(--amber-light); margin-bottom: 20px; }
-  .foot-link { font-size: 14px; margin-bottom: 10px; color: rgba(247, 241, 230, 0.85); }
-  .foot-legal {
-    display: flex; flex-direction: column; gap: 14px; align-items: flex-start;
-    font-size: 11px; color: rgba(247, 241, 230, 0.5); line-height: 1.6;
-    padding-top: 24px; border-top: 1px solid rgba(247,241,230,0.18);
-  }
-  .foot-legal .row-sm {
-    display: flex; justify-content: space-between; width: 100%;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    color: rgba(247,241,230,0.4);
-  }
-
-  /* ── v2 · Urgency band (the first six months take both) ── */
-  .first-six {
-    padding: 70px 72px;
-    background: var(--amber);
-    color: var(--paper);
-    text-align: center;
-    border-bottom: 1px solid var(--rule);
-  }
-  .first-six h2 {
-    font-family: var(--serif); font-size: 40px; line-height: 1.15;
-    font-weight: 400; letter-spacing: -0.015em;
-    margin: 0 auto 14px; max-width: 980px;
-    font-style: italic;
-  }
-  .first-six p {
-    font-family: var(--serif); font-style: italic;
-    font-size: 18px; line-height: 1.5;
-    max-width: 720px; margin: 0 auto;
-    color: rgba(247,241,230,0.92);
-  }
-  .first-six p strong {
-    color: var(--paper); font-weight: 700; font-style: italic;
-  }
-
-  /* ── v2 · CTA scarcity for combined ── */
-  .scarcity-strip-combined {
-    background: var(--ink); color: var(--amber-light);
-    text-align: center; padding: 18px 72px;
-    font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase;
-    border-bottom: 1px solid rgba(247,241,230,0.15);
-  }
-  .scarcity-strip-combined strong { color: var(--paper); font-weight: 500; }
-
-  /* ── v3 · Two paths · same woman (combined version) ── */
-  .twopaths-combined {
-    padding: 110px 72px;
-    background: var(--paper);
-    border-bottom: 1px solid var(--rule);
-  }
-  .twopaths-combined .head { text-align: center; max-width: 880px; margin: 0 auto 56px; }
-  .twopaths-combined .head h2 {
-    font-family: var(--serif); font-size: 52px; line-height: 1.05;
-    font-weight: 400; letter-spacing: -0.02em;
-    margin: 22px 0 22px;
-  }
-  .twopaths-combined .head h2 em { color: var(--amber); font-style: italic; }
-  .twopaths-combined .head .lede {
-    font-family: var(--serif); font-style: italic;
-    font-size: 19px; color: var(--muted);
-    max-width: 700px; margin: 0 auto;
-    line-height: 1.5;
-  }
-  .tp-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
-    background: var(--rule); border: 1px solid var(--rule);
-    max-width: 1240px; margin: 0 auto;
-  }
-  .tp-card { padding: 48px 40px; }
-  .tp-without { background: var(--ink); color: var(--paper); }
-  .tp-with { background: var(--paper); }
-  .tp-tag {
-    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-  .tp-without .tp-tag { color: rgba(247,241,230,0.5); }
-  .tp-with .tp-tag { color: var(--amber); }
-  .tp-card h3 {
-    font-family: var(--serif); font-size: 28px; line-height: 1.15;
-    font-weight: 500; font-style: italic;
-    margin: 0 0 24px;
-  }
-  .tp-with h3 { color: var(--ink); }
-  .tp-row {
-    display: grid; grid-template-columns: 56px 1fr; gap: 14px;
-    padding: 14px 0; border-top: 1px solid rgba(247,241,230,0.12);
-  }
-  .tp-with .tp-row { border-top-color: var(--rule); }
-  .tp-card .tp-row:first-of-type { border-top: none; }
-  .tp-row .area {
-    font-family: var(--serif); font-style: italic;
-    font-size: 14px; color: var(--amber-light);
-    text-transform: lowercase;
-  }
-  .tp-with .tp-row .area { color: var(--amber); }
-  .tp-row .desc {
-    font-family: var(--serif); font-size: 16px; line-height: 1.45;
-  }
-  .tp-without .tp-row .desc { color: rgba(247,241,230,0.85); }
-  .tp-with .tp-row .desc { color: var(--ink); }
-  .tp-card .age-cap {
-    margin-top: 28px; padding-top: 18px;
-    font-family: var(--serif); font-style: italic; font-size: 17px;
-    border-top: 1px solid rgba(247,241,230,0.18);
-  }
-  .tp-with .age-cap { border-top-color: var(--rule); color: var(--amber); }
-  .tp-without .age-cap { color: var(--amber-light); }
-
-  /* ── v3 · Process for combined (3 entry paths) ── */
-  .entry-paths {
-    padding: 110px 72px;
-    background: var(--bg);
-    border-bottom: 1px solid var(--rule);
-  }
-  .entry-paths-head { text-align: center; max-width: 880px; margin: 0 auto 56px; }
-  .entry-paths-head h2 {
-    font-family: var(--serif); font-size: 50px; line-height: 1.05;
-    font-weight: 400; letter-spacing: -0.02em;
-    margin: 22px 0 22px;
-  }
-  .entry-paths-head h2 em { color: var(--amber); font-style: italic; }
-  .entry-paths-head .lede {
-    font-family: var(--serif); font-style: italic;
-    font-size: 19px; color: var(--muted);
-    max-width: 720px; margin: 0 auto;
-    line-height: 1.5;
-  }
-  .entry-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
-    background: var(--rule); border: 1px solid var(--rule);
-    max-width: 1240px; margin: 0 auto;
-  }
-  .entry-card {
-    background: var(--paper); padding: 40px 32px;
-  }
-  .entry-num {
-    font-family: var(--serif); font-size: 48px;
-    color: var(--amber); font-style: italic;
-    line-height: 1; margin-bottom: 12px;
-  }
-  .entry-card h3 {
-    font-family: var(--serif); font-size: 22px;
-    font-weight: 500; line-height: 1.2;
-    margin: 0 0 14px;
-  }
-  .entry-card p {
-    font-family: var(--serif); font-size: 15px; line-height: 1.55;
-    color: var(--muted); margin: 0 0 22px;
-  }
-  .entry-card .next {
-    display: inline-block;
-    font-size: 11px; letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--amber);
-    border-bottom: 1px solid var(--amber);
-    padding-bottom: 4px;
-  }
-
-  /* ── v4 · Pre-hero strip (combined) ── */
-  .pre-hero-combined {
-    background: var(--amber); color: var(--paper);
-    padding: 14px 72px;
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase;
-  }
-  .pre-hero-combined .stat {
-    font-family: var(--serif); font-style: italic;
-    text-transform: none; letter-spacing: 0; font-size: 15px;
-    color: var(--paper);
-  }
-  .pre-hero-combined .stat strong {
-    font-weight: 500; background: var(--ink);
-    padding: 3px 8px; margin-right: 8px;
-  }
-
-  /* ── v4 · Backed by (credibility band, combined) ── */
-  .backed-c {
-    padding: 90px 72px;
-    background: var(--paper);
-    border-bottom: 1px solid var(--rule);
-  }
-  .backed-c-head { text-align: center; margin-bottom: 56px; }
-  .backed-c-head h2 {
-    font-family: var(--serif); font-size: 44px; line-height: 1.1;
-    font-weight: 400; letter-spacing: -0.015em;
-    margin: 18px 0 18px;
-  }
-  .backed-c-head h2 em { color: var(--amber); font-style: italic; }
-  .backed-c-head p {
-    font-family: var(--serif); font-style: italic;
-    font-size: 17px; color: var(--muted);
-    max-width: 720px; margin: 0 auto;
-  }
-  .backed-c-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
-    background: var(--rule); border: 1px solid var(--rule);
-    max-width: 1240px; margin: 0 auto;
-  }
-  .backed-c-cell {
-    background: var(--bg); padding: 36px 28px;
-  }
-  .backed-c-tier {
-    font-size: 10px; letter-spacing: 0.22em;
-    text-transform: uppercase; color: var(--amber);
-    margin-bottom: 14px;
-  }
-  .backed-c-cell h3 {
-    font-family: var(--serif); font-size: 22px; line-height: 1.2;
-    font-weight: 500; font-style: italic;
-    margin: 0 0 10px;
-  }
-  .backed-c-cell p {
-    font-family: var(--serif); font-size: 14px; line-height: 1.55;
-    color: var(--muted); margin: 0;
-  }
-
-  /* ── v4 · Emotional close (combined) ── */
-  .emo-close-c {
-    padding: 80px 72px;
-    background: var(--ink); color: var(--paper);
-    text-align: center;
-    border-bottom: 1px solid rgba(247,241,230,0.15);
-  }
-  .emo-close-c blockquote {
-    font-family: var(--serif); font-style: italic;
-    font-size: 36px; line-height: 1.25;
-    font-weight: 400; letter-spacing: -0.005em;
-    margin: 0 auto; max-width: 1020px;
-  }
-  .emo-close-c blockquote em { color: var(--amber-light); font-style: italic; }
-
-  /* v2 · cascade — pre-hero loss strip */
-  .prehero-loss-c {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 14px 80px;
-    display: flex; align-items: baseline; gap: 18px;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 13px; line-height: 1.45;
-    border-bottom: 1px solid rgba(247,241,230,0.1);
-  }
-  .prehero-loss-c .num {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 22px; line-height: 1; color: var(--amber-light);
-    font-weight: 400;
-  }
-  .prehero-loss-c .copy { color: rgba(247,241,230,0.92); flex: 1; }
-  .prehero-loss-c .tag {
-    font-size: 10px; letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: rgba(247,241,230,0.45);
-  }
-
-  /* v3 · cascade — hero promise band */
-  .hero-promise-c {
-    background: var(--bg);
-    padding: 44px 80px;
-    border-bottom: 1px solid var(--rule);
-    display: flex; gap: 36px; align-items: center;
-    justify-content: center;
-  }
-  .hero-promise-c .lead {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 28px; line-height: 1.35; color: var(--ink);
-    max-width: 720px;
-  }
-  .hero-promise-c .lead em { color: var(--amber); }
-  .hero-promise-c .arrow {
-    font-family: 'Cormorant Garamond', serif;
-    color: var(--amber); font-size: 32px;
-  }
-  .hero-promise-c .vision {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 13px; line-height: 1.6; color: var(--muted);
-    max-width: 360px;
-  }
-
-  /* v4 · Cred chips (combined) */
-  .cred-chips-c {
-    background: var(--paper);
-    padding: 32px 80px;
-    border-bottom: 1px solid var(--rule);
-    display: flex; align-items: center; justify-content: center;
-    gap: 18px; flex-wrap: wrap;
-  }
-  .cred-chips-c .label {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 10px; letter-spacing: 0.22em;
-    text-transform: uppercase; color: var(--muted);
-    margin-right: 12px;
-  }
-  .cred-chip-c {
-    display: inline-flex; align-items: center; gap: 10px;
-    padding: 10px 18px;
-    border: 1px solid var(--rule);
-    background: var(--bg);
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 12px; color: var(--ink);
-    border-radius: 999px;
-  }
-  .cred-chip-c .dot-c { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); }
-
-  /* v4 · Founder pull quote inline (combined) */
-  .founder-pull-c {
-    background: var(--bg);
-    padding: 90px 80px;
-    border-bottom: 1px solid var(--rule);
-  }
-  .founder-pull-c .grid {
-    display: grid; grid-template-columns: 200px 1fr;
-    gap: 56px; max-width: 1100px; margin: 0 auto;
-    align-items: center;
-  }
-  .founder-pull-c .avatar {
-    aspect-ratio: 1;
-    background: var(--rule);
-    border-radius: 50%; overflow: hidden;
-  }
-  .founder-pull-c .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .founder-pull-c blockquote {
-    font-family: var(--serif);
-    font-size: 28px; line-height: 1.4; font-weight: 300;
-    color: var(--ink); margin: 0;
-  }
-  .founder-pull-c blockquote em { color: var(--amber); font-style: italic; }
-  .founder-pull-c .attr {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 11px; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--muted);
-    margin-top: 18px;
-  }
-
-  /* Founder note immediately under hero */
-  .founder-note {
-    background: var(--bg);
-    padding: 80px 80px 90px;
-    border-top: 1px solid var(--rule);
-    border-bottom: 1px solid var(--rule);
-  }
-  .founder-note-grid {
-    display: grid;
-    grid-template-columns: 180px 1fr;
-    gap: 56px;
-    max-width: 1100px;
-    margin: 0 auto;
-    align-items: center;
-  }
-  .founder-note .avatar {
-    aspect-ratio: 1;
-    background: var(--rule);
-    border-radius: 50%;
-    overflow: hidden;
-  }
-  .founder-note .avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .founder-note blockquote {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    line-height: 1.4;
-    font-weight: 300;
-    color: var(--ink);
-    margin: 0;
-  }
-  .founder-note blockquote em {
-    color: var(--amber);
-    font-style: italic;
-  }
-  .founder-note .attr {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-top: 18px;
-  }
-
-  /* ========== Cart drawer + product modal + checkout ========== */
-  body.no-scroll { overflow: hidden; }
-
-  .overlay-backdrop {
-    position: fixed; inset: 0;
-    background: rgba(26, 21, 18, 0.55);
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.25s ease;
-    z-index: 90;
-  }
-  .overlay-backdrop.is-open { opacity: 1; pointer-events: auto; }
-
-  .nav .bag {
-    cursor: pointer;
-    position: relative;
-  }
-  .bag-count {
-    display: inline-block;
-    margin-left: 8px;
-    min-width: 20px;
-    padding: 2px 7px;
-    background: var(--amber);
-    color: var(--paper);
-    border-radius: 999px;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0;
-    text-align: center;
-    line-height: 1.4;
-  }
-
-  /* Cart drawer */
-  .cart-drawer {
-    position: fixed;
-    top: 0; right: 0;
-    width: 460px;
-    max-width: 100vw;
-    height: 100vh;
-    background: var(--paper);
-    box-shadow: -8px 0 32px rgba(26, 21, 18, 0.18);
-    transform: translateX(100%);
-    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-  }
-  .cart-drawer.is-open { transform: translateX(0); }
-  .cart-head {
-    padding: 32px 32px 24px;
-    border-bottom: 1px solid var(--rule);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .cart-head h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 400;
-    margin: 0;
-    color: var(--ink);
-  }
-  .cart-close {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 24px;
-    color: var(--muted);
-    line-height: 1;
-    padding: 4px;
-  }
-  .cart-items {
-    flex: 1;
-    overflow-y: auto;
-    padding: 24px 32px;
-  }
-  .cart-empty {
-    text-align: center;
-    color: var(--muted);
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 18px;
-    padding: 40px 0;
-  }
-  .cart-item {
-    display: grid;
-    grid-template-columns: 80px 1fr auto;
-    gap: 16px;
-    align-items: center;
-    padding: 20px 0;
-    border-bottom: 1px solid var(--rule);
-  }
-  .cart-item:last-child { border-bottom: none; }
-  .cart-item-img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    background: var(--bg);
-  }
-  .cart-item-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    color: var(--ink);
-    margin: 0 0 4px;
-  }
-  .cart-item-meta {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.04em;
-  }
-  .cart-item-qty {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 8px;
-  }
-  .cart-item-qty button {
-    width: 22px; height: 22px;
-    background: var(--bg);
-    border: 1px solid var(--rule);
-    color: var(--ink);
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 1;
-    border-radius: 50%;
-  }
-  .cart-item-qty span {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 12px;
-    min-width: 24px;
-    text-align: center;
-  }
-  .cart-item-price {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    color: var(--ink);
-    text-align: right;
-  }
-  .cart-item-remove {
-    display: block;
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    cursor: pointer;
-    margin-top: 4px;
-    text-align: right;
-    padding: 0;
-    width: 100%;
-  }
-  .cart-foot {
-    padding: 24px 32px 32px;
-    border-top: 1px solid var(--rule);
-    background: var(--bg);
-  }
-  .cart-totals {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    color: var(--ink);
-  }
-  .cart-totals .label {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    color: var(--muted);
-    align-self: end;
-  }
-  .cart-checkout {
-    display: block;
-    width: 100%;
-    background: var(--ink);
-    color: var(--paper);
-    border: none;
-    padding: 18px;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    cursor: pointer;
-    transition: background 0.18s;
-  }
-  .cart-checkout:hover { background: var(--amber); }
-  .cart-checkout:disabled { opacity: 0.4; cursor: not-allowed; }
-  .cart-foot .micro {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 10px;
-    color: var(--muted);
-    text-align: center;
-    margin-top: 12px;
-    letter-spacing: 0.06em;
-  }
-
-  /* Product modal */
-  .product-modal {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0.96);
-    width: min(1080px, calc(100vw - 80px));
-    max-height: 88vh;
-    background: var(--paper);
-    box-shadow: 0 24px 80px rgba(26, 21, 18, 0.3);
-    z-index: 100;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    overflow-y: auto;
-  }
-  .product-modal.is-open {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  .product-modal-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-  }
-  .product-modal-img {
-    background: var(--bg);
-    aspect-ratio: 4 / 5;
-  }
-  .product-modal-img img {
-    width: 100%; height: 100%;
-    object-fit: cover; display: block;
-  }
-  .product-modal-body {
-    padding: 48px 48px 40px;
-    position: relative;
-  }
-  .product-modal-close {
-    position: absolute;
-    top: 12px; right: 12px;
-    width: 36px; height: 36px;
-    background: rgba(247, 241, 230, 0.92);
-    border: 1px solid var(--rule);
-    border-radius: 999px;
-    font-size: 22px;
-    color: var(--ink);
-    cursor: pointer;
-    line-height: 1;
-    z-index: 5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-  }
-  .product-modal-close:hover { background: var(--paper); }
-  .product-modal h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 44px;
-    line-height: 1.1;
-    font-weight: 300;
-    color: var(--ink);
-    margin: 18px 0 8px;
-  }
-  .product-modal h2 em { color: var(--amber); font-style: italic; }
-  .product-modal .price-line {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    color: var(--ink);
-    margin: 8px 0 24px;
-  }
-  .product-modal .price-line .freq {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 13px;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    margin-left: 8px;
-  }
-  .product-modal .desc {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    line-height: 1.55;
-    color: var(--ink);
-    margin: 0 0 24px;
-  }
-  .product-modal .specs {
-    list-style: none;
-    padding: 16px 0;
-    margin: 0 0 24px;
-    border-top: 1px solid var(--rule);
-    border-bottom: 1px solid var(--rule);
-  }
-  .product-modal .specs li {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 13px;
-    color: var(--ink);
-    padding: 6px 0;
-    display: flex;
-    justify-content: space-between;
-  }
-  .product-modal .specs li span:first-child {
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-size: 11px;
-  }
-  .product-modal-add {
-    background: var(--ink);
-    color: var(--paper);
-    border: none;
-    padding: 18px 32px;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    cursor: pointer;
-    width: 100%;
-    transition: background 0.18s;
-  }
-  .product-modal-add:hover { background: var(--amber); }
-  .product-modal .micro {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 10px;
-    color: var(--muted);
-    margin-top: 12px;
-    text-align: center;
-    letter-spacing: 0.06em;
-  }
-
-  /* Checkout overlay (simple form) */
-  .checkout-modal {
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0.96);
-    width: min(560px, calc(100vw - 80px));
-    max-height: 88vh;
-    background: var(--paper);
-    box-shadow: 0 24px 80px rgba(26, 21, 18, 0.3);
-    z-index: 110;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    overflow-y: auto;
-    padding: 40px;
-  }
-  .checkout-modal.is-open {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  .checkout-close {
-    position: absolute;
-    top: 16px; right: 16px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: var(--muted);
-    cursor: pointer;
-    line-height: 1;
-  }
-  .checkout-modal h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 32px;
-    font-weight: 400;
-    margin: 0 0 8px;
-    color: var(--ink);
-  }
-  .checkout-modal .sub {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    color: var(--muted);
-    margin-bottom: 24px;
-  }
-  .checkout-form label {
-    display: block;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.16em;
-    color: var(--muted);
-    margin: 14px 0 4px;
-  }
-  .checkout-form input {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1px solid var(--rule);
-    background: var(--bg);
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 14px;
-    color: var(--ink);
-    box-sizing: border-box;
-  }
-  .checkout-form .row-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  .checkout-submit {
-    width: 100%;
-    background: var(--ink);
-    color: var(--paper);
-    border: none;
-    padding: 18px;
-    margin-top: 24px;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    cursor: pointer;
-  }
-  .checkout-submit:hover { background: var(--amber); }
-  .checkout-success {
-    text-align: center;
-    padding: 24px 0;
-  }
-  .checkout-success h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 400;
-    color: var(--amber);
-    margin: 0 0 8px;
-  }
-  .checkout-success p {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    color: var(--muted);
-  }
-
-  /* Bio-card link row + science-citation modal */
-  .bio-card-links {
-    display: flex; flex-wrap: wrap; gap: 22px; align-items: center;
-    margin-top: 4px;
-  }
-  .bio-learn {
-    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--muted); border-bottom: 1px solid var(--rule);
-    padding-bottom: 2px; cursor: pointer; background: none; border-left: none;
-    border-right: none; border-top: none;
-    font-family: 'IBM Plex Sans', sans-serif;
-  }
-  .bio-learn:hover { color: var(--amber); border-bottom-color: var(--amber); }
-
-  .science-modal {
-    position: fixed; top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0.96);
-    width: min(720px, calc(100vw - 80px));
-    max-height: 86vh;
-    background: var(--paper);
-    box-shadow: 0 24px 80px rgba(26, 21, 18, 0.3);
-    z-index: 110;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    overflow-y: auto;
-    padding: 48px 52px;
-  }
-  .science-modal.is-open {
-    opacity: 1; pointer-events: auto;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  .science-modal-close {
-    position: absolute; top: 16px; right: 16px;
-    background: none; border: none;
-    font-size: 24px; color: var(--muted);
-    cursor: pointer; line-height: 1;
-  }
-  .science-panel { display: none; }
-  .science-panel.is-active { display: block; }
-  .science-panel .pill {
-    color: var(--amber);
-  }
-  .science-panel h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 32px; font-weight: 400; line-height: 1.15;
-    margin: 14px 0 24px;
-    color: var(--ink);
-  }
-  .science-panel h2 em {
-    color: var(--amber); font-style: italic;
-  }
-  .science-panel h3 {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--muted); margin: 26px 0 14px; font-weight: 500;
-  }
-  .science-panel ul {
-    list-style: none; padding: 0; margin: 0 0 16px;
-  }
-  .science-panel li {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 16px; line-height: 1.55;
-    color: var(--ink);
-    padding: 12px 0; border-top: 1px solid var(--rule);
-  }
-  .science-panel li:first-child { border-top: none; padding-top: 6px; }
-  .science-panel li em { color: var(--muted); font-style: italic; }
-  .science-panel .beg-note {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 15px; line-height: 1.5;
-    color: var(--ink);
-    background: var(--bg);
-    border-left: 2px solid var(--amber);
-    padding: 16px 18px;
-    margin-top: 18px;
-  }
-
-  /* ─────────────────────────────────────────────────────────
-     Tablet  (≤ 1100px)
-     ───────────────────────────────────────────────────────── */
-  @media (max-width: 1100px) {
-    .hero-grid { grid-template-columns: 1fr; min-height: 0; }
-    .hero-text { padding: 56px 48px 32px; }
-    .hero-img img { height: auto; max-height: 480px; }
-    .founder { grid-template-columns: 1fr; min-height: 0; }
-    .founder-body { padding: 56px 48px; border-left: none; border-top: 1px solid var(--rule); }
-    .rail { grid-template-columns: 1fr; }
-    .rail.reverse .rail-img { order: 0; }
-    .rail-img img { height: 360px; object-fit: cover; }
-    .rail-body { padding: 56px 48px; }
-    .bio-mech { grid-template-columns: 1fr; gap: 24px; }
-    .standards-cols { grid-template-columns: 1fr; gap: 32px; }
-    .voices-grid { grid-template-columns: repeat(2, 1fr); }
-    .foot-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
-    .gap { padding: 80px 48px 56px; }
-    .bio-short { padding: 48px 48px 80px; }
-    .first-six { padding: 56px 48px; }
-    .founder-note-grid { grid-template-columns: 64px 1fr; gap: 24px; padding: 56px 48px; }
-  }
-
-  /* Tablet voices grid */
-  @media (max-width: 1100px) {
-    .voices { padding: 80px 36px; }
-    .voices-grid { grid-template-columns: 1fr 1fr; gap: 22px; }
-    .voices-stats { grid-template-columns: 1fr 1fr 1fr; gap: 28px; }
-    .voices-head h2 { font-size: 38px; }
-  }
-
-  /* ─────────────────────────────────────────────────────────
-     Mobile  (≤ 760px) — phone breakpoint
-     ───────────────────────────────────────────────────────── */
-  @media (max-width: 760px) {
-    /* Logo + nav row */
-    .nav { padding: 18px 20px; }
-    .nav-links { display: none; }
-    .nav-right { font-size: 11px; gap: 14px; }
-    .logo { font-size: 22px; gap: 8px; }
-    .logo .mark { width: 10px; height: 26px; }
-    .bag { padding: 6px 10px; font-size: 11px; }
-
-    /* Pre-hero loss strip */
-    .prehero-loss-c {
-      padding: 14px 18px; font-size: 11px; gap: 8px;
-      flex-direction: column; text-align: center;
-      align-items: center; line-height: 1.4;
-    }
-    .prehero-loss-c .num { font-size: 14px; }
-    .prehero-loss-c .copy { flex: none; }
-    .prehero-loss-c .tag { font-size: 9px; }
-
-    /* Hero */
-    .hero-grid { grid-template-columns: 1fr; }
-    .hero-text { padding: 36px 22px 28px; }
-    .hero-text h1 {
-      font-size: 34px !important;
-      line-height: 1.08 !important;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-      hyphens: auto;
-    }
-    .hero-lede { font-size: 16px !important; line-height: 1.55 !important; }
-    .cta-row { flex-direction: column; gap: 12px; align-items: stretch; }
-    .cta-row .btn { text-align: center; width: 100%; box-sizing: border-box; }
-    .hero-sub { flex-direction: column; gap: 18px; }
-    .hero-sub-l { max-width: none; }
-    .hero-sub-n { font-size: 22px; }
-    .hero-img {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 4 / 3;
-      min-height: 280px;
-    }
-    .hero-img img {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-    }
-    .hero-img .img-caption { font-size: 9px; padding: 6px 10px; }
-
-    /* Founder note */
-    .founder-note-grid { grid-template-columns: 1fr !important; gap: 18px; padding: 40px 22px; text-align: left; }
-    .founder-note-grid .avatar { width: 64px; height: 64px; }
-    .founder-note-grid blockquote { font-size: 18px !important; line-height: 1.45 !important; }
-
-    /* § 01 The gap */
-    .gap { padding: 64px 22px 40px; }
-    .gap h2 { font-size: 32px !important; line-height: 1.1 !important; }
-
-    /* § 02 Biology */
-    .bio-short { padding: 32px 22px 64px; }
-    .bio-card { padding: 32px 24px; }
-    .bio-card h3 { font-size: 22px !important; }
-    .bio-card-num { font-size: 10px; letter-spacing: 0.18em; }
-    .bio-card p { font-size: 14px; }
-    .consequence { font-size: 15px; padding: 14px 16px; }
-    .compare-slider figure img { height: 140px; }
-    .compare-slider figcaption { font-size: 9px; padding: 8px 10px; }
-    .bio-card-links { flex-direction: column; align-items: flex-start; gap: 14px; }
-
-    /* First-six band */
-    .first-six { padding: 40px 22px; }
-    .first-six h2 { font-size: 26px !important; }
-    .first-six p { font-size: 16px; }
-
-    /* Voices */
-    .voices { padding: 56px 22px; }
-    .voices-head { margin-bottom: 40px; }
-    .voices-head h2 { font-size: 28px !important; }
-    .voices-head p { font-size: 14px; }
-    .voices-grid { grid-template-columns: 1fr; gap: 18px; }
-    .voice-card { padding: 26px 22px; gap: 18px; }
-    .voice-card blockquote { font-size: 18px; }
-    .voices-stats { margin-top: 48px; padding-top: 36px; grid-template-columns: 1fr; gap: 28px; }
-    .voices-stat .figure { font-size: 42px; }
-
-    /* Product rails */
-    .rail { grid-template-columns: 1fr !important; }
-    .rail.reverse .rail-img { order: 0; }
-    .rail-img img { height: 300px; }
-    .rail-body { padding: 40px 22px; }
-    .rail-body h2 { font-size: 36px !important; }
-    .rail-lede { font-size: 16px !important; }
-    .rail-pulls li {
-      padding: 16px 0;
-      grid-template-columns: 1fr;
-      gap: 6px;
-    }
-    .rail-pull-name { font-size: 18px; }
-    .rail-pull-desc { font-size: 14px; line-height: 1.45; }
-    .rail-ctas { flex-direction: column; align-items: stretch; gap: 12px; }
-    .rail-ctas .btn { text-align: center; }
-
-    /* Founder section */
-    .founder { grid-template-columns: 1fr; }
-    .founder-img img { height: 320px; }
-    .founder-body { padding: 40px 22px; border-top: 1px solid var(--rule); border-left: none; }
-    .founder-body h2 { font-size: 30px !important; }
-
-    /* Two paths · same woman section (tp-card) */
-    .twopaths-combined { padding: 56px 22px; }
-    .twopaths-combined .head h2 { font-size: 30px !important; line-height: 1.1 !important; }
-    .twopaths-combined .head .lede { font-size: 16px !important; }
-    .twopaths-combined .head { margin-bottom: 28px; }
-    .tp-grid { grid-template-columns: 1fr !important; gap: 24px; }
-    .tp-card { padding: 28px 22px; }
-    .tp-card h3 { font-size: 22px !important; }
-    .tp-row { grid-template-columns: 48px 1fr; gap: 10px; }
-    .tp-row .desc { font-size: 14px; }
-
-    /* CTA close */
-    .cta { padding: 56px 22px 56px; }
-    .cta h2 { font-size: 38px !important; line-height: 1.05 !important; }
-    .cta-lede { font-size: 17px; margin-bottom: 28px; }
-    .cta-row-dual { flex-direction: column; gap: 12px; }
-    .cta-row-dual .btn { width: 100%; box-sizing: border-box; text-align: center; }
-    .cta-sub { font-size: 10px; letter-spacing: 0.06em; }
-
-    /* Standards / voices (if rendered) */
-    .standards-cols { grid-template-columns: 1fr !important; }
-    .voices-grid { grid-template-columns: 1fr !important; }
-
-    /* Footer */
-    .foot { padding: 48px 18px 24px; }
-    .foot-grid { grid-template-columns: 1fr; gap: 32px; margin-bottom: 32px; }
-    .foot-col { font-size: 13px; }
-    .foot-tag { max-width: none; font-size: 15px; }
-    .foot-legal { align-items: stretch; }
-    .foot-legal > span { display: block; width: 100%; word-wrap: break-word; overflow-wrap: anywhere; }
-    .foot-legal .row-sm { flex-direction: column; gap: 6px; }
-    .foot-legal .row-sm > span { display: block; }
-
-    /* Cart drawer */
-    .cart-drawer { width: 100vw; max-width: none; }
-
-    /* Product modal */
-    .product-modal {
-      width: calc(100vw - 24px);
-      max-height: 92vh;
-      padding: 24px 20px;
-    }
-    .product-modal-grid { grid-template-columns: 1fr; gap: 18px; }
-    .product-modal-img img { height: 220px; object-fit: cover; }
-    .product-modal h2 { font-size: 26px !important; }
-
-    /* Checkout modal */
-    .checkout-modal {
-      width: calc(100vw - 24px);
-      padding: 28px 22px;
-    }
-
-    /* Science modal */
-    .science-modal {
-      width: calc(100vw - 24px);
-      padding: 32px 22px;
-      max-height: 92vh;
-    }
-    .science-panel h2 { font-size: 24px !important; }
-    .science-panel li { font-size: 15px; }
-    .science-panel .beg-note { font-size: 14px; }
-  }
-</style>
+<link rel="stylesheet" href="/css/site.css">
 </head>
 <body>
 <div class="site">
@@ -1529,12 +21,13 @@
       <span class="word">Aplomb<span class="dot">.</span></span>
     </div>
     <nav class="nav-links">
-      <a href="#serum">Serum</a>
-      <a href="#daily">Daily</a>
-      <a href="#roots">Roots</a>
-      <a href="#calm">Calm</a>
-      <a href="#about">About</a>
-      <a href="#faq">FAQ</a>
+      <a href="/serum/">Serum</a>
+      <a href="/daily/">Daily</a>
+      <a href="/roots/">Roots</a>
+      <a href="/calm/">Calm</a>
+      <a href="/breath/">Breath</a>
+      <a href="/about/">About</a>
+      <a href="/faq/">FAQ</a>
     </nav>
     <div class="nav-right">
       <span>Account</span>
@@ -1546,14 +39,14 @@
   <section class="hero">
     <div class="hero-grid">
       <div class="hero-text">
-        <h1>The drug works.<br><em>The side effects can be irreversible.</em></h1>
-        <p class="hero-lede">Ozempic, Wegovy, Mounjaro, Zepbound. The drug class of the decade does what it says. It also takes <strong style="color:var(--amber);font-style:normal;font-weight:700;">a hollow face, depleted labs, thinning hair, and a stomach that turns on you</strong> in the first three months. <strong style="color:var(--ink);font-style:normal;font-weight:600;">Aplomb is for keeping you from losing your best self.</strong></p>
+        <h1>GLP-<span class="num">1</span>s work.<br><em>The side effects can be irreversible.</em></h1>
+        <p class="hero-lede">GLP-<span class="num">1</span>s can do incredible work. They can also cause <strong style="color:var(--amber);font-style:normal;font-weight:700;">a hollow face, nutrient depletion, hair loss, horrible nausea, and bad breath.</strong> <strong style="color:var(--ink);font-style:normal;font-weight:600;">Aplomb is for keeping you from losing your best self.</strong></p>
         <div class="cta-row">
           <a class="btn btn-dark" href="#serum" data-open-product="serum">Shop the line</a>
           <a class="btn btn-dark" href="#serum" data-open-product="serum" style="background:transparent;color:var(--ink);border:1px solid var(--ink);">The Serum · $129</a>
         </div>
         <div class="hero-sub">
-          <p class="hero-sub-l" style="font-size:22px;line-height:1.5;color:var(--ink);max-width:62ch;">Aplomb is French. It means standing upright. Composure under pressure. Your best, most confident self. That is the part the drug works against — and the part this line is built to keep.</p>
+          <p class="hero-sub-l" style="font-size:22px;line-height:1.5;color:var(--ink);max-width:62ch;">Aplomb means standing perfectly upright as your most confident self. We're here to make sure you don't lose your ability to do that.</p>
         </div>
       </div>
       <div class="hero-img">
@@ -1572,8 +65,7 @@
     <div class="bio-mech">
 
       <div class="bio-card">
-        <div class="bio-card-num">Mechanism 01 · Ozempic face</div>
-        <h3>Fat-compartment lipolysis and dermal-signaling change.</h3>
+        <h3>Ozempic face. Fat-compartment lipolysis and dermal-signaling change.</h3>
         <div class="compare-slider">
           <figure class="before">
             <img src="assets/face-volume-loss.jpg" alt="Anatomical cross-section of facial fat compartments — depleted, hollowed mid-face after rapid GLP-1 weight loss.">
@@ -1593,8 +85,7 @@
       </div>
 
       <div class="bio-card simple">
-        <div class="bio-card-num">Mechanism 02 · Nutrient depletion</div>
-        <h3>The lab values nobody is monitoring.</h3>
+        <h3>Nutrient depletion. The lab values nobody is monitoring.</h3>
         <img class="bio-card-img" src="assets/nutrient-mech.jpg" alt="Botanical illustration triptych: an iron-rich seed pod, a branching root system, and a honeycomb mineral lattice — depicting the building blocks the body draws down on a GLP-1.">
         <p>The drug works by blunting appetite. The follow-on is mechanical: smaller meals, slower gastric emptying, narrower food variety. Twenty-two percent of GLP-1 users develop a measurable nutrient deficiency by month twelve. B12, iron, vitamin D, and calcium are the four that move first. Sixty to seventy percent of users fall below the recommended intake for calcium alone.</p>
         <div class="consequence">What you do not see in the mirror, but what the bloodwork would say: ferritin under thirty, B12 trending toward two hundred, vitamin D in the low-twenties. The downstream of those numbers is what shows up in the mirror as <strong>hair, skin, fatigue, and recovery.</strong></div>
@@ -1605,8 +96,7 @@
       </div>
 
       <div class="bio-card simple">
-        <div class="bio-card-num">Mechanism 03 · Hair thinning</div>
-        <h3>Telogen effluvium follows rapid weight loss like clockwork.</h3>
+        <h3>Hair loss. Telogen effluvium follows rapid weight loss like clockwork.</h3>
         <img class="bio-card-img" src="assets/roots-mech.jpg" alt="Botanical comparison illustration: a sparse spindly plant with thin roots beside a dense, leafed plant with a robust root system — the visual metaphor for hair-follicle density before and after support.">
         <p>The body reads rapid weight loss as a stress and pulls follicles out of the active growth phase into the resting phase. Three to six months later the rested follicles shed in a single wave. Insurance-claims data on 187,400 GLP-1 users finds a 1.76-fold increase in telogen effluvium over matched controls. Iron, vitamin D, and zinc deficiencies make the wave larger and the regrowth slower.</p>
         <div class="consequence">What you find on the pillow and in the brush from month four onward: a noticeable shed that does not slow until you address what triggered it. Biotin is the wrong answer. <strong>The deficiencies driving the shed are the right one.</strong></div>
@@ -1617,14 +107,23 @@
       </div>
 
       <div class="bio-card simple">
-        <div class="bio-card-num">Mechanism 04 · Nausea and the GI wave</div>
-        <h3>Delayed gastric emptying. The vagal nerve, on alert.</h3>
+        <h3>Nausea. Delayed gastric emptying, the vagal nerve on alert.</h3>
         <img class="bio-card-img" src="assets/calm-mech.jpg" alt="Botanical illustration of a single ginger root with calm concentric ripple lines — the visual sense of GI nausea settling.">
         <p>GLP-1 medications slow gastric emptying. That is the whole point of the drug for blood sugar; it is also the source of the nausea. In the STEP-1 trial, forty-four percent of semaglutide users reported nausea, peaking in weeks one to four of titration and at every dose increase. It is the single largest reason people quit before they get to the dose that works.</p>
         <div class="consequence">What you feel in the first thirty days: a stomach that turns on you in week one, peaks in week three, and quiets by week eight if you titrate properly. Ginger, B6, and electrolyte replacement have evidence in adjacent populations. <strong>The window is short. The kit is timed for it.</strong></div>
         <div class="bio-card-links">
           <a class="bio-more" href="#calm" data-open-product="calm">See the Calm ingredient panel →</a>
           <button class="bio-learn" type="button" data-open-science="calm">See the citations →</button>
+        </div>
+      </div>
+
+      <div class="bio-card simple">
+        <h3>Bad breath. Hyposalivation, ketosis, and gastric stasis.</h3>
+        <p>GLP-1s reduce salivary flow, raise circulating acetone in the early-ketosis window, and slow gastric emptying enough that fermentation produces volatile sulfur compounds. ADA reporting puts roughly thirty percent of users self-reporting bad breath; clinical reviews confirm the three converging mechanisms. It is not a hygiene problem. It is a physiology one.</p>
+        <div class="consequence">What partners notice but won't say: a metallic, fruity, or sour edge to the breath that sugar-free mints don't fix because mints don't address salivary flow, acetone, or gastric fermentation. <strong>The mechanism is the only intervention that holds.</strong></div>
+        <div class="bio-card-links">
+          <a class="bio-more" href="#breath" data-open-product="breath">See the Breath ingredient panel →</a>
+          <button class="bio-learn" type="button" data-open-science="breath">See the citations →</button>
         </div>
       </div>
 
@@ -1761,6 +260,37 @@
     </div>
   </section>
 
+  <!-- § 02 Product rail E — Breath (Halitosis tin) -->
+  <section class="rail" id="breath">
+    <div class="rail-img"><img src="assets/pharmaloz-tin-hero.jpg" alt="APLOMB. Breath — small frosted-paperboard tin with a cream label reading 'APLOMB · BREATH' on travertine in warm window light."></div>
+    <div class="rail-body">
+      <h2>For the breath<br><em>nobody warned you about.</em></h2>
+      <p class="rail-lede">A 30-day lozenge tin dosed for the three GLP-1 oral-health mechanisms: hyposalivation, early-ketosis acetone, and gastric-stasis fermentation. Four lozenges daily, on the schedule on the card. Sugar-free mints do not address any of the three.</p>
+      <ul class="rail-pulls">
+        <li>
+          <div class="rail-pull-name">Zinc acetate</div>
+          <div class="rail-pull-desc">Binds the volatile sulfur compounds (hydrogen sulfide and methyl mercaptan) that the gastric-stasis pathway produces. The single ingredient with the strongest oral-malodor evidence base.</div>
+        </li>
+        <li>
+          <div class="rail-pull-name">Xylitol + green-tea polyphenols</div>
+          <div class="rail-pull-desc">Xylitol shifts the oral microbiome away from the bacteria that metabolize sulfur. Green-tea polyphenols add antimicrobial and odor-neutralizing activity. Same mechanism as the strongest dental-school protocols.</div>
+        </li>
+        <li>
+          <div class="rail-pull-name">B6 + ginger micro-dose</div>
+          <div class="rail-pull-desc">A small daily B6 + ginger dose sits underneath, addressing the gastric-stasis side of the mechanism rather than masking it. Same ingredient family as the Calm kit, dosed lower for daily use.</div>
+        </li>
+      </ul>
+      <div class="rail-price">$35 <span class="rail-price-sub">30-day tin · 4 lozenges daily</span></div>
+      <p class="rail-price-meta">About <strong>$1.17 a day</strong>. Open it the week salivary flow drops or partners go quiet about it.</p>
+      <p class="rail-price-offer">subscribe and save 15 percent · cancel any time</p>
+      <div class="rail-ctas">
+        <a class="btn btn-dark" href="#breath" data-open-product="breath">Shop Breath →</a>
+        <a class="rail-link" href="#breath" data-open-product="breath">Read the full ingredient panel →</a>
+      </div>
+      <p class="disclaimer">Third-party tested · vegan · gluten-free · dairy-free · no prescription required</p>
+    </div>
+  </section>
+
   <!-- Voices · what the field is saying -->
   <section class="voices">
     <div class="voices-head">
@@ -1831,19 +361,6 @@
       </article>
 
     </div>
-
-    <div class="voices-stats">
-      <div class="voices-stat">
-        <div class="figure">9–16 wks</div>
-        <div class="label">the window in which the Ozempic-face pattern compresses: fat-compartment volume loss plus dermal-signaling change, distinct from age-related thinning.</div>
-        <div class="src">Source: Cotofana 2021, <em>Aesthetic Plastic Surgery</em>; Glogau 2023, <em>Dermatologic Surgery</em>.</div>
-      </div>
-      <div class="voices-stat">
-        <div class="figure">$5,000+</div>
-        <div class="label">average cosmetic dermatology spend to reflate a face after rapid GLP-1 volume loss, versus $1,000 to $2,000 for a typical middle-age regimen.</div>
-        <div class="src">Source: Dr. Paul Jarrod Frank, NYC, via TODAY Show.</div>
-      </div>
-    </div>
   </section>
 
   <!-- The gap — what doesn't happen if you don't close it -->
@@ -1859,6 +376,7 @@
           <li><span class="lossy-num">02</span><div><strong>The labs do not stay.</strong> B12 and ferritin trend down quietly. Twenty-two percent of users land in the deficiency column by month twelve, before anyone is checking.</div></li>
           <li><span class="lossy-num">03</span><div><strong>The hair does not stay.</strong> The shed begins in month four and lasts until you address what triggered it. Biotin will not. The deficiencies behind it will.</div></li>
           <li><span class="lossy-num">04</span><div><strong>The first month does not stay easy.</strong> Forty-four percent of users hit nausea hard enough to consider quitting. Most do, before the dose works.</div></li>
+          <li><span class="lossy-num">05</span><div><strong>The breath does not stay yours.</strong> Roughly thirty percent of users develop persistent bad breath driven by hyposalivation, ketosis, and gastric stasis. Sugar-free mints don't address any of the three.</div></li>
         </ul>
         <p class="lossy-close">The drug works. <strong>The damage is the part nobody is selling you a solution to.</strong> APLOMB. is.</p>
       </div>
@@ -1868,13 +386,14 @@
   <!-- Final CTA -->
   <section class="cta">
     <p class="hero-tag">The drug works. The damage doesn't have to.</p>
-    <h2>The face. The labs.<br><em>The hair. The first month.</em></h2>
+    <h2>The face. The labs. The hair.<br><em>The first month. The breath.</em></h2>
     <p class="cta-lede">Whether you are two weeks from your first injection or seven months into the drug, APLOMB. is built for the side effects nobody is selling you a solution to. Responsible, transparent about evidence, designed to sit alongside your existing care.</p>
     <div class="cta-row-dual">
       <a class="btn btn-dark" href="#serum" data-open-product="serum">The Serum · $129</a>
       <a class="btn btn-dark" href="#daily" data-open-product="daily">Daily · $49</a>
       <a class="btn btn-dark" href="#roots" data-open-product="roots">Roots · $39</a>
       <a class="btn btn-dark" href="#calm" data-open-product="calm">Calm · $35</a>
+      <a class="btn btn-dark" href="#breath" data-open-product="breath">Breath · $35</a>
     </div>
     <div class="cta-sub">Each works on its own · subscribe to any · ships in 48 hours · 15-day returns on every product</div>
   </section>
@@ -1887,39 +406,35 @@
           <svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
           <span class="word">Aplomb<span class="dot">.</span></span>
         </div>
-        <p class="foot-tag">Built for the side effects of the GLP-1 medications. The Serum for the face. Daily for the labs. Roots for the hair. Calm for the first month.</p>
+        <p class="foot-tag">Built for the side effects of the GLP-1 medications. The Serum for the face. Daily for the labs. Roots for the hair. Calm for the first month. Breath for the breath.</p>
       </div>
       <div class="foot-col">
         <div class="pill">Shop</div>
-        <div class="foot-link">The Serum</div>
-        <div class="foot-link">Daily</div>
-        <div class="foot-link">Roots</div>
-        <div class="foot-link">Calm</div>
-        <div class="foot-link">Subscribe</div>
+        <a class="foot-link" href="/serum/">The Serum</a>
+        <a class="foot-link" href="/daily/">Daily</a>
+        <a class="foot-link" href="/roots/">Roots</a>
+        <a class="foot-link" href="/calm/">Calm</a>
+        <a class="foot-link" href="/breath/">Breath</a>
       </div>
       <div class="foot-col">
         <div class="pill">Read</div>
-        <div class="foot-link">Journal</div>
-        <div class="foot-link">The biology</div>
-        <div class="foot-link">Evidence</div>
-        <div class="foot-link">FAQ</div>
+        <a class="foot-link" href="/biology/">The biology</a>
+        <a class="foot-link" href="/evidence/">Evidence</a>
+        <a class="foot-link" href="/faq/">FAQ</a>
       </div>
       <div class="foot-col">
         <div class="pill">House</div>
-        <div class="foot-link">About</div>
-        <div class="foot-link">Contact</div>
-        <div class="foot-link">Press</div>
-        <div class="foot-link">Clinical partners</div>
+        <a class="foot-link" href="/about/">About</a>
+        <a class="foot-link" href="/contact/">Contact</a>
       </div>
     </div>
     <div class="foot-legal">
       <span style="line-height:1.7;">
         <strong>The Serum:</strong> A topical cosmetic product with seven active clinical ingredients (Palmitoyl Tripeptide-1, Palmitoyl Tetrapeptide-7, Palmitoyl Tripeptide-38, Bearberry leaf extract, Centella Asiatica, Kakadu Plum, Licorice root). Vegan · cruelty-free · paraben-free · made in Australia · no prescription required. Discontinue if irritation occurs.
-        <br><br><strong>Daily, Roots, Calm:</strong> Dietary supplements. Third-party tested, manufactured in a GMP-certified US facility. Not intended to diagnose, treat, cure, or prevent any disease. Discuss with your physician if pregnant, nursing, or under medical care. Daily and Roots are best paired with a baseline lab panel and follow-up review at month four. Calm is timed for the GLP-1 titration window; if nausea persists past week eight, contact your prescriber. Individual response varies. <em>These statements have not been evaluated by the Food and Drug Administration.</em>
+        <br><br><strong>Daily, Roots, Calm, Breath:</strong> Dietary supplements. Third-party tested, manufactured in a GMP-certified US facility. Not intended to diagnose, treat, cure, or prevent any disease. Discuss with your physician if pregnant, nursing, or under medical care. Daily and Roots are best paired with a baseline lab panel and follow-up review at month four. Calm is timed for the GLP-1 titration window; if nausea persists past week eight, contact your prescriber. Breath is for the persistent oral-malodor pattern that GLP-1 medications drive; if it persists past week eight, contact your dentist. Individual response varies. <em>These statements have not been evaluated by the Food and Drug Administration.</em>
       </span>
       <span class="row-sm">
         <span>© MMXXVI Aplomb Laboratories, Inc.</span>
-        <span>Portland · New York</span>
       </span>
     </div>
   </footer>
@@ -2079,6 +594,25 @@
     </ul>
   </div>
 
+  <div class="science-panel" data-science-panel="breath">
+    <div class="pill">Mechanism 05 · Citations</div>
+    <h2>What we cite for <em>bad breath</em> on GLP-1s.</h2>
+
+    <h3>Prevalence and mechanism</h3>
+    <ul>
+      <li><strong>ADA News, 2025.</strong> American Dental Association observational reporting on Ozempic-related oral malodor. Roughly 30% of Ozempic users self-report bad breath in dental-practice surveys.</li>
+      <li><strong>PMC PMC12729639, 2025.</strong> Narrative review of the three converging mechanisms behind GLP-1 halitosis: hyposalivation, early-ketosis acetone, and gastric-stasis fermentation producing volatile sulfur compounds.</li>
+      <li><strong>Wilding et al., STEP-1 trial, 2021.</strong> Phase III RCT of semaglutide. ~9% of users report eructation as an adverse event — a partial proxy for the gastric-stasis mechanism. <em>NEJM.</em></li>
+    </ul>
+
+    <h3>Intervention evidence base</h3>
+    <ul>
+      <li><strong>Quirynen et al., 2002.</strong> Zinc-acetate lozenges for oral malodor. Dose-response binding of hydrogen sulfide and methyl mercaptan in the oral cavity.</li>
+      <li><strong>Mäkinen, 2011.</strong> Xylitol and the oral microbiome. Dental literature on xylitol's selection-pressure shift away from sulfur-metabolizing bacteria.</li>
+      <li><strong>Hershey Q1 2026 earnings call.</strong> +8% Ice Breakers segment growth attributed to GLP-1 user pull-through. Commercial signal that the malodor pattern is real and unaddressed by the existing OTC category.</li>
+    </ul>
+  </div>
+
 </div>
 
 <script>
@@ -2155,6 +689,24 @@
         ['Shelf life', '24 months · best by date on box'],
       ],
       micro: 'These statements have not been evaluated by the FDA. Not intended to diagnose, treat, cure, or prevent any disease. Discuss with your prescriber if your nausea persists past week eight.',
+    },
+    breath: {
+      title: 'APLOMB. <em>Breath.</em>',
+      pill: 'For the breath nobody warned you about',
+      price: '$35',
+      priceVal: 35,
+      freq: ' · 30-day tin · 4 lozenges daily · about $1.17 a day · subscribe and save 15 percent',
+      img: 'assets/pharmaloz-tin-hero.jpg',
+      desc: 'A 30-day lozenge tin dosed for the three GLP-1 oral-health mechanisms: hyposalivation (zinc-acetate binds volatile sulfur compounds), oral-bacteria load (xylitol + green-tea polyphenols shift the microbiome), and gastric stasis (B6 + ginger micro-dose). Four lozenges daily on the schedule on the card.',
+      specs: [
+        ['Format', '120 lozenges · 30-day tin'],
+        ['Routine', '4 lozenges daily · spaced across the day'],
+        ['Active ingredients', 'Zinc acetate, xylitol, green-tea polyphenols, B6, ginger'],
+        ['Free of', 'Sugar, artificial sweeteners, gluten, dairy · vegan'],
+        ['Made in', 'USA · GMP-certified facility'],
+        ['Shelf life', '24 months · best by date on tin'],
+      ],
+      micro: 'These statements have not been evaluated by the FDA. Not intended to diagnose, treat, cure, or prevent any disease. If oral malodor persists past week eight, see your dentist to rule out periodontal causes.',
     },
   };
 
