@@ -1742,13 +1742,87 @@
 
   /* About page founder block */
   .about-hero {
-    display: grid; grid-template-columns: 1fr 1fr;
+    display: grid; grid-template-columns: 0.85fr 1.15fr;
     background: var(--paper); border-bottom: 1px solid var(--rule);
     min-height: 600px;
   }
-  .about-hero-img { background: var(--bg); position: relative; }
-  .about-hero-img img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-  .about-hero-body { padding: 96px 72px; display: flex; flex-direction: column; justify-content: center; }
+  .about-hero-img {
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    padding: 64px 48px;
+  }
+  /* Constrain to native size (founder portrait is 400x400)
+     so the image isn't upscaled and blurred. */
+  .about-hero-img img {
+    width: 100%;
+    max-width: 340px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border: 1px solid var(--rule);
+  }
+  .about-hero-body {
+    padding: 88px 72px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  /* About-hero "Why Aplomb." variant — typography for the long lede */
+  .about-why .about-hero-body h1 {
+    font-family: var(--serif);
+    font-size: 56px; line-height: 1.02;
+    font-weight: 400; letter-spacing: -0.025em;
+    margin: 0 0 28px;
+  }
+  .about-why .about-hero-body h1 em {
+    color: var(--amber); font-style: italic;
+  }
+  .about-why .about-hero-body p {
+    font-family: var(--serif);
+    font-size: 17px; line-height: 1.6;
+    color: var(--ink); margin: 0 0 16px;
+    max-width: 560px;
+  }
+  .about-why .about-hero-body p.kicker {
+    font-style: italic; color: var(--amber); font-size: 19px;
+    margin-top: 8px;
+  }
+
+  /* Credentials strip (institution wordmarks) on About page */
+  .creds {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+  }
+  .creds-label {
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--amber); margin-bottom: 24px;
+  }
+  .creds-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+    align-items: start;
+  }
+  .cred {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+    color: var(--muted);
+    transition: color 0.25s ease;
+  }
+  .cred:hover { color: var(--amber); }
+  .cred-mark {
+    width: 60px; height: 60px;
+    margin-bottom: 14px;
+    color: inherit;
+  }
+  .cred-mark svg { width: 100%; height: 100%; display: block; }
+  .cred-name {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+    color: var(--ink);
+    max-width: 160px;
+  }
 
   /* ─── Sub-page mobile breakpoints ─── */
   @media (max-width: 1100px) {
@@ -1760,8 +1834,11 @@
     .cross-sell-grid { grid-template-columns: repeat(2, 1fr); }
     .pp-buy-box { grid-template-columns: 1fr; padding: 36px 32px; }
     .about-hero { grid-template-columns: 1fr; }
-    .about-hero-img { min-height: 360px; }
+    .about-hero-img { min-height: 0; padding: 48px; }
+    .about-hero-img img { max-width: 280px; }
     .about-hero-body { padding: 56px 48px; }
+    .about-why .about-hero-body h1 { font-size: 42px !important; }
+    .creds-row { grid-template-columns: repeat(2, 1fr); gap: 32px; }
     .contact-grid { grid-template-columns: 1fr; gap: 32px; }
   }
   @media (max-width: 760px) {
@@ -1777,4 +1854,10 @@
     .citations h2 { font-size: 26px; }
     .about-hero-body { padding: 32px 22px; }
     .about-hero-body h1 { font-size: 36px !important; }
+    .about-hero-img { padding: 36px 22px; }
+    .about-hero-img img { max-width: 220px; }
+    .about-why .about-hero-body h1 { font-size: 32px !important; }
+    .about-why .about-hero-body p { font-size: 15px; }
+    .creds-row { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    .cred-name { font-size: 10px; }
   }
