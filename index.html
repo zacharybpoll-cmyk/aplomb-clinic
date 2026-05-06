@@ -1517,6 +1517,126 @@
     .science-panel li { font-size: 15px; }
     .science-panel .beg-note { font-size: 14px; }
   }
+
+  /* Hero + rail scope-clarifier line (under H1 / H2) */
+  .hero-scope, .rail-scope {
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: -8px 0 22px;
+    max-width: 56ch;
+  }
+  .hero-scope em, .rail-scope em { font-style: italic; }
+
+  /* Serum rail — evidence, honesty, routine blocks */
+  .rail-evidence, .rail-honesty, .rail-routine {
+    border-top: 1px solid var(--rule);
+    padding: 18px 0 6px;
+    margin: 0 0 20px;
+  }
+  .rail-evidence-head, .rail-honesty-head, .rail-routine-head {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin: 0 0 10px;
+    font-weight: 600;
+  }
+  .rail-evidence-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .rail-evidence-list li {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .rail-evidence-list li:last-child { border-bottom: none; color: var(--muted); font-size: 13px; }
+  .rail-evidence-list em { color: var(--muted); font-style: italic; }
+  .rail-honesty p, .rail-routine p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink);
+    margin: 0;
+  }
+  .rail-routine p strong { color: var(--amber); font-weight: 600; }
+  .rail-adjacent {
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 0 0 28px;
+    max-width: 56ch;
+  }
+  .rail-citations {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--muted);
+    margin: 14px 0 0;
+  }
+
+  /* FAQ section */
+  .faq {
+    padding: 96px 8vw 80px;
+    background: var(--bg);
+    border-top: 1px solid var(--rule);
+  }
+  .faq-head { max-width: 920px; margin: 0 auto 56px; text-align: center; }
+  .faq-head .pill { display: inline-block; }
+  .faq-head h2 {
+    font-family: var(--serif);
+    font-size: 56px;
+    font-weight: 500;
+    line-height: 1.05;
+    margin: 18px 0 18px;
+    letter-spacing: -0.02em;
+  }
+  .faq-head h2 em { color: var(--amber); font-style: italic; }
+  .faq-head p {
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--muted);
+    max-width: 56ch;
+    margin: 0 auto;
+  }
+  .faq-list {
+    max-width: 880px;
+    margin: 0 auto;
+    display: grid;
+    gap: 8px;
+  }
+  .faq-item {
+    border-top: 1px solid var(--rule);
+    padding: 28px 0 24px;
+  }
+  .faq-item:last-child { border-bottom: 1px solid var(--rule); }
+  .faq-item h3 {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--ink);
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+  .faq-item p {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--ink);
+    margin: 0;
+    max-width: 70ch;
+  }
+  @media (max-width: 720px) {
+    .faq { padding: 64px 6vw 56px; }
+    .faq-head h2 { font-size: 36px; }
+    .faq-item h3 { font-size: 20px; }
+    .faq-item p { font-size: 15px; }
+  }
 </style>
 </head>
 <body>
@@ -1546,10 +1666,11 @@
   <section class="hero">
     <div class="hero-grid">
       <div class="hero-text">
-        <h1>The drug works.<br><em>The side effects can be irreversible.</em></h1>
-        <p class="hero-lede">Ozempic, Wegovy, Mounjaro, Zepbound. The drug class of the decade does what it says. It also takes <strong style="color:var(--amber);font-style:normal;font-weight:700;">a hollow face, depleted labs, thinning hair, and a stomach that turns on you</strong> in the first three months. <strong style="color:var(--ink);font-style:normal;font-weight:600;">Aplomb is for keeping you from losing your best self.</strong></p>
+        <h1>Built for the dermal half<br><em>of GLP-1 facial change.</em></h1>
+        <p class="hero-scope"><em>A topical peptide serum for the dermal-thinning fraction of GLP-1 facial change. Not a substitute for volume restoration.</em></p>
+        <p class="hero-lede">Rapid weight loss on a GLP-1 changes the face two different ways. The visible hollowness comes from subcutaneous fat loss, and a topical can't reach that — <strong style="color:var(--ink);font-style:normal;font-weight:600;">fillers and biostimulators do.</strong> The quieter change is dermal: the dermis itself thins as caloric restriction drops the protein and cofactor supply fibroblasts need to maintain collagen. <strong style="color:var(--amber);font-style:normal;font-weight:700;">That layer is where this serum works.</strong></p>
         <div class="cta-row">
-          <a class="btn btn-dark" href="#serum" data-open-product="serum">Shop the line</a>
+          <a class="btn btn-dark" href="#serum" data-open-product="serum">See the line</a>
           <a class="btn btn-dark" href="#serum" data-open-product="serum" style="background:transparent;color:var(--ink);border:1px solid var(--ink);">The Serum · $129</a>
         </div>
         <div class="hero-sub">
@@ -1572,20 +1693,20 @@
     <div class="bio-mech">
 
       <div class="bio-card">
-        <div class="bio-card-num">Mechanism 01 · Ozempic face</div>
-        <h3>Fat-compartment lipolysis and dermal-signaling change.</h3>
+        <div class="bio-card-num">Mechanism 01 · GLP-1 facial change</div>
+        <h3>Two drivers, not one. Volume below; dermal thinning above.</h3>
         <div class="compare-slider">
           <figure class="before">
-            <img src="assets/face-volume-loss.jpg" alt="Anatomical cross-section of facial fat compartments — depleted, hollowed mid-face after rapid GLP-1 weight loss.">
-            <figcaption><span>Before · volume loss</span> <span class="stat">−50–100 mL</span></figcaption>
+            <img src="assets/face-volume-loss.jpg" alt="Anatomical cross-section showing fat-compartment volume change after rapid weight loss — the volumetric layer.">
+            <figcaption><span>Volume loss</span> <span class="stat">fillers and biostimulators</span></figcaption>
           </figure>
           <figure class="after">
-            <img src="assets/face-volume-preserved.jpg" alt="Anatomical cross-section of facial fat compartments supported by topical peptide therapy — preserved cushion and dermal structure.">
-            <figcaption><span>With the Serum</span> <span class="stat">preserved</span></figcaption>
+            <img src="assets/face-volume-preserved.jpg" alt="Anatomical cross-section showing the dermal layer above the fat compartments — where peptide actives can act on collagen density.">
+            <figcaption><span>Dermal layer</span> <span class="stat">where the Serum works</span></figcaption>
           </figure>
         </div>
-        <p>Fifty to one hundred millilitres of facial fat compartment volume disappears as the body draws down its stores. In parallel, GLP-1 receptor activation on dermal fibroblasts impairs collagen and elastin synthesis, independent of the weight loss itself. The pattern is distinct from age-related thinning, and it compresses into nine to sixteen weeks.</p>
-        <div class="consequence">What you see in the mirror at month four: a hollowed mid-face, deepened nasolabial folds, a jawline that has softened, and the look of a face that has aged ten years in twelve weeks. <strong>Filler is the only intervention once the volume is gone.</strong></div>
+        <p>Fifty to one hundred millilitres of fat-compartment volume disappears in the first ninety days as the body draws down its stores. That is the volumetric driver. The second, quieter driver is the dermis itself: caloric restriction drops the protein and cofactor supply that fibroblasts need to maintain collagen, and the dermal layer thins. Skin texture changes; fine-line depth deepens; the appearance of the hollows is amplified by the layer above. Mechanistically the same dermal aging seen in any rapid-weight-loss population, compressed into nine to sixteen weeks.</p>
+        <div class="consequence">What you see in the mirror at month four: a hollowed mid-face, deepened nasolabial folds, a softer jawline, a face that reads ten years older than it did in twelve weeks. For the volumetric half, the right call is a board-certified dermatologist about HA fillers, Sculptra, or fat grafting. <strong>The Serum is built for the other half: the dermal layer that holds skin texture and collagen density.</strong></div>
         <div class="bio-card-links">
           <a class="bio-more" href="#serum" data-open-product="serum">See the Serum ingredient panel →</a>
           <button class="bio-learn" type="button" data-open-science="face">See the citations →</button>
@@ -1633,38 +1754,57 @@
 
   <!-- v2 · First six months urgency band -->
   <section class="first-six">
-    <h2>The first six months on a GLP-1 are when most of the volume change happens.</h2>
-    <p>Begin APLOMB. now and you preserve what you have. Begin in month seven and you are working from a deficit that may need a filler to undo. <strong>The window is short.</strong> The mid-face you walk in with is the mid-face the drug works against the fastest.</p>
+    <h2>The first six months on a GLP-1 are when most of the change happens.</h2>
+    <p>Volume change runs alongside dermal change in the same window. For the volumetric half, the right call is a board-certified dermatologist — fillers, Sculptra, fat grafting. For the dermal half — the texture, the fine-line depth, the crepey quality that accentuates the hollows — peptide support starts AM and PM, layered under SPF, in month one. <strong>The window is short.</strong> SPF discipline matters more than any peptide.</p>
   </section>
 
   <!-- § 02 Product rail A — Serum -->
   <section class="rail" id="serum">
     <div class="rail-img"><img src="assets/serum-rail.jpg" alt="APLOMB. serum — frosted glass bottle, cream paper packaging, warm afternoon light."></div>
     <div class="rail-body">
-      <h2>For the face<br><em>in the mirror.</em></h2>
-      <p class="rail-lede">Seven active clinical ingredients, formulated for the specific skin pattern that GLP-1 medications produce: volume loss underneath, elasticity change above, compressed timeline. One to two drops, morning or evening.</p>
+      <h2>Built for the dermal half<br><em>of GLP-1 facial change.</em></h2>
+      <p class="rail-scope"><em>A topical peptide serum for the dermal-thinning fraction of GLP-1 facial change. Not a substitute for volume restoration.</em></p>
+      <p class="rail-lede">Rapid weight loss changes the face two different ways. The visible hollowness comes from subcutaneous fat-pad loss, and a topical can't reach that — fillers and biostimulators do. The quieter change is dermal: the dermis itself thins as caloric restriction drops the protein and cofactor supply fibroblasts need to maintain collagen. That layer is where this serum works.</p>
       <ul class="rail-pulls">
         <li>
           <div class="rail-pull-name">Matrixyl 3000</div>
-          <div class="rail-pull-desc">Palmitoyl Tripeptide-1 + Palmitoyl Tetrapeptide-7. Stimulates fibroblast collagen and elastin synthesis: the pathway that thickens dermis from underneath.</div>
+          <div class="rail-pull-desc">Palmitoyl Tripeptide-1 + Palmitoyl Tetrapeptide-7. A peptide complex with measured collagen-stimulation effects in cosmeceutical trials.</div>
         </li>
         <li>
           <div class="rail-pull-name">Matrixyl Synthe'6</div>
-          <div class="rail-pull-desc">Palmitoyl Tripeptide-38. Stimulates six dermal-matrix proteins to reduce wrinkle depth and smooth the surface above.</div>
+          <div class="rail-pull-desc">Palmitoyl Tripeptide-38. Targets six dermal-matrix proteins; reduces fine-line depth and smooths surface texture.</div>
         </li>
         <li>
           <div class="rail-pull-name">Centella + Kakadu Plum + Bearberry + Licorice</div>
           <div class="rail-pull-desc">Four plant actives behind the peptides: Centella for collagen support, Kakadu Plum (the highest natural source of vitamin C) for antioxidant defence, Bearberry and Licorice for tone and brightness.</div>
         </li>
       </ul>
+      <div class="rail-evidence">
+        <div class="rail-evidence-head">Evidence base</div>
+        <ul class="rail-evidence-list">
+          <li>Up to 45 percent reduction in deep-wrinkle surface area at 2% Matrixyl 3000, twice-daily, 8 weeks. <em>Sederma technical dossier — manufacturer-sponsored.</em></li>
+          <li>+55 percent dermal collagen density at 12 weeks in a 37-subject palmitoyl-peptide study. <em>Li Y et al., J Cosmet Dermatol 2023;22(8):2169–2178.</em></li>
+          <li>No GLP-1-specific topical trials exist for this category. The evidence is in general dermal-aging populations and extrapolated on the shared collagen-loss mechanism.</li>
+        </ul>
+      </div>
+      <div class="rail-honesty">
+        <div class="rail-honesty-head">What this serum will not do</div>
+        <p>It will not restore facial volume. For the hollows themselves, see a board-certified dermatologist about HA fillers or biostimulators. This serum is for the layer above.</p>
+      </div>
+      <div class="rail-routine">
+        <div class="rail-routine-head">Routine</div>
+        <p>One to two drops to clean skin, AM and PM, layered under moisturizer and SPF. <strong>SPF discipline matters more than any peptide.</strong></p>
+      </div>
+      <p class="rail-adjacent"><em>Pair with adequate dietary protein (≥1.6&nbsp;g/kg body weight) and vitamin C intake. Fibroblast collagen synthesis is substrate-limited; the topical does its half, your kitchen does the other.</em></p>
       <div class="rail-price">$129 <span class="rail-price-sub">30 mL · 60-day supply</span></div>
-      <p class="rail-price-meta">That works out to <strong>about $2 a day</strong> to keep the face you walk in with. Less than your morning coffee. A rounding error on the cost of the drug itself.</p>
+      <p class="rail-price-meta">That works out to <strong>about $2 a day</strong>. Less than your morning coffee. A rounding error on the cost of the drug itself.</p>
       <p class="rail-price-offer">$20 off your first bottle · subscribe and save 10 percent</p>
       <div class="rail-ctas">
         <a class="btn btn-dark" href="#serum" data-open-product="serum">Shop the Serum →</a>
         <a class="rail-link" href="#serum" data-open-product="serum">Read the full ingredient panel →</a>
       </div>
       <p class="disclaimer">Vegan · cruelty-free · paraben-free · made in Australia · no prescription required</p>
+      <p class="rail-citations"><em>Cosmeceutical evidence base on file: Sederma Matrixyl 3000 and Synthe'6 technical dossiers; Li 2023 (J Cosmet Dermatol 22:8). Available on request.</em></p>
     </div>
   </section>
 
@@ -1761,6 +1901,43 @@
     </div>
   </section>
 
+  <!-- FAQ — paste-ready questions from the Serum brief -->
+  <section class="faq" id="faq">
+    <div class="faq-head">
+      <div class="pill">FAQ</div>
+      <h2>The questions we get<br><em>about the Serum.</em></h2>
+      <p>What this serum can address, what it can't, and how it fits alongside the other things you might be doing.</p>
+    </div>
+    <div class="faq-list">
+
+      <article class="faq-item">
+        <h3>Will this fix hollow cheeks?</h3>
+        <p>No. Hollow cheeks come from subcutaneous fat-pad loss, which sits below the skin layer that any topical can reach. For volume restoration, the right call is a conversation with a board-certified dermatologist or facial plastic surgeon about HA fillers, Sculptra, or fat grafting. This serum is for the other half of GLP-1 facial change — the dermal thinning that makes skin look crepey and accentuates the hollows.</p>
+      </article>
+
+      <article class="faq-item">
+        <h3>How long until I see a difference?</h3>
+        <p>Cosmeceutical trials of these peptides measure changes at 8 to 12 weeks of consistent twice-daily use. Skin texture and fine-line depth are what tend to shift first; deeper density changes take the full 12 weeks.</p>
+      </article>
+
+      <article class="faq-item">
+        <h3>Is there clinical evidence in GLP-1 users specifically?</h3>
+        <p>No — and you should be skeptical of any topical brand that claims there is. The peptide actives in this serum have evidence in general dermal-aging populations (Sederma trials, Li 2023). We extrapolate to the GLP-1 cohort because the underlying biology — collagen loss from metabolic and nutritional stress — is mechanistically the same.</p>
+      </article>
+
+      <article class="faq-item">
+        <h3>Can I use this with retinol or tretinoin?</h3>
+        <p>Yes, but on alternating evenings rather than layered. Peptides and retinoids both act on collagen but through different pathways; layering can increase irritation without proportional benefit.</p>
+      </article>
+
+      <article class="faq-item">
+        <h3>Why no biotin in this serum?</h3>
+        <p>Biotin is in our hair-and-nail consideration set and we have intentionally kept it out of any product where lab-assay interference would be a concern. Biotin above 2.5 mg per day affects roughly 59 percent of common immunoassays, which matters for users monitored for thyroid function during weight loss.</p>
+      </article>
+
+    </div>
+  </section>
+
   <!-- Voices · what the field is saying -->
   <section class="voices">
     <div class="voices-head">
@@ -1775,7 +1952,7 @@
         <blockquote>When you have global facial volume loss, it can take a significant amount of filler. Whereas someone in middle age may normally spend $1,000 or $2,000, they could spend $5,000 and up to reflate the face from the volume loss.</blockquote>
         <div class="by">
           <span class="by-name">Dr. Paul Jarrod Frank</span>
-          <span class="by-cred">Cosmetic dermatologist, NYC. Widely credited with naming "Ozempic face."</span>
+          <span class="by-cred">Cosmetic dermatologist, NYC. Widely credited with naming the GLP-1 facial-change pattern.</span>
           <span class="by-source">Source: TODAY Show interview, widely cited.</span>
         </div>
       </article>
@@ -1835,12 +2012,12 @@
     <div class="voices-stats">
       <div class="voices-stat">
         <div class="figure">9–16 wks</div>
-        <div class="label">the window in which the Ozempic-face pattern compresses: fat-compartment volume loss plus dermal-signaling change, distinct from age-related thinning.</div>
+        <div class="label">the window in which the GLP-1 facial-change pattern compresses: fat-compartment volume loss plus dermal thinning, distinct from age-related change.</div>
         <div class="src">Source: Cotofana 2021, <em>Aesthetic Plastic Surgery</em>; Glogau 2023, <em>Dermatologic Surgery</em>.</div>
       </div>
       <div class="voices-stat">
         <div class="figure">$5,000+</div>
-        <div class="label">average cosmetic dermatology spend to reflate a face after rapid GLP-1 volume loss, versus $1,000 to $2,000 for a typical middle-age regimen.</div>
+        <div class="label">average cosmetic dermatology spend to address volume loss after rapid GLP-1 weight loss. That is the volumetric half. The dermal half is what this serum is built for.</div>
         <div class="src">Source: Dr. Paul Jarrod Frank, NYC, via TODAY Show.</div>
       </div>
     </div>
@@ -1855,7 +2032,7 @@
       <div class="founder-prose">
         <p class="lossy-intro">If you do nothing (no Serum, no Daily, no Roots, no Calm; just the drug) here is what does <em>not</em> happen.</p>
         <ul class="lossy-list">
-          <li><span class="lossy-num">01</span><div><strong>The face does not stay.</strong> Fifty to a hundred millilitres of fat-compartment volume disappears in the first ninety days. The cheekbones flatten. Friends ask quietly if you are okay.</div></li>
+          <li><span class="lossy-num">01</span><div><strong>The dermal layer thins fastest.</strong> Volume runs alongside it (the volumetric half is a filler conversation), but the dermis itself thins as caloric restriction drops the substrate fibroblasts need to make collagen. Texture changes; fine lines deepen; the layer above the hollows reads older than the rest.</div></li>
           <li><span class="lossy-num">02</span><div><strong>The labs do not stay.</strong> B12 and ferritin trend down quietly. Twenty-two percent of users land in the deficiency column by month twelve, before anyone is checking.</div></li>
           <li><span class="lossy-num">03</span><div><strong>The hair does not stay.</strong> The shed begins in month four and lasts until you address what triggered it. Biotin will not. The deficiencies behind it will.</div></li>
           <li><span class="lossy-num">04</span><div><strong>The first month does not stay easy.</strong> Forty-four percent of users hit nausea hard enough to consider quitting. Most do, before the dose works.</div></li>
@@ -2014,18 +2191,23 @@
 
   <div class="science-panel" data-science-panel="face">
     <div class="pill">Mechanism 01 · Citations</div>
-    <h2>What we cite for the <em>Ozempic-face</em> mechanism.</h2>
+    <h2>What we cite for the <em>two-driver</em> mechanism.</h2>
 
-    <h3>Volume loss and the 9–16 week window</h3>
+    <h3>Volume loss and the 9–16 week window (the volumetric half — what fillers address)</h3>
     <ul>
       <li><strong>Cotofana S et al., 2021.</strong> Anatomical study of midface fat-compartment volume changes after rapid weight loss. <em>Aesthetic Plastic Surgery.</em> Source for the 50–100 mL volume figure.</li>
-      <li><strong>Glogau RG, 2023.</strong> Clinical observation series on the onset of the "Ozempic face" pattern within the 9–16 week window. <em>Dermatologic Surgery.</em></li>
+      <li><strong>Glogau RG, 2023.</strong> Clinical observation series on the onset of the GLP-1 facial-change pattern within the 9–16 week window. <em>Dermatologic Surgery.</em></li>
+      <li><strong>PMC12110338.</strong> Narrative dermatology review of GLP-1 facial volume loss and treatment algorithm. Source for the two-driver framing.</li>
     </ul>
 
-    <h3>The dermal-signaling pathway</h3>
+    <h3>The dermal-half evidence base (where the Serum acts)</h3>
     <ul>
-      <li><strong>Drucker DJ, 2018.</strong> GLP-1 receptor signaling: mechanism of action across tissues. <em>Cell Metabolism.</em> Background on GLP-1R distribution including dermal fibroblasts.</li>
+      <li><strong>Sederma SAS — Matrixyl 3000 Technical Dossier.</strong> ~N=23, 2 months, twice-daily 3% formulation. 45% reduction in deep-wrinkle surface area; +20% skin tonicity by profilometry. Manufacturer-sponsored.</li>
+      <li><strong>Sederma SAS — Synthe'6 (palmitoyl tripeptide-38) Technical Dossier.</strong> N=25, ages 42–70, 2 months, twice-daily 2%. In vitro: collagen I +105%, collagen III +104%, collagen IV +42%.</li>
+      <li><strong>Li Y et al., 2023.</strong> Efficacy of yeast ferment + palmitoyl peptide eye cream. <em>Journal of Cosmetic Dermatology</em> 22(8):2169–2178. N=37, 12 weeks, +54.99% collagen density, +18.81% elasticity by ultrasound and cutometer. No placebo arm.</li>
     </ul>
+
+    <p style="margin-top:14px;font-size:14px;line-height:1.6;color:var(--muted);"><em>No GLP-1-specific topical trials exist for this category. The peptide actives in this serum have evidence in general dermal-aging populations (Sederma, Li 2023). We extrapolate to the rapid-weight-loss cohort because the underlying biology — collagen loss from metabolic and nutritional stress — is mechanistically the same.</em></p>
 
   </div>
 
@@ -2086,21 +2268,23 @@
   const PRODUCTS = {
     serum: {
       title: 'APLOMB. <em>The Serum.</em>',
-      pill: 'For the face in the mirror',
+      pill: 'For the dermal half of GLP-1 facial change',
       price: '$129',
       priceVal: 129,
       freq: ' · 30 mL · 60-day supply · about $2 a day · $20 off your first bottle · subscribe and save 10 percent',
       img: 'assets/serum-detail.jpg',
-      desc: 'Seven active clinical ingredients. Three peptides (Matrixyl 3000 and Matrixyl Synthe’6) plus four plant actives (Centella, Kakadu Plum, Bearberry, Licorice), formulated for the Ozempic-face pattern. Apply 1 to 2 drops to clean skin, morning or evening.',
+      desc: 'Seven active clinical ingredients — three peptides (Matrixyl 3000 and Matrixyl Synthe’6) plus four plant actives (Centella, Kakadu Plum, Bearberry, Licorice). Formulated for the dermal-thinning fraction of GLP-1 facial change. Not a substitute for volume restoration. One to two drops to clean skin, AM and PM, layered under SPF.',
       specs: [
         ['Format', '30 mL frosted-glass bottle'],
-        ['Routine', '1–2 drops, AM or PM'],
-        ['Active ingredients', 'Seven, named on the panel'],
+        ['Routine', 'AM and PM, layered under SPF'],
+        ['Active ingredients', 'Matrixyl 3000, Synthe’6, Centella, Kakadu Plum, Bearberry, Licorice'],
+        ['Evidence', 'Sederma dossier (45% deep-wrinkle reduction, 8 wks); Li 2023, J Cosmet Dermatol (+55% collagen density, 12 wks)'],
+        ['Will not do', 'Restore facial volume — see a dermatologist about HA fillers or biostimulators'],
         ['Free of', 'Parabens, sulfates · cruelty-free · vegan'],
         ['Made in', 'Australia'],
         ['Shelf life', '12 months after opening'],
       ],
-      micro: 'Not evaluated by the FDA. Not intended to diagnose, treat, cure, or prevent any disease. Discontinue if irritation occurs.',
+      micro: 'A topical cosmetic. Not evaluated by the FDA. Not intended to diagnose, treat, cure, or prevent any disease. Discontinue if irritation occurs.',
     },
     daily: {
       title: 'APLOMB. <em>Daily.</em>',
