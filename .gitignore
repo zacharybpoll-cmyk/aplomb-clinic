@@ -7,3 +7,6 @@ __pycache__/
 *.docx
 *.pdf
 Screenshot*.png
+
+# But: product-design artifacts (real labels + supplier uploads) ARE tracked
+!product designs/**/*.pdf

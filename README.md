@@ -14,7 +14,7 @@ aplomb.clinic/
 │   └── BRAND.md               # palette, type, voice, photo direction, do/don't
 ├── assets/                    # 15 images
 │   ├── (4 portraits)          founder-zachary, hero-two-women, portrait-confident, woman-50s-portrait
-│   ├── (3 mechanism art)      nutrient-mech, roots-mech, calm-mech (gouache illustrations)
+│   ├── (3 mechanism art)      roots-mech, calm-mech, breath-mech (gouache illustrations)
 │   ├── (2 face stills)        face-volume-loss, face-volume-preserved
 │   └── (6 product rails)      serum-detail, serum-rail, bundle-detail, daily-rail, roots-rail, calm-rail
 └── scripts/

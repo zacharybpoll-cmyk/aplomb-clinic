@@ -3,7 +3,7 @@
 > "Self-confidence; assurance; composure; grace under pressure."
 > The brand promise: *preserving your self through GLP-1 use.*
 
-APLOMB. is a products-led DTC brand. It is the destination for women on GLP-1 medications (Ozempic, Wegovy, Mounjaro, Zepbound) who are managing the side effects nobody warned them about — facial volume loss, nutrient depletion, hair thinning, nausea.
+APLOMB. is a products-led DTC brand. It is the destination for women on GLP-1 medications (Ozempic, Wegovy, Mounjaro, Zepbound) who are managing the side effects nobody warned them about — facial volume loss, hair thinning, nausea, oral health.
 
 This document is the single source of truth for the visual and verbal identity. Read it before doing any design, copy, or asset work.
 
@@ -131,7 +131,7 @@ Canonical SVG file: [`assets/aplomb-mark.svg`](../assets/aplomb-mark.svg). `curr
 
 ## 6. Illustration Direction
 
-For mechanism diagrams (nutrient, roots, calm):
+For mechanism diagrams (roots, calm, breath):
 
 - **Medium:** gouache and ink on warm bone-colored paper.
 - **Reference:** Nature magazine cover art rendered in warm tones; Beatrix Potter botanical studies.
