@@ -1,0 +1,31 @@
+# Copy to `.dev.vars` for local `wrangler pages dev`. NEVER commit `.dev.vars`.
+# In production these are set via Cloudflare Pages → Settings → Env vars.
+
+# Stripe — start with test-mode keys
+STRIPE_SECRET_KEY="sk_test_..."
+STRIPE_PUBLISHABLE_KEY="pk_test_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+
+# Stripe Price IDs (one per SKU × billing mode)
+STRIPE_PRICE_SERUM_ONETIME=""
+STRIPE_PRICE_SERUM_SUBSCRIPTION=""
+STRIPE_PRICE_DAILY_ONETIME=""
+STRIPE_PRICE_DAILY_SUBSCRIPTION=""
+STRIPE_PRICE_ROOTS_ONETIME=""
+STRIPE_PRICE_ROOTS_SUBSCRIPTION=""
+STRIPE_PRICE_CALM_ONETIME=""
+STRIPE_PRICE_CALM_SUBSCRIPTION=""
+STRIPE_PRICE_BREATH_ONETIME=""
+STRIPE_PRICE_BREATH_SUBSCRIPTION=""
+
+# Supabase
+SUPABASE_URL="https://xxxxxxxxxxxx.supabase.co"
+SUPABASE_SERVICE_ROLE_KEY=""
+SUPABASE_ANON_KEY=""
+
+# Resend (transactional email)
+RESEND_API_KEY="re_..."
+EMAIL_FROM="Aplomb. <orders@getaplomb.com>"
+
+# Site
+SITE_URL="https://getaplomb.com"

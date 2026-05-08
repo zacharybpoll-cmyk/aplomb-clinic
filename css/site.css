@@ -1293,6 +1293,29 @@
     cursor: pointer;
   }
   .checkout-submit:hover { background: var(--amber); }
+  .checkout-submit:disabled { opacity: 0.55; cursor: progress; background: var(--ink); }
+  [data-stripe-address-element],
+  [data-stripe-payment-element] {
+    margin-top: 16px;
+    min-height: 1px;
+  }
+  [data-stripe-payment-element]:not(:empty),
+  [data-stripe-address-element]:not(:empty) {
+    margin-top: 18px;
+    padding: 14px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+  }
+  .checkout-error {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: #f7e6e0;
+    border-left: 3px solid #b8341e;
+    color: #1a1512;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+  }
   .checkout-success {
     text-align: center;
     padding: 24px 0;

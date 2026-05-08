@@ -4,12 +4,14 @@
 <meta charset="utf-8">
 <title>APLOMB. For women on GLP-1.</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="APLOMB. is the side-effect line for women on GLP-1 medications. Five products for the side effects nobody is selling you a solution to: face volume loss, nutrient depletion, hair loss, nausea, and bad breath.">
+<meta name="description" content="APLOMB. is the side-effect line for women on GLP-1 medications. Four products for the side effects nobody is selling you a solution to: face volume loss, hair loss, nausea, and bad breath.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="assets/aplomb-mark.svg">
 <link rel="stylesheet" href="/css/site.css">
+<script src="https://js.stripe.com/v3/" defer></script>
+<script src="/assets/checkout.js" defer></script>
 </head>
 <body>
 <div class="site">
@@ -22,7 +24,6 @@
     </div>
     <nav class="nav-links">
       <a href="/serum/">Serum</a>
-      <a href="/daily/">Daily</a>
       <a href="/roots/">Roots</a>
       <a href="/calm/">Calm</a>
       <a href="/breath/">Breath</a>
@@ -40,7 +41,7 @@
     <div class="hero-grid">
       <div class="hero-text">
         <h1>GLP-<span class="num">1</span>s work.<br><em>The side effects can be irreversible.</em></h1>
-        <p class="hero-lede">GLP-<span class="num">1</span>s can do incredible work. They can also cause <strong style="color:var(--amber);font-style:normal;font-weight:700;">a hollow face, nutrient depletion, hair loss, horrible nausea, and bad breath.</strong> <strong style="color:var(--ink);font-style:normal;font-weight:600;">Aplomb is for keeping you from losing your best self.</strong></p>
+        <p class="hero-lede">GLP-<span class="num">1</span>s can do incredible work. They can also cause <strong style="color:var(--amber);font-style:normal;font-weight:700;">a hollow face, hair loss, horrible nausea, and bad breath.</strong> <strong style="color:var(--ink);font-style:normal;font-weight:600;">Aplomb is for keeping you from losing your best self.</strong></p>
         <div class="cta-row">
           <a class="btn btn-dark" href="#serum" data-open-product="serum">Shop the line</a>
           <a class="btn btn-dark" href="#serum" data-open-product="serum" style="background:transparent;color:var(--ink);border:1px solid var(--ink);">The Serum · $129</a>
@@ -87,17 +88,6 @@
       </div>
 
       <div class="bio-card simple">
-        <h3>Nutrient depletion. The lab values nobody is monitoring.</h3>
-        <img class="bio-card-img" src="assets/nutrient-mech.jpg" alt="Botanical illustration triptych: an iron-rich seed pod, a branching root system, and a honeycomb mineral lattice — depicting the building blocks the body draws down on a GLP-1.">
-        <p>The drug works by blunting appetite. The follow-on is mechanical: smaller meals, slower gastric emptying, narrower food variety. Twenty-two percent of GLP-1 users develop a measurable nutrient deficiency by month twelve. B12, iron, vitamin D, and calcium are the four that move first. Sixty to seventy percent of users fall below the recommended intake for calcium alone.</p>
-        <div class="consequence">What you do not see in the mirror, but what the bloodwork would say: ferritin under thirty, B12 trending toward two hundred, vitamin D in the low-twenties. The downstream of those numbers is what shows up in the mirror as <strong>hair, skin, fatigue, and recovery.</strong></div>
-        <div class="bio-card-links">
-          <a class="bio-more" href="#daily" data-open-product="daily">See the Daily ingredient panel →</a>
-          <button class="bio-learn" type="button" data-open-science="nutrient">See the citations →</button>
-        </div>
-      </div>
-
-      <div class="bio-card simple">
         <h3>Hair loss. Telogen effluvium follows rapid weight loss like clockwork.</h3>
         <img class="bio-card-img" src="assets/roots-mech.jpg" alt="Botanical comparison illustration: a sparse spindly plant with thin roots beside a dense, leafed plant with a robust root system — the visual metaphor for hair-follicle density before and after support.">
         <p>The body reads rapid weight loss as a stress and pulls follicles out of the active growth phase into the resting phase. Three to six months later the rested follicles shed in a single wave. Insurance-claims data on 187,400 GLP-1 users finds a 1.76-fold increase in telogen effluvium over matched controls. Iron, vitamin D, and zinc deficiencies make the wave larger and the regrowth slower.</p>
@@ -134,12 +124,11 @@
       </div>
       <div class="bio-dots" data-bio-dots aria-label="Carousel position">
         <button type="button" data-bio-dot="0" aria-label="Show GLP-1 facial change card" class="is-active"></button>
-        <button type="button" data-bio-dot="1" aria-label="Show nutrient depletion card"></button>
-        <button type="button" data-bio-dot="2" aria-label="Show hair loss card"></button>
-        <button type="button" data-bio-dot="3" aria-label="Show nausea card"></button>
-        <button type="button" data-bio-dot="4" aria-label="Show bad breath card"></button>
+        <button type="button" data-bio-dot="1" aria-label="Show hair loss card"></button>
+        <button type="button" data-bio-dot="2" aria-label="Show nausea card"></button>
+        <button type="button" data-bio-dot="3" aria-label="Show bad breath card"></button>
       </div>
-      <div class="bio-counter" data-bio-counter><span data-bio-current>1</span><span class="bio-counter-sep"> / </span><span>5</span></div>
+      <div class="bio-counter" data-bio-counter><span data-bio-current>1</span><span class="bio-counter-sep"> / </span><span>4</span></div>
     </div>
   </section>
 
@@ -187,38 +176,7 @@
     </div>
   </section>
 
-  <!-- § 02 Product rail B — Daily (Nutrient Stack) -->
-  <section class="rail reverse" id="daily">
-    <div class="rail-img"><img src="assets/daily-rail.jpg" alt="APLOMB. Daily — amber-glass apothecary jar with a cream paper label reading 'APLOMB · DAILY' on a travertine slab in warm window light."></div>
-    <div class="rail-body">
-      <h2>For the labs<br><em>nobody is checking.</em></h2>
-      <p class="rail-lede">A daily capsule dosed for the nutrient deficiencies that GLP-1s drive in twenty-two percent of users by month twelve. Methylated B12, vitamin D3 with K2, ferrous bisglycinate iron, zinc picolinate, magnesium glycinate. One bottle, one month.</p>
-      <ul class="rail-pulls">
-        <li>
-          <div class="rail-pull-name">B12 + iron</div>
-          <div class="rail-pull-desc">Methylcobalamin B12 (the active form) and ferrous bisglycinate iron. The two deficiencies the bloodwork moves on first when intake drops. Dosed for absorption, not just label numbers.</div>
-        </li>
-        <li>
-          <div class="rail-pull-name">D3 with K2</div>
-          <div class="rail-pull-desc">Vitamin D3 with K2 for bone, immune, and mood support. Sixty percent of GLP-1 users fall below sufficiency by month twelve. K2 directs calcium where it belongs.</div>
-        </li>
-        <li>
-          <div class="rail-pull-name">Zinc + magnesium</div>
-          <div class="rail-pull-desc">Zinc picolinate and magnesium glycinate, for skin and hair structure, sleep, and the muscle recovery that smaller meals make harder.</div>
-        </li>
-      </ul>
-      <div class="rail-price">$49 <span class="rail-price-sub">30-day supply · 4 capsules daily</span></div>
-      <p class="rail-price-meta">About <strong>$1.63 a day</strong> to keep your labs from quietly drifting. Pairs with a baseline blood draw at month one and again at month four.</p>
-      <p class="rail-price-offer">subscribe and save 15 percent · cancel any time</p>
-      <div class="rail-ctas">
-        <a class="btn btn-dark" href="#daily" data-open-product="daily">Shop Daily →</a>
-        <a class="rail-link" href="#daily" data-open-product="daily">Read the full ingredient panel →</a>
-      </div>
-      <p class="disclaimer">Third-party tested · vegan · gluten-free · dairy-free · no prescription required</p>
-    </div>
-  </section>
-
-  <!-- § 02 Product rail C — Roots (Hair Stack) -->
+  <!-- § 02 Product rail B — Roots (Hair Stack) -->
   <section class="rail" id="roots">
     <div class="rail-img"><img src="assets/roots-rail.jpg" alt="APLOMB. Roots — amber-glass apothecary jar with a cream paper label reading 'APLOMB · ROOTS' beside a small bundle of dried wheat stalks on travertine in warm window light."></div>
     <div class="rail-body">
@@ -249,7 +207,7 @@
     </div>
   </section>
 
-  <!-- § 02 Product rail D — Calm (Nausea Kit) -->
+  <!-- § 02 Product rail C — Calm (Nausea Kit) -->
   <section class="rail reverse" id="calm">
     <div class="rail-img"><img src="assets/calm-rail.jpg" alt="APLOMB. Calm — open cream paperboard kit-box reading 'APLOMB · CALM' containing herbal sachets, a small frosted-glass jar, and an instruction card; dried lemon and fresh ginger root beside it on travertine."></div>
     <div class="rail-body">
@@ -280,7 +238,7 @@
     </div>
   </section>
 
-  <!-- § 02 Product rail E — Breath (Halitosis tin) -->
+  <!-- § 02 Product rail D — Breath (Halitosis tin) -->
   <section class="rail" id="breath">
     <div class="rail-img"><img src="assets/pharmaloz-tin-hero.jpg" alt="APLOMB. Breath — small frosted-paperboard tin with a cream label reading 'APLOMB · BREATH' on travertine in warm window light."></div>
     <div class="rail-body">
@@ -361,16 +319,6 @@
       </article>
 
       <article class="voice-card">
-        <div class="topic">On nutrient depletion</div>
-        <blockquote>This large, rapid reduction in caloric intake can lead to insufficient intakes of essential vitamins and minerals, especially at energy intakes below 1,200 kcal/day for females and 1,800 kcal/day for males.</blockquote>
-        <div class="by">
-          <span class="by-name">ACLM, ASN, OMA, and TOS</span>
-          <span class="by-cred">Joint advisory panel: American College of Lifestyle Medicine, American Society for Nutrition, Obesity Medicine Association, The Obesity Society.</span>
-          <span class="by-source">Source: <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12125019/" target="_blank" rel="noopener">Nutritional Priorities to Support GLP-1 Therapy for Obesity</a></span>
-        </div>
-      </article>
-
-      <article class="voice-card">
         <div class="topic">On nausea + GI</div>
         <blockquote>Forty-four percent of patients reported nausea on semaglutide; the median duration of an episode is eight days, and the worst severity is concentrated in the titration window.</blockquote>
         <div class="by">
@@ -390,13 +338,12 @@
       <h2>Sometimes the most credible response to a gap is to <em>close it yourself.</em></h2>
       <p class="founder-tribute">Thanks to the others. The clinicians and the women on the drug. The two columns above are theirs. We just put the products in front of them.</p>
       <div class="founder-prose">
-        <p class="lossy-intro">If you do nothing (no Serum, no Daily, no Roots, no Calm; just the drug) here is what does <em>not</em> happen.</p>
+        <p class="lossy-intro">If you do nothing (no Serum, no Roots, no Calm, no Breath; just the drug) here is what does <em>not</em> happen.</p>
         <ul class="lossy-list">
           <li><span class="lossy-num">01</span><div><strong>The dermal layer thins fastest.</strong> Volume runs alongside it (the volumetric half is a filler conversation), but the dermis itself thins as caloric restriction drops the substrate fibroblasts need to make collagen. Texture changes; fine lines deepen; the layer above the hollows reads older than the rest.</div></li>
-          <li><span class="lossy-num">02</span><div><strong>The labs do not stay.</strong> B12 and ferritin trend down quietly. Twenty-two percent of users land in the deficiency column by month twelve, before anyone is checking.</div></li>
-          <li><span class="lossy-num">03</span><div><strong>The hair does not stay.</strong> The shed begins in month four and lasts until you address what triggered it. Biotin will not. The deficiencies behind it will.</div></li>
-          <li><span class="lossy-num">04</span><div><strong>The first month does not stay easy.</strong> Forty-four percent of users hit nausea hard enough to consider quitting. Most do, before the dose works.</div></li>
-          <li><span class="lossy-num">05</span><div><strong>The breath does not stay yours.</strong> Roughly thirty percent of users develop persistent bad breath driven by hyposalivation, ketosis, and gastric stasis. Sugar-free mints don't address any of the three.</div></li>
+          <li><span class="lossy-num">02</span><div><strong>The hair does not stay.</strong> The shed begins in month four and lasts until you address what triggered it. Biotin will not. The deficiencies behind it will.</div></li>
+          <li><span class="lossy-num">03</span><div><strong>The first month does not stay easy.</strong> Forty-four percent of users hit nausea hard enough to consider quitting. Most do, before the dose works.</div></li>
+          <li><span class="lossy-num">04</span><div><strong>The breath does not stay yours.</strong> Roughly thirty percent of users develop persistent bad breath driven by hyposalivation, ketosis, and gastric stasis. Sugar-free mints don't address any of the three.</div></li>
         </ul>
         <p class="lossy-close">The drug works. <strong>The damage is the part nobody is selling you a solution to.</strong> APLOMB. is.</p>
       </div>
@@ -406,11 +353,10 @@
   <!-- Final CTA -->
   <section class="cta">
     <p class="hero-tag">The drug works. The damage doesn't have to.</p>
-    <h2>The face. The labs. The hair.<br><em>The first month. The breath.</em></h2>
+    <h2>The face. The hair.<br><em>The first month. The breath.</em></h2>
     <p class="cta-lede">Whether you are two weeks from your first injection or seven months into the drug, APLOMB. is built for the side effects nobody is selling you a solution to. Responsible, transparent about evidence, designed to sit alongside your existing care.</p>
     <div class="cta-row-dual">
       <a class="btn btn-dark" href="#serum" data-open-product="serum">The Serum · $129</a>
-      <a class="btn btn-dark" href="#daily" data-open-product="daily">Daily · $49</a>
       <a class="btn btn-dark" href="#roots" data-open-product="roots">Roots · $39</a>
       <a class="btn btn-dark" href="#calm" data-open-product="calm">Calm · $35</a>
       <a class="btn btn-dark" href="#breath" data-open-product="breath">Breath · $35</a>
@@ -426,12 +372,11 @@
           <svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
           <span class="word">Aplomb<span class="dot">.</span></span>
         </div>
-        <p class="foot-tag">Built for the side effects of the GLP-1 medications. The Serum for the face. Daily for the labs. Roots for the hair. Calm for the first month. Breath for the breath.</p>
+        <p class="foot-tag">Built for the side effects of the GLP-1 medications. The Serum for the face. Roots for the hair. Calm for the first month. Breath for the breath.</p>
       </div>
       <div class="foot-col">
         <div class="pill">Shop</div>
         <a class="foot-link" href="/serum/">The Serum</a>
-        <a class="foot-link" href="/daily/">Daily</a>
         <a class="foot-link" href="/roots/">Roots</a>
         <a class="foot-link" href="/calm/">Calm</a>
         <a class="foot-link" href="/breath/">Breath</a>
@@ -451,7 +396,7 @@
     <div class="foot-legal">
       <span style="line-height:1.7;">
         <strong>The Serum:</strong> A topical cosmetic product with seven active clinical ingredients (Palmitoyl Tripeptide-1, Palmitoyl Tetrapeptide-7, Palmitoyl Tripeptide-38, Bearberry leaf extract, Centella Asiatica, Kakadu Plum, Licorice root). Vegan · cruelty-free · paraben-free · made in Australia · no prescription required. Discontinue if irritation occurs.
-        <br><br><strong>Daily, Roots, Calm, Breath:</strong> Dietary supplements. Third-party tested, manufactured in a GMP-certified US facility. Not intended to diagnose, treat, cure, or prevent any disease. Discuss with your physician if pregnant, nursing, or under medical care. Daily and Roots are best paired with a baseline lab panel and follow-up review at month four. Calm is timed for the GLP-1 titration window; if nausea persists past week eight, contact your prescriber. Breath is for the persistent oral-malodor pattern that GLP-1 medications drive; if it persists past week eight, contact your dentist. Individual response varies. <em>These statements have not been evaluated by the Food and Drug Administration.</em>
+        <br><br><strong>Roots, Calm, Breath:</strong> Dietary supplements. Third-party tested, manufactured in a GMP-certified US facility. Not intended to diagnose, treat, cure, or prevent any disease. Discuss with your physician if pregnant, nursing, or under medical care. Roots is best paired with a baseline lab panel and follow-up review at month four. Calm is timed for the GLP-1 titration window; if nausea persists past week eight, contact your prescriber. Breath is for the persistent oral-malodor pattern that GLP-1 medications drive; if it persists past week eight, contact your dentist. Individual response varies. <em>These statements have not been evaluated by the Food and Drug Administration.</em>
       </span>
       <span class="row-sm">
         <span>© MMXXVI Aplomb Laboratories, Inc.</span>
@@ -505,36 +450,33 @@
   <div data-checkout-form-wrap>
     <h2>Checkout</h2>
     <p class="sub">Order ships within 48 hours.</p>
-    <form class="checkout-form" data-checkout-form>
+    <form class="checkout-form" data-checkout-form novalidate>
       <label>Email</label>
-      <input type="email" required name="email" placeholder="you@example.com">
+      <input type="email" required name="email" autocomplete="email" placeholder="you@example.com">
       <label>Full name</label>
-      <input type="text" required name="name" placeholder="">
-      <label>Address</label>
-      <input type="text" required name="address" placeholder="Street + apartment">
-      <div class="row-2">
-        <div>
-          <label>City</label>
-          <input type="text" required name="city">
-        </div>
-        <div>
-          <label>ZIP</label>
-          <input type="text" required name="zip">
-        </div>
-      </div>
-      <label>Card number</label>
-      <input type="text" required name="card" placeholder="•••• •••• •••• ••••" inputmode="numeric">
-      <div class="row-2">
-        <div>
-          <label>Expiry</label>
-          <input type="text" required name="exp" placeholder="MM/YY">
-        </div>
-        <div>
-          <label>CVC</label>
-          <input type="text" required name="cvc" placeholder="•••" inputmode="numeric">
-        </div>
-      </div>
-      <button type="submit" class="checkout-submit">Place order</button>
+      <input type="text" required name="name" autocomplete="name" placeholder="">
+
+      <!-- Stripe Address Element (mounts on demand; gives Apple Pay / Google Pay / autofill) -->
+      <div data-stripe-address-element></div>
+
+      <!-- Stripe Payment Element (card, wallets, BNPL — PCI scope is Stripe's, not ours) -->
+      <div data-stripe-payment-element></div>
+
+      <div class="checkout-error" data-checkout-error role="alert" aria-live="polite" hidden></div>
+
+      <button type="submit" class="checkout-submit" data-checkout-submit>
+        <span data-submit-label>Continue to secure payment</span>
+        <span data-submit-spinner hidden>Working…</span>
+      </button>
+      <p class="micro" style="margin-top:14px;color:var(--muted);text-align:center;">
+        Secured by Stripe. We never see or store your card details.
+        <br>
+        By placing your order you agree to our
+        <a href="/legal/terms/">Terms</a>,
+        <a href="/legal/privacy/">Privacy Policy</a>,
+        <a href="/legal/refund-policy/">Refund Policy</a>,
+        and <a href="/legal/shipping/">Shipping</a>.
+      </p>
     </form>
   </div>
   <div class="checkout-success" hidden data-checkout-success>
@@ -569,24 +511,8 @@
 
   </div>
 
-  <div class="science-panel" data-science-panel="nutrient">
-    <div class="pill">Mechanism 02 · Citations</div>
-    <h2>What we cite for <em>nutrient depletion</em> on GLP-1s.</h2>
-
-    <h3>Prevalence and onset</h3>
-    <ul>
-      <li><strong>Pham et al., 2024.</strong> Nutrient deficiencies in GLP-1 users vs matched controls (N=3,240). <em>Nutrients.</em> 13% deficiency at 6 months, 22% at 12 months. Iron, B12, vitamin D, calcium move first.</li>
-      <li><strong>Joint advisory: ACLM, ASN, OMA, TOS, 2024.</strong> Nutritional priorities to support GLP-1 therapy for obesity. PMC12125019. Energy intake floors at which essential micronutrient sufficiency breaks down.</li>
-    </ul>
-
-    <h3>Bariatric-population analog</h3>
-    <ul>
-      <li><strong>ASMBS guidelines, 2024 update.</strong> Baseline + Q6-month labs (CBC, iron panel, B12, 25-OH vitamin D) for any patient on a GLP-1 expecting more than 10% weight loss. Established in the bariatric-surgery population, transferred to GLP-1.</li>
-    </ul>
-  </div>
-
   <div class="science-panel" data-science-panel="roots">
-    <div class="pill">Mechanism 03 · Citations</div>
+    <div class="pill">Mechanism 02 · Citations</div>
     <h2>What we cite for <em>hair thinning</em> on GLP-1s.</h2>
 
     <h3>Real-world incidence</h3>
@@ -603,7 +529,7 @@
   </div>
 
   <div class="science-panel" data-science-panel="calm">
-    <div class="pill">Mechanism 04 · Citations</div>
+    <div class="pill">Mechanism 03 · Citations</div>
     <h2>What we cite for <em>nausea</em> on GLP-1s.</h2>
 
     <h3>RCT incidence and duration</h3>
@@ -620,7 +546,7 @@
   </div>
 
   <div class="science-panel" data-science-panel="breath">
-    <div class="pill">Mechanism 05 · Citations</div>
+    <div class="pill">Mechanism 04 · Citations</div>
     <h2>What we cite for <em>bad breath</em> on GLP-1s.</h2>
 
     <h3>Prevalence and mechanism</h3>
@@ -662,24 +588,6 @@
         ['Shelf life', '12 months after opening'],
       ],
       micro: 'A topical cosmetic. Not evaluated by the FDA. Not intended to diagnose, treat, cure, or prevent any disease. Discontinue if irritation occurs.',
-    },
-    daily: {
-      title: 'APLOMB. <em>Daily.</em>',
-      pill: 'For the labs nobody is checking',
-      price: '$49',
-      priceVal: 49,
-      freq: ' · 30-day supply · 4 capsules daily · about $1.63 a day · subscribe and save 15 percent',
-      img: 'assets/daily-rail.jpg',
-      desc: 'A four-capsule daily for the four nutrient deficiencies that GLP-1s drive in 22% of users by month 12: methylcobalamin B12, vitamin D3 with K2, ferrous bisglycinate iron, and zinc picolinate plus magnesium glycinate. Take with food.',
-      specs: [
-        ['Format', '120 capsules · 30-day supply'],
-        ['Routine', '4 capsules daily, with food'],
-        ['Active ingredients', 'Methyl-B12, D3 + K2, iron, zinc, magnesium'],
-        ['Free of', 'Gluten, dairy, soy · third-party tested · vegan'],
-        ['Made in', 'USA · GMP-certified facility'],
-        ['Shelf life', '24 months · best by date on bottle'],
-      ],
-      micro: 'These statements have not been evaluated by the FDA. Not intended to diagnose, treat, cure, or prevent any disease. Pair with a baseline lab panel and review at month four.',
     },
     roots: {
       title: 'APLOMB. <em>Roots.</em>',
@@ -889,14 +797,24 @@
     }
   });
 
-  document.querySelector('[data-checkout-form]').addEventListener('submit', function(e) {
-    e.preventDefault();
-    document.querySelector('[data-checkout-form-wrap]').hidden = true;
-    document.querySelector('[data-checkout-success]').hidden = false;
-    cart = {};
-    saveCart();
-    renderCart();
-  });
+  // Checkout: handed off to assets/checkout.js, which mounts Stripe Payment Element
+  // and submits to /api/checkout. We expose what it needs to do its job.
+  window.AplombCheckout = {
+    getCart: () => ({ ...cart }),
+    getCartLineItems: () => Object.entries(cart).map(([key, qty]) => ({
+      productKey: key,
+      quantity: qty,
+      priceId: PRODUCTS[key]?.priceIds?.oneTime || null,
+    })),
+    onCheckoutSuccess: () => {
+      document.querySelector('[data-checkout-form-wrap]').hidden = true;
+      document.querySelector('[data-checkout-success]').hidden = false;
+      cart = {};
+      saveCart();
+      renderCart();
+    },
+    products: PRODUCTS,
+  };
 
   document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeAll(); });
 
