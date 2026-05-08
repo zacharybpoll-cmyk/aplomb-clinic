@@ -20,6 +20,7 @@ After upload, Supliful runs a verification pass before fulfillment.
 | `Aplomb_Chewables_Artwork.pdf` | Identical archive copy. |
 | `Aplomb_Chewables_Artwork.svg` | Vector source. |
 | `Aplomb_Chewables_Schematic.pdf` | Dieline + 3 mm bleed + 3 mm safe zone for QC. |
+| `Aplomb_Chewables_Photo_1.jpg` | Photoreal Kinfolk-style mockup (Flux 2 Pro). For ecommerce / press use. |
 | `SPEC_REQUIREMENTS.md` | Captured requirements from the Supliful portal. |
 
 ## Pre-upload checklist

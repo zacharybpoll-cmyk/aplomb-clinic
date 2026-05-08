@@ -20,6 +20,7 @@ After upload, Supliful runs a verification pass before fulfillment. If the label
 | `Aplomb_Hair_Growth_Serum_Artwork.pdf` | Identical archive copy. |
 | `Aplomb_Hair_Growth_Serum_Artwork.svg` | Vector source — drop into Illustrator for any in-house tweaks. |
 | `Aplomb_Hair_Growth_Serum_Schematic.pdf` | Dieline + 3 mm bleed + 3 mm safe zone for QC. |
+| `Aplomb_Hair_Growth_Serum_Photo_1.jpg` | Photoreal Kinfolk-style mockup (Flux 2 Pro). For ecommerce / press use. |
 | `SPEC_REQUIREMENTS.md` | Captured requirements from the Supliful portal. |
 
 ## Pre-upload checklist

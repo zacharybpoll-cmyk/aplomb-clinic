@@ -19,6 +19,7 @@ Canva template they linked, or supply this PDF directly.
 | `Aplomb_Peptide_Serum_Artwork.pdf` | Identical contents to upload PDF, kept for archive. |
 | `Aplomb_Peptide_Serum_Artwork.svg` | Vector source if Cellular Cosmetics' designer needs to make minor positional tweaks at proof. |
 | `Aplomb_Peptide_Serum_Schematic.pdf` | Dieline + bleed (red dashed) + safe zone (grey dashed) for QC review. |
+| `Aplomb_Peptide_Serum_Photo_1.jpg` | Photoreal Kinfolk-style mockup of the bottle in the brand still-life setup (Flux 2 Pro). For ecommerce / press use. |
 | `SPEC_REQUIREMENTS.md` | Captured requirements from the supplier portal. |
 
 ## Pre-upload checklist
