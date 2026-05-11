@@ -10,9 +10,57 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="/assets/aplomb-mark.svg">
 <link rel="stylesheet" href="/css/site.css">
+<script src="/assets/cart.js" defer></script>
+<script src="/assets/newsletter.js" defer></script>
+<script src="/assets/analytics.js" defer></script>
+<link rel="canonical" href="https://getaplomb.com/serum/">
+<meta property="og:type" content="product">
+<meta property="og:title" content="APLOMB. The Serum — for the dermal half of GLP-1 facial change.">
+<meta property="og:description" content="A topical peptide serum (Matrixyl 3000 + Synthe’6) for the dermal-thinning fraction of GLP-1 facial change. 30 mL, 60-day supply.">
+<meta property="og:image" content="https://getaplomb.com/assets/serum-rail.jpg">
+<meta property="og:url" content="https://getaplomb.com/serum/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="APLOMB. The Serum — for the dermal half of GLP-1 facial change.">
+<meta name="twitter:description" content="A topical peptide serum (Matrixyl 3000 + Synthe’6) for the dermal-thinning fraction of GLP-1 facial change. 30 mL, 60-day supply.">
+<meta name="twitter:image" content="https://getaplomb.com/assets/serum-rail.jpg">
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "APLOMB. The Serum.",
+  "sku": "aplomb-serum-30ml",
+  "image": "https://getaplomb.com/assets/serum-rail.jpg",
+  "description": "A topical peptide serum (Matrixyl 3000 + Synthe’6) for the dermal-thinning fraction of GLP-1 facial change. 30 mL, 60-day supply.",
+  "brand": {"@type": "Brand", "name": "APLOMB."},
+  "offers": {
+    "@type": "Offer",
+    "url": "https://getaplomb.com/serum/",
+    "priceCurrency": "USD",
+    "price": "129.00",
+    "availability": "https://schema.org/InStock",
+    "itemCondition": "https://schema.org/NewCondition"
+  }
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getaplomb.com/"},
+    {"@type": "ListItem", "position": 2, "name": "APLOMB. The Serum.", "item": "https://getaplomb.com/serum/"}
+  ]
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "APLOMB.",
+  "legalName": "Aplomb Laboratories, Inc.",
+  "url": "https://getaplomb.com",
+  "logo": "https://getaplomb.com/assets/aplomb-mark.svg",
+  "sameAs": []
+}</script>
 </head>
 <body>
-<div class="site">
+<a class="skip-to-main" href="#main">Skip to main content</a>
+<div class="site" id="main">
 
   <header class="nav">
     <div class="logo">
@@ -28,7 +76,8 @@
       <a href="/faq/">FAQ</a>
     </nav>
     <div class="nav-right">
-      <a href="/contact/">Contact</a>
+      <a href="/account/">Account</a>
+      <span class="bag" data-open-cart>Bag <span class="bag-count" data-cart-count>0</span></span>
     </div>
   </header>
 
@@ -93,12 +142,30 @@
   </div></section>
 
   <section class="pp-section"><div class="inner pp-buy-box-wrap">
-    <div class="pp-buy-box">
-      <div>
+    <div class="pp-buy-box" data-buy-box>
+      <div class="pp-buy-box-meta">
         <h3>$129 &middot; 30 mL &middot; about $2 a day</h3>
         <p>Less than your morning coffee. A rounding error on the cost of the drug itself. $20 off your first bottle. Subscribe and save 10 percent.</p>
+        <fieldset class="mode-toggle">
+          <legend class="visually-hidden">Purchase option</legend>
+          <label class="mode-opt">
+            <input type="radio" name="aplomb-mode-serum" value="onetime" checked>
+            <span class="mode-opt-body">
+              <span class="mode-opt-title">One-time</span>
+              <span class="mode-opt-meta">$129 &middot; ships once</span>
+            </span>
+          </label>
+          <label class="mode-opt mode-opt-sub">
+            <input type="radio" name="aplomb-mode-serum" value="subscription">
+            <span class="mode-opt-body">
+              <span class="mode-opt-title">Subscribe &amp; save 10%</span>
+              <span class="mode-opt-meta">$116.10 &middot; auto-renews every 30 days &middot; cancel anytime</span>
+            </span>
+          </label>
+        </fieldset>
+        <p class="micro" style="margin-top:10px;color:var(--muted);font-size:12px;line-height:1.5;">By choosing Subscribe, you authorize us to charge your payment method $116.10 every 30 days. Cancel anytime in one click from your account.</p>
       </div>
-      <a class="btn btn-dark" href="/#serum">Add to bag</a>
+      <button class="btn btn-dark" type="button" data-aplomb-add="serum">Add to bag</button>
     </div>
   </div></section>
 

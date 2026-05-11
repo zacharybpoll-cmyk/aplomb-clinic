@@ -1,18 +1,20 @@
 // APLOMB. — Stripe-powered checkout
 //
-// Loaded by index.html and every product detail page that includes a checkout
-// modal. Coordinates with the inline cart code via window.AplombCheckout
-// (defined in index.html) and exposes a single externally-visible side effect:
-// when the customer presses "Continue to secure payment" on the checkout form,
-// we POST to /api/checkout and mount the Stripe Payment Element with the
-// returned client_secret. On confirmPayment success Stripe redirects to
-// /checkout/success/, where a separate page reads payment_intent and renders
-// the order summary.
+// Owns submission of the standalone /checkout/ form (also works in any legacy
+// modal that has the same [data-checkout-form] hooks). Coordinates with
+// window.AplombCart (assets/cart.js) for the line-item payload.
 //
-// The publishable key is injected by the host at build time as
-// window.STRIPE_PUBLISHABLE_KEY (a meta tag set by Cloudflare Pages, or a
-// hardcoded test key during local development). If it is missing we surface
-// a clear error rather than rendering a checkout that silently does nothing.
+// Flow:
+//  1. User fills email + name + Stripe Address Element (mounted on load).
+//  2. First "Continue to secure payment" click POSTs to /api/checkout.
+//     - Onetime cart → response is { clientSecret, orderId }; mount Stripe
+//       Payment Element with that secret; second click confirms payment.
+//     - Subscription cart → response is { checkoutUrl, orderId }; redirect
+//       the browser to Stripe Checkout (hosted page with full SCA/3DS).
+//  3. confirmPayment redirects on success to /checkout/success/.
+//
+// Publishable key comes from window.STRIPE_PUBLISHABLE_KEY (set on the page)
+// or <meta name="stripe-publishable-key">. Missing key surfaces a clear error.
 
 (function () {
   'use strict';
@@ -23,7 +25,7 @@
   let stripe = null;
   let elements = null;
   let mounted = false;
-  let pendingClientSecret = null;
+  let addressMounted = false;
 
   function $(sel, root) { return (root || document).querySelector(sel); }
 
@@ -66,18 +68,34 @@
     return stripe;
   }
 
-  // Returns the cart payload for /api/checkout.
+  function getTurnstileToken() {
+    if (typeof window.turnstile !== 'object' || !window.turnstile) return null;
+    const widget = document.querySelector('.cf-turnstile');
+    if (!widget) return null;
+    try {
+      const id = widget.getAttribute('data-widget-id');
+      return id ? window.turnstile.getResponse(id) : window.turnstile.getResponse();
+    } catch (_) { return null; }
+  }
+
+  // Returns the cart payload for /api/checkout. Prefers AplombCart (the global
+  // cart module on every page); falls back to legacy AplombCheckout.
   function buildCartPayload(form) {
     const data = new FormData(form);
-    const checkoutApi = window.AplombCheckout;
-    const lineItems = (checkoutApi && checkoutApi.getCartLineItems) ? checkoutApi.getCartLineItems() : [];
+    const lineItems = (window.AplombCart && window.AplombCart.getLineItems)
+      ? window.AplombCart.getLineItems()
+      : (window.AplombCheckout && window.AplombCheckout.getCartLineItems
+          ? window.AplombCheckout.getCartLineItems()
+          : []);
     return {
       email: (data.get('email') || '').trim(),
       name: (data.get('name') || '').trim(),
       lineItems: lineItems.map(li => ({
         productKey: li.productKey,
         quantity: li.quantity,
+        mode: li.mode || 'onetime',
       })),
+      turnstileToken: getTurnstileToken(),
     };
   }
 
@@ -126,20 +144,27 @@
       return;
     }
 
-    const { clientSecret } = await resp.json();
-    if (!clientSecret) {
+    const body = await resp.json();
+
+    // Subscription cart — backend returns Stripe Checkout Session URL; redirect.
+    if (body.checkoutUrl) {
+      window.location.href = body.checkoutUrl;
+      return;
+    }
+
+    if (!body.clientSecret) {
       setSubmitState(false);
       showError('Checkout did not return a payment intent. Please try again.');
       return;
     }
 
-    pendingClientSecret = clientSecret;
-
-    // First click: mount Stripe elements with the client_secret. The form's
-    // submit handler swaps to "confirmPayment" mode on subsequent presses.
+    // First click: mount Stripe Payment Element with the client_secret. The
+    // form's submit handler swaps to "confirmPayment" mode on subsequent presses.
     if (!mounted) {
-      mountElements(clientSecret);
+      mountElements(body.clientSecret);
       setSubmitState(false);
+      const fieldset = document.querySelector('[data-payment-fieldset]');
+      if (fieldset) fieldset.hidden = false;
       const label = $('[data-submit-label]');
       if (label) label.textContent = 'Place order';
       return;
@@ -168,7 +193,7 @@
 
     const addressContainer = $('[data-stripe-address-element]');
     const paymentContainer = $('[data-stripe-payment-element]');
-    if (addressContainer) {
+    if (addressContainer && !addressMounted) {
       const address = elements.create('address', {
         mode: 'shipping',
         allowedCountries: ['US'],
@@ -176,6 +201,7 @@
         validation: { phone: { required: 'always' } },
       });
       address.mount(addressContainer);
+      addressMounted = true;
     }
     if (paymentContainer) {
       const payment = elements.create('payment', { layout: 'tabs' });

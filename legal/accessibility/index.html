@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Accessibility &mdash; APLOMB.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="APLOMB.'s accessibility statement and our commitment to WCAG 2.1 AA conformance.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/assets/aplomb-mark.svg">
+<link rel="stylesheet" href="/css/site.css">
+<script src="/assets/cart.js" defer></script>
+<script src="/assets/newsletter.js" defer></script>
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body>
+<a class="skip-to-main" href="#main">Skip to main content</a>
+<div class="site" id="main">
+
+  <header class="nav">
+    <div class="logo">
+      <a href="/"><svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+      <span class="word">Aplomb<span class="dot">.</span></span></a>
+    </div>
+    <nav class="nav-links">
+      <a href="/serum/">Serum</a>
+      <a href="/roots/">Roots</a>
+      <a href="/calm/">Calm</a>
+      <a href="/breath/">Breath</a>
+      <a href="/about/">About</a>
+      <a href="/faq/">FAQ</a>
+    </nav>
+    <div class="nav-right">
+      <a href="/account/">Account</a>
+      <span class="bag" data-open-cart>Bag <span class="bag-count" data-cart-count>0</span></span>
+    </div>
+  </header>
+
+  <section class="pp-section"><div class="inner" style="max-width:780px;">
+    <div class="pp-eyebrow">Legal</div>
+    <h2 style="font-size:54px;line-height:1.05;">Accessibility<span style="color:var(--amber);">.</span></h2>
+    <p class="lede" style="margin-bottom:24px;">Effective May 11, 2026. We want getaplomb.com to be usable by everyone who needs what we make.</p>
+
+    <h3>Our standard</h3>
+    <p>We aim for conformance with <strong>Web Content Accessibility Guidelines (WCAG) 2.1, Level AA</strong>. We test against that bar on every release and treat any regression as a release blocker.</p>
+
+    <h3>What we’ve done</h3>
+    <ul>
+      <li>Every image carries descriptive <code>alt</code> text. Decorative images carry <code>alt=""</code>.</li>
+      <li>Every interactive control is reachable by keyboard. Focus rings are visible.</li>
+      <li>Forms have associated labels and clear error states.</li>
+      <li>Body text holds a minimum 4.5:1 contrast ratio against its background.</li>
+      <li>The cart drawer, product modal, and newsletter popup can be dismissed with the Escape key.</li>
+      <li>A skip-to-main-content link is the first element in the tab order.</li>
+      <li>Pages are still readable when JavaScript is disabled, with the exception of checkout (which requires Stripe Elements).</li>
+    </ul>
+
+    <h3>Where we know we fall short</h3>
+    <ul>
+      <li>Decorative carousels auto-advance; they pause on first user interaction. Users on the prefers-reduced-motion setting see a static layout.</li>
+      <li>Some marketing images carry long descriptive alt text that screen readers will spend time on. We are evaluating a switch to figcaption for those.</li>
+    </ul>
+
+    <h3>Found a problem?</h3>
+    <p>Write to <a href="mailto:hello@getaplomb.com">hello@getaplomb.com</a> with the page URL, the assistive technology you’re using, and a short description. We aim to acknowledge within one business day and ship a fix within seven.</p>
+
+    <h3>Alternative formats</h3>
+    <p>If you need a product label, ingredient list, or any policy in an alternative format (large print, screen-reader friendly text file), email us. We will respond within three business days.</p>
+
+  </div></section>
+
+  <footer class="foot">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-logo">
+          <svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+          <span class="word">Aplomb<span class="dot">.</span></span>
+        </div>
+      </div>
+      <div class="foot-col">
+        <div class="pill">Legal</div>
+        <a class="foot-link" href="/legal/privacy/">Privacy</a>
+        <a class="foot-link" href="/legal/terms/">Terms</a>
+        <a class="foot-link" href="/legal/subscription-terms/">Subscription Terms</a>
+        <a class="foot-link" href="/legal/accessibility/">Accessibility</a>
+      </div>
+    </div>
+    <div class="foot-legal"><span class="row-sm"><span>&copy; MMXXVI Aplomb Laboratories, Inc.</span></span></div>
+  </footer>
+</div>
+</body>
+</html>
