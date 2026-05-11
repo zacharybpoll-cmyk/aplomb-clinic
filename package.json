@@ -1,0 +1,18 @@
+{
+  "name": "aplomb-clinic",
+  "version": "0.1.0",
+  "private": true,
+  "description": "APLOMB. — getaplomb.com (static site + Cloudflare Pages Functions for commerce)",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev . --compatibility-flag=nodejs_compat",
+    "deploy": "wrangler pages deploy . --project-name=aplomb-clinic"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "stripe": "^17.4.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}

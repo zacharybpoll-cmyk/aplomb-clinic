@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Thank you &mdash; APLOMB.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Order confirmed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/assets/aplomb-mark.svg">
+<link rel="stylesheet" href="/css/site.css">
+<script src="https://js.stripe.com/v3/" defer></script>
+</head>
+<body>
+<div class="site">
+
+  <header class="nav">
+    <div class="logo">
+      <a href="/"><svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+      <span class="word">Aplomb<span class="dot">.</span></span></a>
+    </div>
+    <nav class="nav-links">
+      <a href="/serum/">Serum</a>
+      <a href="/daily/">Daily</a>
+      <a href="/roots/">Roots</a>
+      <a href="/calm/">Calm</a>
+      <a href="/breath/">Breath</a>
+      <a href="/about/">About</a>
+      <a href="/faq/">FAQ</a>
+    </nav>
+    <div class="nav-right">
+      <a href="/contact/">Contact</a>
+    </div>
+  </header>
+
+  <section class="pp-section"><div class="inner" style="max-width:680px; text-align:center;">
+    <div class="pp-eyebrow" data-status-eyebrow>Verifying&hellip;</div>
+    <h1 style="font-family:var(--serif);font-size:64px;line-height:1.05;font-weight:400;margin:8px 0 16px;color:var(--ink);">
+      Thank you<span style="color:var(--amber);">.</span>
+    </h1>
+    <p class="lede" data-status-message style="margin:0 auto 24px;max-width:48ch;">
+      We are confirming your order with Stripe. This usually takes a few seconds.
+    </p>
+    <div data-order-summary hidden style="margin:32px auto 0;max-width:520px;text-align:left;border-top:1px solid var(--ink);padding-top:18px;">
+      <div style="font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:0.16em;color:var(--muted);margin-bottom:6px;">Order reference</div>
+      <div data-order-id style="font-family:var(--serif);font-size:22px;color:var(--ink);"></div>
+    </div>
+    <p style="margin-top:48px;"><a class="btn btn-dark" href="/" style="text-decoration:none;">Return to the site</a></p>
+  </div></section>
+
+  <footer class="foot">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-logo">
+          <svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+          <span class="word">Aplomb<span class="dot">.</span></span>
+        </div>
+      </div>
+      <div class="foot-col">
+        <div class="pill">House</div>
+        <a class="foot-link" href="/about/">About</a>
+        <a class="foot-link" href="/contact/">Contact</a>
+        <a class="foot-link" href="/faq/">FAQ</a>
+      </div>
+      <div class="foot-col">
+        <div class="pill">Legal</div>
+        <a class="foot-link" href="/legal/privacy/">Privacy</a>
+        <a class="foot-link" href="/legal/terms/">Terms</a>
+        <a class="foot-link" href="/legal/refund-policy/">Refund</a>
+        <a class="foot-link" href="/legal/shipping/">Shipping</a>
+        <a class="foot-link" href="/legal/returns/">Returns</a>
+      </div>
+    </div>
+    <div class="foot-legal">
+      <span class="row-sm"><span>&copy; MMXXVI Aplomb Laboratories, Inc.</span></span>
+    </div>
+  </footer>
+</div>
+<script>
+// Reads the payment_intent_client_secret returned by Stripe in the URL,
+// confirms the payment status, and updates the page copy. The order detail
+// itself is delivered by email (via our webhook + Resend); this page only
+// confirms the transaction completed.
+(function () {
+  function $(s){return document.querySelector(s);}
+  function set(eyebrow, msg){ $('[data-status-eyebrow]').textContent = eyebrow; $('[data-status-message]').textContent = msg; }
+  function clearLocalCart(){ try { localStorage.removeItem('aplomb-serum-cart'); } catch(_){} }
+
+  const params = new URLSearchParams(window.location.search);
+  const clientSecret = params.get('payment_intent_client_secret');
+  const paymentIntentId = params.get('payment_intent');
+
+  if (paymentIntentId) {
+    const ref = paymentIntentId.replace(/^pi_/, '').slice(0,8).toUpperCase();
+    $('[data-order-id]').textContent = '#' + ref;
+    $('[data-order-summary]').hidden = false;
+  }
+
+  function showByStatus(status) {
+    if (status === 'succeeded') {
+      set('Order confirmed', 'A confirmation email is on its way. The order ships within 48 hours; you will receive tracking when it leaves us.');
+      clearLocalCart();
+    } else if (status === 'processing') {
+      set('Processing', 'Your bank is still reviewing the charge. We will email you when it settles, usually within a few minutes.');
+    } else if (status === 'requires_payment_method') {
+      set('Payment did not go through', 'Please return to the checkout and try a different payment method.');
+    } else {
+      set('Status: ' + status, 'If you do not receive a confirmation email within ten minutes, please write to zachary@getaplomb.com with your order reference.');
+    }
+  }
+
+  function getPublishableKey(){
+    if (window.STRIPE_PUBLISHABLE_KEY) return window.STRIPE_PUBLISHABLE_KEY;
+    const meta = document.querySelector('meta[name="stripe-publishable-key"]');
+    return meta && meta.content ? meta.content : null;
+  }
+
+  function ready(){ if (typeof window.Stripe !== 'function') return setTimeout(ready, 80); poll(); }
+  function poll(){
+    if (!clientSecret) { set('Order confirmed', 'A confirmation email is on its way. Tracking arrives when the package leaves us.'); clearLocalCart(); return; }
+    const pk = getPublishableKey();
+    if (!pk) { set('Order received', 'A confirmation email is on its way.'); clearLocalCart(); return; }
+    const stripe = window.Stripe(pk);
+    stripe.retrievePaymentIntent(clientSecret).then(({paymentIntent, error}) => {
+      if (error || !paymentIntent) return set('Status check failed', 'Please write to zachary@getaplomb.com if you do not receive a confirmation email within 10 minutes.');
+      showByStatus(paymentIntent.status);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', ready);
+})();
+</script>
+</body>
+</html>

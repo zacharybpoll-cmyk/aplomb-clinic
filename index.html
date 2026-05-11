@@ -10,6 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="assets/aplomb-mark.svg">
 <link rel="stylesheet" href="/css/site.css">
+<script src="https://js.stripe.com/v3/" defer></script>
+<script src="/assets/checkout.js" defer></script>
 </head>
 <body>
 <div class="site">
@@ -448,36 +450,33 @@
   <div data-checkout-form-wrap>
     <h2>Checkout</h2>
     <p class="sub">Order ships within 48 hours.</p>
-    <form class="checkout-form" data-checkout-form>
+    <form class="checkout-form" data-checkout-form novalidate>
       <label>Email</label>
-      <input type="email" required name="email" placeholder="you@example.com">
+      <input type="email" required name="email" autocomplete="email" placeholder="you@example.com">
       <label>Full name</label>
-      <input type="text" required name="name" placeholder="">
-      <label>Address</label>
-      <input type="text" required name="address" placeholder="Street + apartment">
-      <div class="row-2">
-        <div>
-          <label>City</label>
-          <input type="text" required name="city">
-        </div>
-        <div>
-          <label>ZIP</label>
-          <input type="text" required name="zip">
-        </div>
-      </div>
-      <label>Card number</label>
-      <input type="text" required name="card" placeholder="•••• •••• •••• ••••" inputmode="numeric">
-      <div class="row-2">
-        <div>
-          <label>Expiry</label>
-          <input type="text" required name="exp" placeholder="MM/YY">
-        </div>
-        <div>
-          <label>CVC</label>
-          <input type="text" required name="cvc" placeholder="•••" inputmode="numeric">
-        </div>
-      </div>
-      <button type="submit" class="checkout-submit">Place order</button>
+      <input type="text" required name="name" autocomplete="name" placeholder="">
+
+      <!-- Stripe Address Element (mounts on demand; gives Apple Pay / Google Pay / autofill) -->
+      <div data-stripe-address-element></div>
+
+      <!-- Stripe Payment Element (card, wallets, BNPL — PCI scope is Stripe's, not ours) -->
+      <div data-stripe-payment-element></div>
+
+      <div class="checkout-error" data-checkout-error role="alert" aria-live="polite" hidden></div>
+
+      <button type="submit" class="checkout-submit" data-checkout-submit>
+        <span data-submit-label>Continue to secure payment</span>
+        <span data-submit-spinner hidden>Working…</span>
+      </button>
+      <p class="micro" style="margin-top:14px;color:var(--muted);text-align:center;">
+        Secured by Stripe. We never see or store your card details.
+        <br>
+        By placing your order you agree to our
+        <a href="/legal/terms/">Terms</a>,
+        <a href="/legal/privacy/">Privacy Policy</a>,
+        <a href="/legal/refund-policy/">Refund Policy</a>,
+        and <a href="/legal/shipping/">Shipping</a>.
+      </p>
     </form>
   </div>
   <div class="checkout-success" hidden data-checkout-success>
@@ -798,14 +797,24 @@
     }
   });
 
-  document.querySelector('[data-checkout-form]').addEventListener('submit', function(e) {
-    e.preventDefault();
-    document.querySelector('[data-checkout-form-wrap]').hidden = true;
-    document.querySelector('[data-checkout-success]').hidden = false;
-    cart = {};
-    saveCart();
-    renderCart();
-  });
+  // Checkout: handed off to assets/checkout.js, which mounts Stripe Payment Element
+  // and submits to /api/checkout. We expose what it needs to do its job.
+  window.AplombCheckout = {
+    getCart: () => ({ ...cart }),
+    getCartLineItems: () => Object.entries(cart).map(([key, qty]) => ({
+      productKey: key,
+      quantity: qty,
+      priceId: PRODUCTS[key]?.priceIds?.oneTime || null,
+    })),
+    onCheckoutSuccess: () => {
+      document.querySelector('[data-checkout-form-wrap]').hidden = true;
+      document.querySelector('[data-checkout-success]').hidden = false;
+      cart = {};
+      saveCart();
+      renderCart();
+    },
+    products: PRODUCTS,
+  };
 
   document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeAll(); });
 

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /checkout/success/
+Disallow: /admin/
+
+Sitemap: https://getaplomb.com/sitemap.xml
