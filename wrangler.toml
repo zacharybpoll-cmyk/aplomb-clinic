@@ -6,3 +6,17 @@ pages_build_output_dir = "."
 # All secrets are managed via the Cloudflare dashboard (Pages → Settings → Env
 # vars) or `wrangler pages secret put <NAME>`. The .dev.vars.example file in
 # the repo root documents every variable the functions read.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Cron triggers
+# ─────────────────────────────────────────────────────────────────────────────
+# Cloudflare Pages Functions does NOT support `triggers.crons` in wrangler.toml
+# (as of 2026-05). Schedule the two endpoints below via a small companion
+# Worker (Cloudflare dashboard → Workers → Create → Schedule), POSTing to:
+#
+#   - `0  9 * * *` → https://getaplomb.com/cron/renewal-reminder
+#   - `30 9 * * *` → https://getaplomb.com/cron/welcome-series
+#
+# Both endpoints require the header `X-Cron-Secret: <CRON_SHARED_SECRET>`.
+# Until that companion Worker is wired up, the endpoints can be poked manually
+# via curl for testing.

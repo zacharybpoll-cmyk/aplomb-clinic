@@ -7,7 +7,7 @@
 import { json, serverError } from '../../_lib/json.js';
 import { stripeClient } from '../../_lib/stripe.js';
 import { supabaseAdmin } from '../../_lib/supabase.js';
-import { sendOrderConfirmation } from '../../_lib/email.js';
+import { sendOrderConfirmation, sendEmail } from '../../_lib/email.js';
 
 export const onRequestPost = async ({ request, env }) => {
   const stripe = stripeClient(env);
@@ -49,12 +49,21 @@ export const onRequestPost = async ({ request, env }) => {
       case 'charge.refunded':
         await handleChargeRefunded(event.data.object, sb);
         break;
+      case 'checkout.session.completed':
+        await handleCheckoutSessionCompleted(event.data.object, sb, env);
+        break;
       case 'customer.subscription.created':
       case 'customer.subscription.updated':
         await handleSubscriptionChange(event.data.object, sb);
         break;
       case 'customer.subscription.deleted':
-        await handleSubscriptionDeleted(event.data.object, sb);
+        await handleSubscriptionDeleted(event.data.object, sb, env);
+        break;
+      case 'invoice.paid':
+        await handleInvoicePaid(event.data.object, sb, env);
+        break;
+      case 'invoice.payment_failed':
+        await handleInvoicePaymentFailed(event.data.object, sb, env);
         break;
       default:
         break;
@@ -106,9 +115,153 @@ async function handleSubscriptionChange(sub, sb) {
   }, { onConflict: 'stripe_subscription_id' });
 }
 
-async function handleSubscriptionDeleted(sub, sb) {
+async function handleSubscriptionDeleted(sub, sb, env) {
   if (!sb) return;
-  await sb.from('subscriptions')
+  const { data: row } = await sb.from('subscriptions')
     .update({ status: 'canceled', canceled_at: new Date().toISOString() })
-    .eq('stripe_subscription_id', sub.id);
+    .eq('stripe_subscription_id', sub.id)
+    .select('*').single();
+  if (row && env) {
+    try {
+      await sendEmail(env, 'cancellation-confirmation', {
+        subscription: row,
+        customer: { email: row.email },
+        lastShipmentDate: row.current_period_end || null,
+      });
+    } catch (_) {}
+  }
+}
+
+// Triggered when the Stripe-hosted Checkout completes for a subscription cart.
+// Closes the loop on the pending order row created at /api/checkout.
+async function handleCheckoutSessionCompleted(session, sb, env) {
+  if (!sb) return;
+  // Only handle subscription sessions; payment-mode sessions complete via payment_intent.succeeded.
+  if (session.mode !== 'subscription') return;
+
+  const shippingDetails = session.shipping_details || session.customer_details?.address || null;
+  const customerEmail = (session.customer_details?.email || session.customer_email || '').toLowerCase();
+  const customerName = session.customer_details?.name || null;
+
+  const { data: order } = await sb.from('orders')
+    .update({
+      status: 'paid',
+      paid_at: new Date().toISOString(),
+      stripe_customer_id: session.customer || null,
+      stripe_subscription_id: session.subscription || null,
+      subtotal_cents: session.amount_subtotal || 0,
+      tax_cents: session.total_details?.amount_tax || 0,
+      shipping_cents: session.total_details?.amount_shipping || 0,
+      total_cents_override: session.amount_total || null,
+      shipping_address: shippingDetails,
+      email: customerEmail || undefined,
+      customer_name: customerName || undefined,
+    })
+    .eq('stripe_checkout_session_id', session.id)
+    .select('*').single();
+
+  if (order) {
+    try { await sendOrderConfirmation(env, order); } catch (_) {}
+  }
+
+  // Upsert into customers table
+  if (customerEmail && session.customer) {
+    try {
+      await sb.from('customers').upsert({
+        email: customerEmail,
+        name: customerName,
+        stripe_customer_id: session.customer,
+      }, { onConflict: 'email' });
+    } catch (_) {}
+  }
+}
+
+// Invoices fire on every billing cycle. The first one is suppressed (handled by checkout.session.completed).
+// Subsequent ones are renewals: insert a new order, advance the subscription period, send renewal receipt.
+async function handleInvoicePaid(invoice, sb, env) {
+  if (!sb) return;
+  const reason = invoice.billing_reason;
+  // first invoice on a new sub is already handled by checkout.session.completed
+  if (reason === 'subscription_create') return;
+  if (reason !== 'subscription_cycle' && reason !== 'subscription_update') return;
+
+  // Build line_items from invoice.lines
+  const lineItems = (invoice.lines?.data || []).map(li => ({
+    productKey: (li.price?.product || li.price?.id || 'unknown').toString(),
+    name: li.description || li.price?.nickname || 'Subscription item',
+    quantity: li.quantity || 1,
+    unitPriceCents: li.amount || 0,
+    mode: 'subscription',
+  }));
+
+  // Look up the most-recent prior order for this subscription to get shipping_address
+  let shippingAddress = null;
+  if (invoice.subscription) {
+    try {
+      const { data: prior } = await sb.from('orders')
+        .select('shipping_address')
+        .eq('stripe_subscription_id', invoice.subscription)
+        .not('shipping_address', 'is', null)
+        .order('paid_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      shippingAddress = prior?.shipping_address || null;
+    } catch (_) {}
+  }
+
+  // Insert renewal order
+  const { data: order } = await sb.from('orders').insert({
+    stripe_payment_intent_id: invoice.payment_intent || null,
+    stripe_charge_id: invoice.charge || null,
+    stripe_subscription_id: invoice.subscription || null,
+    stripe_customer_id: invoice.customer || null,
+    stripe_invoice_id: invoice.id,
+    email: invoice.customer_email?.toLowerCase() || '',
+    customer_name: invoice.customer_name || '',
+    subtotal_cents: invoice.subtotal || 0,
+    tax_cents: invoice.tax || 0,
+    shipping_cents: invoice.shipping_cost?.amount_total || 0,
+    total_cents_override: invoice.total || null,
+    line_items: lineItems,
+    shipping_address: shippingAddress,
+    status: 'paid',
+    paid_at: new Date().toISOString(),
+    metadata: { source: 'subscription_cycle', invoice_id: invoice.id },
+  }).select('*').single();
+
+  // Advance subscription period
+  if (invoice.subscription && invoice.lines?.data?.[0]?.period?.end) {
+    try {
+      await sb.from('subscriptions').update({
+        current_period_end: new Date(invoice.lines.data[0].period.end * 1000).toISOString(),
+        renewal_reminder_sent_at: null, // reset so the next cycle sends a heads-up
+      }).eq('stripe_subscription_id', invoice.subscription);
+    } catch (_) {}
+  }
+
+  // Send renewal receipt
+  if (order) {
+    try { await sendEmail(env, 'renewal-receipt', { order }); } catch (_) {}
+  }
+}
+
+async function handleInvoicePaymentFailed(invoice, sb, env) {
+  if (!sb) return;
+  if (invoice.subscription) {
+    try {
+      await sb.from('subscriptions')
+        .update({ status: 'past_due' })
+        .eq('stripe_subscription_id', invoice.subscription);
+    } catch (_) {}
+  }
+  // Notify customer; Stripe Smart Retries will handle the actual dunning attempts
+  try {
+    await sendEmail(env, 'card-failed', {
+      customer: { email: (invoice.customer_email || '').toLowerCase() },
+      subscription: { id: invoice.subscription },
+      nextAttempt: invoice.next_payment_attempt
+        ? new Date(invoice.next_payment_attempt * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })
+        : 'in 3 days',
+    });
+  } catch (_) {}
 }

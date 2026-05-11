@@ -23,9 +23,32 @@ SUPABASE_URL="https://xxxxxxxxxxxx.supabase.co"
 SUPABASE_SERVICE_ROLE_KEY=""
 SUPABASE_ANON_KEY=""
 
-# Resend (transactional email)
+# Resend (transactional email + Broadcasts marketing)
 RESEND_API_KEY="re_..."
-EMAIL_FROM="Aplomb. <orders@getaplomb.com>"
+EMAIL_FROM="APLOMB. <orders@getaplomb.com>"
+EMAIL_FROM_MARKETING="APLOMB. <hello@getaplomb.com>"
+EMAIL_BUSINESS_NAME="APLOMB."
+EMAIL_BUSINESS_ADDRESS="[street, city, state, zip]"  # CAN-SPAM required; populate before launch
+EMAIL_UNSUB_SECRET=""  # 32+ random bytes; HMAC for unsubscribe tokens
+RESEND_AUDIENCE_ID=""  # Resend Broadcasts audience UUID
 
 # Site
 SITE_URL="https://getaplomb.com"
+
+# Supabase Auth (for magic-link sessions)
+SUPABASE_JWT_SECRET=""  # JWT secret from Supabase dashboard → Settings → API
+
+# Cron auth
+CRON_SHARED_SECRET=""  # any 32+ random bytes; required by /cron/* endpoints
+
+# Cloudflare Turnstile (CAPTCHA on checkout)
+TURNSTILE_SITE_KEY=""
+TURNSTILE_SECRET_KEY=""
+
+# Observability
+SENTRY_DSN=""
+PLAUSIBLE_SITE_ID=""
+
+# Shipping
+SHIPPING_FLAT_CENTS="799"
+FREE_SHIPPING_THRESHOLD_CENTS="7500"

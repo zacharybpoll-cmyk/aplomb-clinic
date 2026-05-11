@@ -1,18 +1,20 @@
 // POST /api/checkout
 //
-// Body: { email, name, lineItems: [{ productKey, quantity }] }
-// Returns: { clientSecret, orderId }
+// Body: { email, name, lineItems: [{ productKey, quantity, mode }], mode? }
+// Returns: { clientSecret, orderId } (PaymentIntent) or { checkoutUrl, orderId } (Checkout Session)
 //
 // Validates the cart against the server-side product catalog (never trusts
-// client-supplied prices), creates a Stripe PaymentIntent with automatic
-// payment methods + Stripe Tax enabled, and persists a pending row in
-// Supabase orders. The webhook handler (functions/api/webhooks/stripe.js)
-// flips that row to paid on payment_intent.succeeded.
+// client-supplied prices). Branches on mode: 'onetime' creates a Stripe
+// PaymentIntent with automatic payment methods + Stripe Tax; 'subscription'
+// creates a Checkout Session with recurring billing. Enforces uniform mode
+// across all items. Persists a pending row in Supabase orders.
+// The webhook handler (functions/api/webhooks/stripe.js) updates orders
+// on payment_intent.succeeded (PaymentIntent) or checkout.session.completed (Session).
 
 import { json, badRequest, serverError } from '../_lib/json.js';
 import { stripeClient } from '../_lib/stripe.js';
 import { supabaseAdmin } from '../_lib/supabase.js';
-import { getProduct, computeSubtotalCents } from '../_lib/products.js';
+import { getProduct, computeSubtotalCents, getStripePriceIds } from '../_lib/products.js';
 
 export const onRequestPost = async ({ request, env }) => {
   let body;
@@ -32,11 +34,22 @@ export const onRequestPost = async ({ request, env }) => {
 
   // Validate every line item against the server catalog.
   const validated = [];
+  let cartMode = null; // 'onetime' or 'subscription'
   for (const li of lineItems) {
     const p = getProduct(li.productKey);
     if (!p) return badRequest(`Unknown product: ${li.productKey}`);
     const qty = Math.max(1, Math.min(99, (li.quantity | 0) || 1));
-    validated.push({ productKey: li.productKey, name: p.name, quantity: qty, unitPriceCents: p.unitPriceCents });
+    const itemMode = (li.mode || body?.mode || 'onetime').toLowerCase();
+    if (itemMode !== 'onetime' && itemMode !== 'subscription') {
+      return badRequest(`Invalid mode: ${itemMode}. Use 'onetime' or 'subscription'.`);
+    }
+    // Enforce uniform mode across cart
+    if (cartMode === null) {
+      cartMode = itemMode;
+    } else if (cartMode !== itemMode) {
+      return badRequest('All items must be either one-time or subscription. Mixed carts are not allowed.');
+    }
+    validated.push({ productKey: li.productKey, name: p.name, quantity: qty, unitPriceCents: p.unitPriceCents, mode: itemMode });
   }
 
   const subtotalCents = computeSubtotalCents(validated);
@@ -54,10 +67,19 @@ export const onRequestPost = async ({ request, env }) => {
     return serverError('Could not create customer.');
   }
 
+  // Branch on cart mode
+  if (cartMode === 'subscription') {
+    return handleSubscriptionCheckout(validated, email, name, customer, env, stripe);
+  } else {
+    return handleOnetimeCheckout(validated, email, name, customer, env, stripe);
+  }
+};
+
+async function handleOnetimeCheckout(validated, email, name, customer, env, stripe) {
   let intent;
   try {
     intent = await stripe.paymentIntents.create({
-      amount: subtotalCents,
+      amount: computeSubtotalCents(validated),
       currency: 'usd',
       customer: customer.id,
       receipt_email: email,
@@ -72,8 +94,7 @@ export const onRequestPost = async ({ request, env }) => {
     return serverError('Could not create payment intent.');
   }
 
-  // Persist pending order in Supabase (best-effort — we still return the
-  // client_secret if the DB write fails, because the webhook will reconcile).
+  // Persist pending order in Supabase (best-effort).
   const sb = supabaseAdmin(env);
   let orderId = null;
   if (sb) {
@@ -83,7 +104,7 @@ export const onRequestPost = async ({ request, env }) => {
         stripe_customer_id: customer.id,
         email,
         customer_name: name,
-        subtotal_cents: subtotalCents,
+        subtotal_cents: computeSubtotalCents(validated),
         currency: 'usd',
         status: 'pending',
         line_items: validated,
@@ -93,4 +114,61 @@ export const onRequestPost = async ({ request, env }) => {
   }
 
   return json({ clientSecret: intent.client_secret, orderId });
-};
+}
+
+async function handleSubscriptionCheckout(validated, email, name, customer, env, stripe) {
+  // Map validated items to Stripe line_items with subscription prices
+  const lineItems = [];
+  for (const item of validated) {
+    const priceIds = getStripePriceIds(env, item.productKey);
+    if (!priceIds.subscription) {
+      return serverError(`No subscription price configured for ${item.productKey}.`);
+    }
+    lineItems.push({
+      price: priceIds.subscription,
+      quantity: item.quantity,
+    });
+  }
+
+  let session;
+  try {
+    session = await stripe.checkout.sessions.create({
+      mode: 'subscription',
+      customer: customer.id,
+      line_items: lineItems,
+      success_url: `${env.SITE_URL || 'https://getaplomb.com'}/checkout/success/?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${env.SITE_URL || 'https://getaplomb.com'}/checkout/`,
+      automatic_tax: { enabled: true },
+      subscription_data: {
+        metadata: {
+          cart: JSON.stringify(validated.map(v => ({ k: v.productKey, q: v.quantity }))),
+          customer_name: name,
+        },
+      },
+      consent_collection: { terms_of_service: 'required' },
+    });
+  } catch (e) {
+    return serverError('Could not create checkout session.');
+  }
+
+  // Persist pending order in Supabase with stripe_checkout_session_id
+  const sb = supabaseAdmin(env);
+  let orderId = null;
+  if (sb) {
+    try {
+      const { data, error } = await sb.from('orders').insert({
+        stripe_checkout_session_id: session.id,
+        stripe_customer_id: customer.id,
+        email,
+        customer_name: name,
+        subtotal_cents: computeSubtotalCents(validated),
+        currency: 'usd',
+        status: 'pending',
+        line_items: validated,
+      }).select('id').single();
+      if (!error) orderId = data?.id || null;
+    } catch (_) {}
+  }
+
+  return json({ checkoutUrl: session.url, orderId });
+}
