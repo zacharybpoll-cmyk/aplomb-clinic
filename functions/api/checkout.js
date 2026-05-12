@@ -145,7 +145,11 @@ async function handleSubscriptionCheckout(validated, email, name, customer, env,
           customer_name: name,
         },
       },
-      consent_collection: { terms_of_service: 'required' },
+      // consent_collection.terms_of_service requires a ToS URL on the Stripe
+      // account (Dashboard → Settings → Public details). Our /checkout/ page
+      // already carries the legal agreement in-line, so we skip Stripe's
+      // redundant checkbox. Re-enable here after configuring the dashboard
+      // URL if you want the extra friction.
     });
   } catch (e) {
     return serverError('Could not create checkout session.');
