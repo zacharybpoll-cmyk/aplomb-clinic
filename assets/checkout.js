@@ -235,4 +235,64 @@
       startCheckout(form);
     }
   });
+
+  // Mount the Stripe Address Element as soon as Stripe.js + the publishable
+  // key are available. Uses Elements in "setup" mode (no PaymentIntent needed)
+  // so the customer can fill their address before clicking "Continue to secure
+  // payment". When they click submit, mountElements() takes over with the
+  // real client_secret; we set addressMounted=true to avoid double-mounting.
+  function stripeAppearance() {
+    return {
+      theme: 'stripe',
+      variables: {
+        colorPrimary: '#7a3d14',
+        colorBackground: '#f7f1e6',
+        colorText: '#1a1512',
+        colorDanger: '#b8341e',
+        fontFamily: '"IBM Plex Sans", system-ui, sans-serif',
+        fontSizeBase: '16px',
+        spacingUnit: '4px',
+        borderRadius: '4px',
+      },
+    };
+  }
+
+  function mountAddressEarly() {
+    const container = $('[data-stripe-address-element]');
+    if (!container || addressMounted) return;
+    const s = ensureStripe();
+    if (!s) return;
+    try {
+      const setupElements = s.elements({
+        mode: 'setup',
+        currency: 'usd',
+        appearance: stripeAppearance(),
+      });
+      const address = setupElements.create('address', {
+        mode: 'shipping',
+        allowedCountries: ['US'],
+        fields: { phone: 'always' },
+        validation: { phone: { required: 'always' } },
+      });
+      address.mount(container);
+      addressMounted = true;
+    } catch (err) {
+      console.warn('[checkout] address element mount failed:', err && err.message);
+    }
+  }
+
+  function tryMountAddress(attempts) {
+    attempts = attempts || 0;
+    if (typeof window.Stripe !== 'function') {
+      if (attempts > 50) return; // ~3s of polling; give up
+      return setTimeout(function () { tryMountAddress(attempts + 1); }, 60);
+    }
+    mountAddressEarly();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () { tryMountAddress(0); });
+  } else {
+    tryMountAddress(0);
+  }
 })();
