@@ -135,6 +135,10 @@ async function handleSubscriptionCheckout(validated, email, name, customer, env,
     session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer: customer.id,
+      // When attaching an existing customer + automatic_tax, Stripe needs
+      // permission to write the address collected at checkout back onto
+      // the customer (for tax computation on future renewals).
+      customer_update: { shipping: 'auto', address: 'auto', name: 'auto' },
       line_items: lineItems,
       success_url: `${env.SITE_URL || 'https://getaplomb.com'}/checkout/success/?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${env.SITE_URL || 'https://getaplomb.com'}/checkout/`,
