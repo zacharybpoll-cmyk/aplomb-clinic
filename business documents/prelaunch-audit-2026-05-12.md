@@ -25,7 +25,7 @@ GitHub repo: https://github.com/getaplomb/aplomb-clinic
 | 12 | Webhook endpoint registered in Stripe | ✅ DONE (sandbox) | `we_1TWN2wLMPMQpuItGka9aKTuD` → `/api/webhooks/stripe`; signature verification confirmed |
 | 13 | `/account/` magic-link login → order history → Portal | ⏸ NOT-SMOKED | Code shipped (Workstream D); needs end-to-end test with real magic-link |
 | 14 | 9 transactional email templates render | ✅ DONE | `node scripts/smoke-emails.mjs` → 11/11 OK |
-| 15 | Newsletter signup → welcome email | ⏸ BLOCKED | Resend `RESEND_AUDIENCE_ID` UUID needs founder to grab from getaplomb workspace (different login than current Chrome session) |
+| 15 | Newsletter signup → welcome email | ✅ DONE | `/api/newsletter/subscribe` end-to-end smoke: `smoke-newsletter-…@getaplomb.com` → `{ok:true}` → contact landed in Resend audience `7dea81fd-2107-45a2-88e0-d58d30f841d7` instantly. Full-access Resend key + audience UUID in CF Pages env |
 | 16 | Plausible analytics firing | ⏸ PENDING FOUNDER | Sign up at plausible.io + paste site ID |
 | 17 | Sentry receiving errors | ⏸ PENDING FOUNDER | Sign up at sentry.io + paste DSN |
 | 18 | SEO: JSON-LD passes validator; sitemap + robots live | ✅ DONE | Workstream H |
@@ -34,10 +34,10 @@ GitHub repo: https://github.com/getaplomb/aplomb-clinic
 | 21 | FDA disclaimer + auto-renewal disclosure on PDPs | ✅ DONE | Workstream I |
 | 22 | Physical business address in email footers | ✅ DONE | `EMAIL_BUSINESS_NAME=Get Aplomb`, `EMAIL_BUSINESS_ADDRESS=4140 Glencoe Ave Unit 503, Marina del Rey, CA 90292` in CF Pages env |
 | 23 | Allergen + Prop 65 disclosures on PDPs | ⏸ PENDING FOUNDER | Confirm supplier specs |
-| 24 | `/admin/` page protected by CF Access | ⏸ BLOCKED | Token scope missing Access:Edit; founder either regenerates token w/ scope OR uses dashboard one-click setup |
+| 24 | `/admin/` page protected by CF Access | ⏸ BLOCKED | Token scope missing Access:Edit; founder either regenerates token w/ scope OR uses dashboard one-click setup at `dash.cloudflare.com → Zero Trust → Access → Applications → Add an application → Self-hosted → application URL `getaplomb.com/admin` → policy: Email matches `zachary@getaplomb.com` |
 | 25 | Lighthouse ≥90 mobile + zero serious WCAG violations | ✅ DONE | Workstream H + K (per master plan) |
 
-**Tally:** 17 ✅ done · 5 ⏸ pending founder · 2 ⏸ blocked (founder action unblocks) · 1 ⏸ not-smoked
+**Tally:** 18 ✅ done · 5 ⏸ pending founder · 1 ⏸ blocked (founder action unblocks) · 1 ⏸ not-smoked
 
 ---
 
@@ -53,6 +53,7 @@ GitHub repo: https://github.com/getaplomb/aplomb-clinic
 8. **Stripe Tax CA registration**: created via API — active from 2026-05-12
 9. **Email-template smoke**: 11/11 render with non-empty subject/html/text
 10. **End-to-end smoke**: fresh onetime + subscription orders both persisted to Supabase; onetime confirmed → webhook → status=paid
+11. **Resend audience + full-access key**: created via UI, audience UUID `7dea81fd-2107-45a2-88e0-d58d30f841d7` pushed to CF Pages env; newsletter signup smoke → contact landed in audience instantly
 
 ## What needs the founder (≤1 hour total)
 
