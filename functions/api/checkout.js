@@ -27,6 +27,7 @@ export const onRequestPost = async ({ request, env }) => {
   const email = (body?.email || '').trim().toLowerCase();
   const name = (body?.name || '').trim();
   const lineItems = Array.isArray(body?.lineItems) ? body.lineItems : [];
+  const shippingAddress = body?.shippingAddress || null;
 
   if (!email || !email.includes('@')) return badRequest('A valid email is required.');
   if (!name) return badRequest('Your full name is required.');
@@ -71,14 +72,65 @@ export const onRequestPost = async ({ request, env }) => {
   if (cartMode === 'subscription') {
     return handleSubscriptionCheckout(validated, email, name, customer, env, stripe);
   } else {
-    return handleOnetimeCheckout(validated, email, name, customer, env, stripe);
+    return handleOnetimeCheckout(validated, email, name, customer, env, stripe, shippingAddress);
   }
 };
 
-async function handleOnetimeCheckout(validated, email, name, customer, env, stripe) {
+async function handleOnetimeCheckout(validated, email, name, customer, env, stripe, shippingAddress) {
   const subtotalCents = computeSubtotalCents(validated);
   const shippingCents = computeShippingCents(validated, env);
-  const chargeAmount = subtotalCents + shippingCents;
+
+  // Compute sales tax via Stripe Tax when we have a shipping address.
+  // The address is collected by the client's Stripe Address Element before
+  // this request. Missing address (e.g., subscription-only Stripe Checkout
+  // path, or test traffic without the UI) falls back to no-tax — the
+  // subscription path uses automatic_tax inside Stripe Checkout instead.
+  let taxCents = 0;
+  let taxCalculationId = null;
+  let stripeShipping = null;
+
+  if (shippingAddress?.address?.postal_code && shippingAddress?.address?.country) {
+    try {
+      const calc = await stripe.tax.calculations.create({
+        currency: 'usd',
+        customer_details: {
+          address: {
+            line1: shippingAddress.address.line1 || '',
+            line2: shippingAddress.address.line2 || '',
+            city: shippingAddress.address.city || '',
+            state: shippingAddress.address.state || '',
+            postal_code: shippingAddress.address.postal_code,
+            country: shippingAddress.address.country,
+          },
+          address_source: 'shipping',
+        },
+        line_items: validated.map(v => ({
+          amount: v.unitPriceCents * v.quantity,
+          quantity: v.quantity,
+          reference: v.productKey,
+          tax_behavior: 'exclusive',
+        })),
+        shipping_cost: shippingCents > 0
+          ? { amount: shippingCents, tax_behavior: 'exclusive' }
+          : undefined,
+      });
+      taxCents = calc.tax_amount_exclusive || 0;
+      taxCalculationId = calc.id;
+    } catch (e) {
+      // If Stripe Tax fails (invalid address, no nexus, transient API error),
+      // proceed without tax rather than blocking the order. We log via the
+      // PI metadata so we can find these later.
+      taxCalculationId = `error:${(e?.message || 'unknown').slice(0, 80)}`;
+    }
+
+    stripeShipping = {
+      name: shippingAddress.name || name,
+      phone: shippingAddress.phone || undefined,
+      address: shippingAddress.address,
+    };
+  }
+
+  const chargeAmount = subtotalCents + shippingCents + taxCents;
 
   let intent;
   try {
@@ -93,8 +145,10 @@ async function handleOnetimeCheckout(validated, email, name, customer, env, stri
         customer_name: name,
         subtotal_cents: String(subtotalCents),
         shipping_cents: String(shippingCents),
+        tax_cents: String(taxCents),
+        tax_calculation_id: taxCalculationId || '',
       },
-      shipping: undefined, // collected by Stripe Address Element on the client
+      ...(stripeShipping ? { shipping: stripeShipping } : {}),
     });
   } catch (e) {
     return serverError('Could not create payment intent.');
@@ -113,9 +167,11 @@ async function handleOnetimeCheckout(validated, email, name, customer, env, stri
         customer_name: name,
         subtotal_cents: subtotalCents,
         shipping_cents: shippingCents,
+        tax_cents: taxCents,
         currency: 'usd',
         status: 'pending',
         line_items: validated,
+        shipping_address: stripeShipping || null,
       }).select('id').single();
       if (!error) orderId = data?.id || null;
     } catch (_) {}

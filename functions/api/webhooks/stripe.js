@@ -41,13 +41,13 @@ export const onRequestPost = async ({ request, env }) => {
   try {
     switch (event.type) {
       case 'payment_intent.succeeded':
-        await handlePaymentSucceeded(event.data.object, sb, env);
+        await handlePaymentSucceeded(event.data.object, sb, env, stripe);
         break;
       case 'payment_intent.payment_failed':
         await handlePaymentFailed(event.data.object, sb);
         break;
       case 'charge.refunded':
-        await handleChargeRefunded(event.data.object, sb);
+        await handleChargeRefunded(event.data.object, sb, env);
         break;
       case 'checkout.session.completed':
         await handleCheckoutSessionCompleted(event.data.object, sb, env);
@@ -75,13 +75,31 @@ export const onRequestPost = async ({ request, env }) => {
   return json({ received: true });
 };
 
-async function handlePaymentSucceeded(intent, sb, env) {
+async function handlePaymentSucceeded(intent, sb, env, stripe) {
   if (!sb) return;
   const { data: order } = await sb.from('orders')
     .update({ status: 'paid', paid_at: new Date().toISOString() })
     .eq('stripe_payment_intent_id', intent.id)
     .select('*').single();
   if (!order) return;
+
+  // Register the Stripe Tax transaction so Stripe Tax reports include this
+  // order in its filing data. The calculation ID was stashed in PI metadata
+  // by /api/checkout. Skip cleanly when there isn't one (e.g., orders placed
+  // before this code shipped, or anon test traffic with no address).
+  const calcId = intent?.metadata?.tax_calculation_id;
+  if (stripe && calcId && !calcId.startsWith('error:')) {
+    try {
+      await stripe.tax.transactions.createFromCalculation({
+        calculation: calcId,
+        reference: intent.id,
+      });
+    } catch (_) {
+      // Stripe Tax registration failure is non-fatal — log via order metadata
+      // for follow-up reconciliation; do NOT fail the webhook.
+    }
+  }
+
   try {
     await sendOrderConfirmation(env, order);
   } catch (_) {
@@ -96,11 +114,20 @@ async function handlePaymentFailed(intent, sb) {
     .eq('stripe_payment_intent_id', intent.id);
 }
 
-async function handleChargeRefunded(charge, sb) {
+async function handleChargeRefunded(charge, sb, env) {
   if (!sb || !charge.payment_intent) return;
-  await sb.from('orders')
+  const { data: order } = await sb.from('orders')
     .update({ status: 'refunded', refunded_at: new Date().toISOString() })
-    .eq('stripe_payment_intent_id', charge.payment_intent);
+    .eq('stripe_payment_intent_id', charge.payment_intent)
+    .select('*').single();
+  if (!order) return;
+  // Email the customer so they know the refund landed. The refund-confirmation
+  // template reads total_cents off the order row (generated column).
+  try {
+    await sendEmail(env, 'refund-confirmation', { order, charge });
+  } catch (_) {
+    // email failure must not fail the webhook
+  }
 }
 
 async function handleSubscriptionChange(sub, sb) {
