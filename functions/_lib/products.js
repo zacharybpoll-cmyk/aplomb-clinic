@@ -70,3 +70,17 @@ export function computeSubtotalCents(lineItems) {
   }
   return total;
 }
+
+// Defaults mirror assets/cart.js so the cart drawer and the server agree.
+// Override via CF Pages env (SHIPPING_FLAT_CENTS, FREE_SHIPPING_THRESHOLD_CENTS).
+export const SHIPPING_FLAT_CENTS_DEFAULT = 799;
+export const FREE_SHIPPING_THRESHOLD_CENTS_DEFAULT = 7500;
+
+export function computeShippingCents(lineItems, env) {
+  const subtotal = computeSubtotalCents(lineItems);
+  if (subtotal === 0) return 0;
+  const flat = parseInt(env?.SHIPPING_FLAT_CENTS, 10) || SHIPPING_FLAT_CENTS_DEFAULT;
+  const threshold = parseInt(env?.FREE_SHIPPING_THRESHOLD_CENTS, 10) || FREE_SHIPPING_THRESHOLD_CENTS_DEFAULT;
+  if (subtotal >= threshold) return 0;
+  return flat;
+}
