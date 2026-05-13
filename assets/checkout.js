@@ -26,6 +26,7 @@
   let elements = null;
   let mounted = false;
   let addressMounted = false;
+  let earlyAddressElement = null; // setup-mode Address Element, read pre-PI for tax
 
   function $(sel, root) { return (root || document).querySelector(sel); }
 
@@ -99,6 +100,35 @@
     };
   }
 
+  // Resolve the shipping address from the early-mounted Address Element.
+  // Returns the Stripe Address value when complete, or null if the element
+  // doesn't exist (e.g., subscription-only cart). Returns the string
+  // 'incomplete' when the customer hasn't filled all required fields — the
+  // caller surfaces a friendly error in that case.
+  async function getShippingAddressForTax() {
+    if (!earlyAddressElement) return null;
+    try {
+      const result = await earlyAddressElement.getValue();
+      if (!result || !result.complete) return 'incomplete';
+      const v = result.value || {};
+      const a = v.address || {};
+      return {
+        name: v.name || '',
+        phone: v.phone || '',
+        address: {
+          line1: a.line1 || '',
+          line2: a.line2 || '',
+          city: a.city || '',
+          state: a.state || '',
+          postal_code: a.postal_code || '',
+          country: a.country || 'US',
+        },
+      };
+    } catch (_) {
+      return null;
+    }
+  }
+
   async function startCheckout(form) {
     clearError();
 
@@ -116,6 +146,20 @@
     if (!payload.lineItems.length) {
       showError('Your bag is empty.');
       return;
+    }
+
+    // Pull shipping address from the Address Element so the server can
+    // compute sales tax via Stripe Tax. Subscription carts route through
+    // Stripe Checkout (hosted page) and collect address there, so we only
+    // require an address up front when at least one line is onetime.
+    const hasOnetime = payload.lineItems.some(li => (li.mode || 'onetime') === 'onetime');
+    if (hasOnetime) {
+      const addr = await getShippingAddressForTax();
+      if (addr === 'incomplete') {
+        showError('Please complete your shipping address (street, city, state, ZIP, phone).');
+        return;
+      }
+      if (addr) payload.shippingAddress = addr;
     }
 
     setSubmitState(true);
@@ -275,6 +319,7 @@
         validation: { phone: { required: 'always' } },
       });
       address.mount(container);
+      earlyAddressElement = address;
       addressMounted = true;
     } catch (err) {
       console.warn('[checkout] address element mount failed:', err && err.message);
