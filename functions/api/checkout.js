@@ -14,7 +14,7 @@
 import { json, badRequest, serverError } from '../_lib/json.js';
 import { stripeClient } from '../_lib/stripe.js';
 import { supabaseAdmin } from '../_lib/supabase.js';
-import { getProduct, computeSubtotalCents, getStripePriceIds } from '../_lib/products.js';
+import { getProduct, computeSubtotalCents, computeShippingCents, getStripePriceIds } from '../_lib/products.js';
 
 export const onRequestPost = async ({ request, env }) => {
   let body;
@@ -76,10 +76,14 @@ export const onRequestPost = async ({ request, env }) => {
 };
 
 async function handleOnetimeCheckout(validated, email, name, customer, env, stripe) {
+  const subtotalCents = computeSubtotalCents(validated);
+  const shippingCents = computeShippingCents(validated, env);
+  const chargeAmount = subtotalCents + shippingCents;
+
   let intent;
   try {
     intent = await stripe.paymentIntents.create({
-      amount: computeSubtotalCents(validated),
+      amount: chargeAmount,
       currency: 'usd',
       customer: customer.id,
       receipt_email: email,
@@ -87,6 +91,8 @@ async function handleOnetimeCheckout(validated, email, name, customer, env, stri
       metadata: {
         cart: JSON.stringify(validated.map(v => ({ k: v.productKey, q: v.quantity }))),
         customer_name: name,
+        subtotal_cents: String(subtotalCents),
+        shipping_cents: String(shippingCents),
       },
       shipping: undefined, // collected by Stripe Address Element on the client
     });
@@ -94,7 +100,8 @@ async function handleOnetimeCheckout(validated, email, name, customer, env, stri
     return serverError('Could not create payment intent.');
   }
 
-  // Persist pending order in Supabase (best-effort).
+  // Persist pending order in Supabase (best-effort). total_cents is a generated
+  // column (subtotal + shipping + tax) so we don't write it directly.
   const sb = supabaseAdmin(env);
   let orderId = null;
   if (sb) {
@@ -104,7 +111,8 @@ async function handleOnetimeCheckout(validated, email, name, customer, env, stri
         stripe_customer_id: customer.id,
         email,
         customer_name: name,
-        subtotal_cents: computeSubtotalCents(validated),
+        subtotal_cents: subtotalCents,
+        shipping_cents: shippingCents,
         currency: 'usd',
         status: 'pending',
         line_items: validated,
@@ -130,6 +138,19 @@ async function handleSubscriptionCheckout(validated, email, name, customer, env,
     });
   }
 
+  // Shipping for subscription Checkout Sessions: Stripe requires a pre-created
+  // `shipping_rate` ID (inline rates aren't supported in Sessions). We expose
+  // a free-shipping rate AND a flat rate so customers over the threshold see
+  // free shipping. Both IDs are env vars (STRIPE_SHIPPING_RATE_FLAT,
+  // STRIPE_SHIPPING_RATE_FREE) — provisioned via scripts/sync-stripe-shipping.mjs.
+  const shippingOptions = [];
+  if (env.STRIPE_SHIPPING_RATE_FLAT) {
+    shippingOptions.push({ shipping_rate: env.STRIPE_SHIPPING_RATE_FLAT });
+  }
+  if (env.STRIPE_SHIPPING_RATE_FREE) {
+    shippingOptions.push({ shipping_rate: env.STRIPE_SHIPPING_RATE_FREE });
+  }
+
   let session;
   try {
     session = await stripe.checkout.sessions.create({
@@ -143,6 +164,8 @@ async function handleSubscriptionCheckout(validated, email, name, customer, env,
       success_url: `${env.SITE_URL || 'https://getaplomb.com'}/checkout/success/?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${env.SITE_URL || 'https://getaplomb.com'}/checkout/`,
       automatic_tax: { enabled: true },
+      shipping_address_collection: { allowed_countries: ['US'] },
+      ...(shippingOptions.length ? { shipping_options: shippingOptions } : {}),
       subscription_data: {
         metadata: {
           cart: JSON.stringify(validated.map(v => ({ k: v.productKey, q: v.quantity }))),
