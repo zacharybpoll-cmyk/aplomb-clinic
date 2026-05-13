@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Checkout &mdash; APLOMB.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Secure checkout.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/assets/aplomb-mark.svg">
+<link rel="stylesheet" href="/css/site.css">
+<script src="https://js.stripe.com/v3/" defer></script>
+<script src="/assets/cart.js" defer></script>
+<script src="/assets/checkout.js" defer></script>
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body>
+<a class="skip-to-main" href="#main">Skip to main content</a>
+<div class="site" id="main">
+
+  <header class="nav nav-checkout">
+    <div class="logo">
+      <a href="/"><svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+      <span class="word">Aplomb<span class="dot">.</span></span></a>
+    </div>
+    <div class="nav-right">
+      <a href="/" style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;color:var(--muted);">&larr; Return to shop</a>
+    </div>
+  </header>
+
+  <section class="pp-section">
+    <div class="inner checkout-page" style="max-width:1080px;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;">
+
+      <!-- Left: form -->
+      <div>
+        <div class="pp-eyebrow">Checkout</div>
+        <h1 style="font-family:var(--serif);font-size:48px;line-height:1.05;font-weight:400;margin:8px 0 24px;color:var(--ink);">
+          Almost there<span style="color:var(--amber);">.</span>
+        </h1>
+
+        <div class="checkout-empty" data-checkout-empty hidden>
+          <p style="font-size:16px;line-height:1.6;color:var(--ink);margin-bottom:16px;">Your bag is empty.</p>
+          <a class="btn btn-dark" href="/" style="text-decoration:none;">Return to shop</a>
+        </div>
+
+        <form class="checkout-form" data-checkout-form novalidate hidden>
+          <fieldset style="border:0;padding:0;margin:0 0 24px;">
+            <legend style="font-family:'IBM Plex Sans',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--muted);margin-bottom:14px;">Contact</legend>
+            <label for="checkout-email">Email</label>
+            <input type="email" required name="email" id="checkout-email" autocomplete="email" placeholder="you@example.com">
+            <label for="checkout-name">Full name</label>
+            <input type="text" required name="name" id="checkout-name" autocomplete="name" placeholder="">
+          </fieldset>
+
+          <fieldset style="border:0;padding:0;margin:0 0 24px;">
+            <legend style="font-family:'IBM Plex Sans',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--muted);margin-bottom:14px;">Shipping address</legend>
+            <div data-stripe-address-element></div>
+          </fieldset>
+
+          <fieldset data-payment-fieldset hidden style="border:0;padding:0;margin:0 0 24px;">
+            <legend style="font-family:'IBM Plex Sans',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:0.18em;color:var(--muted);margin-bottom:14px;">Payment</legend>
+            <div data-stripe-payment-element></div>
+          </fieldset>
+
+          <!-- Cloudflare Turnstile (rendered if site key present) -->
+          <div data-turnstile-container style="margin:0 0 18px;"></div>
+
+          <p data-rosca-disclosure hidden style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;line-height:1.6;color:var(--muted);margin:0 0 18px;padding:14px 16px;background:rgba(122,61,20,0.04);border-left:3px solid var(--amber);">
+            <strong style="color:var(--ink);">Subscription terms.</strong>
+            You're starting a subscription. By placing this order, you authorize APLOMB. to charge your payment method on the schedule shown above. Subscriptions auto-renew every 30 days until cancelled. You can pause, skip, or cancel any time in one click from your account at <a href="/account/subscriptions/" style="color:var(--amber);">getaplomb.com/account/subscriptions</a>.
+          </p>
+
+          <div class="checkout-error" data-checkout-error role="alert" aria-live="polite" hidden></div>
+
+          <button type="submit" class="checkout-submit" data-checkout-submit>
+            <span data-submit-label>Continue to secure payment</span>
+            <span data-submit-spinner hidden>Working&hellip;</span>
+          </button>
+          <p class="micro" style="margin-top:14px;color:var(--muted);text-align:center;font-size:11px;line-height:1.6;">
+            Secured by Stripe. We never see or store your card details.<br>
+            By placing your order you agree to our
+            <a href="/legal/terms/">Terms</a>,
+            <a href="/legal/privacy/">Privacy Policy</a>,
+            <a href="/legal/refund-policy/">Refund Policy</a>,
+            and <a href="/legal/shipping/">Shipping</a>.
+          </p>
+        </form>
+      </div>
+
+      <!-- Right: order summary -->
+      <aside class="checkout-summary" data-checkout-summary aria-label="Order summary">
+        <h3 style="font-family:var(--serif);font-size:22px;font-weight:400;margin:0 0 18px;color:var(--ink);">Your order</h3>
+        <div data-summary-items></div>
+        <dl class="checkout-summary-totals">
+          <div><dt>Subtotal</dt><dd data-summary-subtotal>$0</dd></div>
+          <div><dt>Shipping</dt><dd data-summary-shipping>$0</dd></div>
+          <div class="total"><dt>Total</dt><dd data-summary-total>$0</dd></div>
+        </dl>
+        <p class="micro" style="margin-top:18px;color:var(--muted);font-size:11px;line-height:1.6;text-align:center;">
+          Ships in 48 hours &middot; tracked &middot; 15-day returns
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="foot-grid" style="grid-template-columns:1fr 1fr;">
+      <div>
+        <div class="foot-logo">
+          <svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+          <span class="word">Aplomb<span class="dot">.</span></span>
+        </div>
+      </div>
+      <div class="foot-col">
+        <div class="pill">Legal</div>
+        <a class="foot-link" href="/legal/privacy/">Privacy</a>
+        <a class="foot-link" href="/legal/terms/">Terms</a>
+        <a class="foot-link" href="/legal/refund-policy/">Refund</a>
+        <a class="foot-link" href="/legal/shipping/">Shipping</a>
+        <a class="foot-link" href="/legal/returns/">Returns</a>
+      </div>
+    </div>
+    <div class="foot-legal">
+      <span class="row-sm"><span>&copy; MMXXVI Get Aplomb</span></span>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  function $(s){ return document.querySelector(s); }
+  function fmt(cents){ const d = cents/100; return '$' + (d % 1 === 0 ? d.toFixed(0) : d.toFixed(2)); }
+
+  // Wait for AplombCart to be ready (cart.js loads with defer + parses async).
+  function whenReady(fn) {
+    if (window.AplombCart) return fn();
+    setTimeout(() => whenReady(fn), 30);
+  }
+
+  function renderSummary() {
+    const items = window.AplombCart.getLineItems();
+    const itemsEl = $('[data-summary-items]');
+    const formEl = $('[data-checkout-form]');
+    const emptyEl = $('[data-checkout-empty]');
+
+    if (!items.length) {
+      emptyEl.hidden = false;
+      formEl.hidden = true;
+      itemsEl.innerHTML = '<p style="color:var(--muted);font-size:14px;">No items in bag.</p>';
+      $('[data-summary-subtotal]').textContent = '$0';
+      $('[data-summary-shipping]').textContent = '$0';
+      $('[data-summary-total]').textContent = '$0';
+      return;
+    }
+
+    emptyEl.hidden = true;
+    formEl.hidden = false;
+
+    itemsEl.innerHTML = items.map(li => {
+      const lineCents = li.unitPriceCents * li.quantity;
+      const meta = li.mode === 'subscription' ? ' &middot; auto-renews every 30 days' : '';
+      return `
+        <div class="checkout-summary-item">
+          <div>
+            <div class="checkout-summary-name">${li.name}</div>
+            <div class="checkout-summary-meta">Qty ${li.quantity}${meta}</div>
+          </div>
+          <div class="checkout-summary-price">${fmt(lineCents)}</div>
+        </div>
+      `;
+    }).join('');
+
+    $('[data-summary-subtotal]').textContent = fmt(window.AplombCart.getSubtotalCents());
+    const shipping = window.AplombCart.getShippingCents();
+    $('[data-summary-shipping]').textContent = shipping === 0 ? 'Free' : fmt(shipping);
+    $('[data-summary-total]').textContent = fmt(window.AplombCart.getTotalCents());
+
+    // ROSCA disclosure shows if any item is subscription
+    const hasSub = items.some(li => li.mode === 'subscription');
+    $('[data-rosca-disclosure]').hidden = !hasSub;
+    const submitLabel = $('[data-submit-label]');
+    if (submitLabel) {
+      submitLabel.textContent = hasSub ? 'Continue to Stripe Checkout' : 'Continue to secure payment';
+    }
+  }
+
+  // Turnstile widget — renders only if a site key is present in <meta>.
+  function maybeRenderTurnstile() {
+    const meta = document.querySelector('meta[name="turnstile-site-key"]');
+    const siteKey = meta && meta.content;
+    if (!siteKey) return;
+    const container = $('[data-turnstile-container]');
+    if (!container) return;
+    // Inject the Turnstile loader once.
+    if (!document.querySelector('script[data-turnstile-loader]')) {
+      const s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+      s.async = true; s.defer = true; s.setAttribute('data-turnstile-loader', '');
+      document.head.appendChild(s);
+    }
+    container.innerHTML = `<div class="cf-turnstile" data-sitekey="${siteKey}" data-theme="light"></div>`;
+  }
+
+  whenReady(function () {
+    renderSummary();
+    window.AplombCart.subscribe(renderSummary);
+    maybeRenderTurnstile();
+  });
+})();
+</script>
+</body>
+</html>

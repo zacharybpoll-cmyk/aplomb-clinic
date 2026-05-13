@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Your account &mdash; APLOMB.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Your APLOMB. account.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/assets/aplomb-mark.svg">
+<link rel="stylesheet" href="/css/site.css">
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body>
+<a class="skip-to-main" href="#main">Skip to main content</a>
+<div class="site" id="main">
+
+  <header class="nav">
+    <div class="logo">
+      <a href="/"><svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+      <span class="word">Aplomb<span class="dot">.</span></span></a>
+    </div>
+    <nav class="nav-links">
+      <a href="/serum/">Serum</a>
+      <a href="/roots/">Roots</a>
+      <a href="/calm/">Calm</a>
+      <a href="/breath/">Breath</a>
+      <a href="/about/">About</a>
+      <a href="/faq/">FAQ</a>
+    </nav>
+    <div class="nav-right">
+      <a href="/account/" class="is-current">Account</a>
+      <button type="button" data-logout style="background:none;border:none;color:var(--muted);font-family:'IBM Plex Sans',sans-serif;font-size:12px;letter-spacing:0.08em;cursor:pointer;">Sign out</button>
+    </div>
+  </header>
+
+  <section class="pp-section">
+    <div class="inner" style="max-width:920px;">
+      <div class="pp-eyebrow">Account</div>
+      <h1 style="font-family:var(--serif);font-size:48px;line-height:1.05;font-weight:400;margin:8px 0 28px;color:var(--ink);">
+        Welcome back<span style="color:var(--amber);">.</span>
+      </h1>
+
+      <div data-account-loading>
+        <p style="color:var(--muted);font-family:'IBM Plex Sans',sans-serif;">Loading your account&hellip;</p>
+      </div>
+
+      <div data-account-content hidden>
+        <div style="font-family:'IBM Plex Sans',sans-serif;color:var(--muted);font-size:13px;margin-bottom:32px;">
+          Signed in as <strong data-account-email style="color:var(--ink);"></strong>.
+        </div>
+
+        <!-- Active subscriptions -->
+        <section class="account-section" data-section-subscriptions hidden>
+          <div class="account-section-head">
+            <h2>Subscriptions</h2>
+            <a href="/account/subscriptions/" class="account-section-link">Manage &rarr;</a>
+          </div>
+          <div data-subscriptions-list></div>
+          <button type="button" data-portal-btn class="btn btn-dark" style="margin-top:14px;">Manage in Stripe Portal</button>
+        </section>
+
+        <!-- Recent orders -->
+        <section class="account-section">
+          <div class="account-section-head">
+            <h2>Recent orders</h2>
+          </div>
+          <div data-orders-list>
+            <p style="color:var(--muted);font-family:'IBM Plex Sans',sans-serif;">No orders yet. <a href="/" style="color:var(--amber);">Start shopping</a>.</p>
+          </div>
+        </section>
+
+        <!-- Addresses -->
+        <section class="account-section" data-section-addresses hidden>
+          <div class="account-section-head">
+            <h2>Saved addresses</h2>
+          </div>
+          <div data-addresses-list class="account-addresses-grid"></div>
+        </section>
+      </div>
+
+      <div data-account-error class="checkout-error" hidden></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="foot-grid" style="grid-template-columns:1fr 1fr;">
+      <div>
+        <div class="foot-logo">
+          <svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+          <span class="word">Aplomb<span class="dot">.</span></span>
+        </div>
+      </div>
+      <div class="foot-col">
+        <div class="pill">Account</div>
+        <a class="foot-link" href="/account/subscriptions/">Subscriptions</a>
+        <a class="foot-link" href="/contact/">Contact support</a>
+      </div>
+    </div>
+    <div class="foot-legal"><span class="row-sm"><span>&copy; MMXXVI Get Aplomb</span></span></div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  function $(s){ return document.querySelector(s); }
+  function fmt(cents){ if (cents == null) return '—'; const d = cents/100; return '$' + (d % 1 === 0 ? d.toFixed(0) : d.toFixed(2)); }
+  function fmtDate(s){ if (!s) return '—'; try { return new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); } catch(_){ return s; } }
+  function shortId(id){ return (id || '').toString().slice(0, 8).toUpperCase(); }
+  function escapeHtml(s){ return (s == null ? '' : String(s)).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
+
+  async function loadAccount() {
+    let resp;
+    try { resp = await fetch('/api/account/me', { credentials: 'include' }); }
+    catch (_) { showError('Network error. Please try again.'); return; }
+    if (resp.status === 401) { window.location.href = '/account/login/'; return; }
+    if (!resp.ok) { showError('Could not load your account.'); return; }
+    const data = await resp.json();
+    renderAccount(data);
+  }
+
+  function showError(msg){
+    $('[data-account-loading]').hidden = true;
+    const el = $('[data-account-error]'); el.hidden = false; el.textContent = msg;
+  }
+
+  function renderAccount(data) {
+    $('[data-account-loading]').hidden = true;
+    $('[data-account-content]').hidden = false;
+    $('[data-account-email]').textContent = data.email || '';
+
+    // Subscriptions
+    const subs = (data.subscriptions || []).filter(s => ['active','trialing','past_due'].includes(s.status));
+    if (subs.length) {
+      $('[data-section-subscriptions]').hidden = false;
+      $('[data-subscriptions-list]').innerHTML = subs.map(s => `
+        <div class="account-row">
+          <div>
+            <div class="account-row-title">${escapeHtml(s.product_name || s.stripe_subscription_id || 'Subscription')}</div>
+            <div class="account-row-meta">
+              Status: ${escapeHtml(s.status)} &middot;
+              Next charge: ${fmtDate(s.current_period_end)}
+            </div>
+          </div>
+          <div class="account-row-value">${fmt(s.price_cents)}/mo</div>
+        </div>
+      `).join('');
+    }
+
+    // Orders
+    const orders = data.orders || [];
+    if (orders.length) {
+      $('[data-orders-list]').innerHTML = orders.map(o => {
+        const items = (o.line_items || []).map(li => `${li.name || li.productKey} × ${li.quantity}`).join(', ');
+        return `
+          <a href="/account/orders/?id=${encodeURIComponent(o.stripe_payment_intent_id || o.stripe_checkout_session_id || o.id)}" class="account-row account-row-link">
+            <div>
+              <div class="account-row-title">Order #${shortId(o.stripe_payment_intent_id || o.stripe_checkout_session_id || o.id)}</div>
+              <div class="account-row-meta">${fmtDate(o.created_at)} &middot; ${escapeHtml(items)} &middot; <span class="status-pill status-${escapeHtml(o.status)}">${escapeHtml(o.status)}</span></div>
+            </div>
+            <div class="account-row-value">${fmt(o.total_cents || o.subtotal_cents)}</div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    // Addresses
+    const addrs = data.addresses || [];
+    if (addrs.length) {
+      $('[data-section-addresses]').hidden = false;
+      $('[data-addresses-list]').innerHTML = addrs.map(a => `
+        <div class="account-address">
+          <div>${escapeHtml(a.line1 || '')}</div>
+          ${a.line2 ? `<div>${escapeHtml(a.line2)}</div>` : ''}
+          <div>${escapeHtml(a.city || '')}, ${escapeHtml(a.state || '')} ${escapeHtml(a.postal_code || '')}</div>
+          <div style="color:var(--muted);font-size:12px;">${escapeHtml(a.country || 'US')}</div>
+        </div>
+      `).join('');
+    }
+  }
+
+  async function openPortal() {
+    const btn = $('[data-portal-btn]');
+    btn.disabled = true;
+    btn.textContent = 'Opening portal…';
+    let resp;
+    try { resp = await fetch('/api/customer-portal', { method: 'POST', credentials: 'include' }); }
+    catch (_) { btn.disabled = false; btn.textContent = 'Manage in Stripe Portal'; alert('Network error.'); return; }
+    if (!resp.ok) {
+      btn.disabled = false;
+      btn.textContent = 'Manage in Stripe Portal';
+      const err = await resp.json().catch(() => ({}));
+      alert(err.error || 'Could not open the billing portal.');
+      return;
+    }
+    const { url } = await resp.json();
+    if (url) window.location.href = url;
+  }
+
+  async function logout() {
+    try { await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }); }
+    catch(_) {}
+    window.location.href = '/';
+  }
+
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-portal-btn]')) { openPortal(); return; }
+    if (e.target.closest('[data-logout]')) { logout(); return; }
+  });
+
+  document.addEventListener('DOMContentLoaded', loadAccount);
+})();
+</script>
+</body>
+</html>

@@ -16,4 +16,6 @@
   <url><loc>https://getaplomb.com/legal/refund-policy/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://getaplomb.com/legal/shipping/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
   <url><loc>https://getaplomb.com/legal/returns/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://getaplomb.com/legal/subscription-terms/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://getaplomb.com/legal/accessibility/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
 </urlset>

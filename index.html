@@ -11,10 +11,39 @@
 <link rel="icon" type="image/svg+xml" href="assets/aplomb-mark.svg">
 <link rel="stylesheet" href="/css/site.css">
 <script src="https://js.stripe.com/v3/" defer></script>
+<script src="/assets/cart.js" defer></script>
 <script src="/assets/checkout.js" defer></script>
+<script src="/assets/newsletter.js" defer></script>
+<script src="/assets/analytics.js" defer></script>
+<link rel="canonical" href="https://getaplomb.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="APLOMB. For women on GLP-1.">
+<meta property="og:description" content="The side-effect line for women on GLP-1 medications. Four products for the side effects nobody is selling a solution to: face volume loss, hair loss, nausea, bad breath.">
+<meta property="og:image" content="https://getaplomb.com/assets/hero-two-women.jpg">
+<meta property="og:url" content="https://getaplomb.com/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="APLOMB. For women on GLP-1.">
+<meta name="twitter:description" content="The side-effect line for women on GLP-1 medications.">
+<meta name="twitter:image" content="https://getaplomb.com/assets/hero-two-women.jpg">
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "APLOMB.",
+  "legalName": "Get Aplomb",
+  "url": "https://getaplomb.com",
+  "logo": "https://getaplomb.com/assets/aplomb-mark.svg",
+  "sameAs": []
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "APLOMB.",
+  "url": "https://getaplomb.com/"
+}</script>
 </head>
 <body>
-<div class="site">
+<a class="skip-to-main" href="#main">Skip to main content</a>
+<div class="site" id="main">
 
   <!-- Nav -->
   <header class="nav">
@@ -399,7 +428,7 @@
         <br><br><strong>Roots, Calm, Breath:</strong> Dietary supplements. Third-party tested, manufactured in a GMP-certified US facility. Not intended to diagnose, treat, cure, or prevent any disease. Discuss with your physician if pregnant, nursing, or under medical care. Roots is best paired with a baseline lab panel and follow-up review at month four. Calm is timed for the GLP-1 titration window; if nausea persists past week eight, contact your prescriber. Breath is for the persistent oral-malodor pattern that GLP-1 medications drive; if it persists past week eight, contact your dentist. Individual response varies. <em>These statements have not been evaluated by the Food and Drug Administration.</em>
       </span>
       <span class="row-sm">
-        <span>© MMXXVI Aplomb Laboratories, Inc.</span>
+        <span>© MMXXVI Get Aplomb</span>
       </span>
     </div>
   </footer>
@@ -422,8 +451,12 @@
       <span class="label">Subtotal</span>
       <span data-cart-subtotal>$0</span>
     </div>
-    <button class="cart-checkout" data-open-checkout disabled>Checkout</button>
-    <p class="micro">Ships in 48 hours · 15-day returns</p>
+    <div class="cart-totals" data-cart-shipping-row hidden>
+      <span class="label">Shipping</span>
+      <span data-cart-shipping>$0</span>
+    </div>
+    <a class="cart-checkout" data-checkout-link href="/checkout/" aria-disabled="true">Checkout</a>
+    <p class="micro" data-cart-disclosure>Ships in 48 hours · 15-day returns</p>
   </div>
 </aside>
 
@@ -432,13 +465,31 @@
   <button class="product-modal-close" data-close-product aria-label="Close">×</button>
   <div class="product-modal-grid">
     <div class="product-modal-img"><img data-modal-img src="" alt=""></div>
-    <div class="product-modal-body">
+    <div class="product-modal-body" data-buy-box>
       <div class="pill" data-modal-pill></div>
       <h2 data-modal-title></h2>
       <div class="price-line"><span data-modal-price></span><span class="freq" data-modal-freq></span></div>
       <p class="desc" data-modal-desc></p>
       <ul class="specs" data-modal-specs></ul>
-      <button class="product-modal-add" data-add-product>Add to bag · <span data-modal-price2></span></button>
+      <fieldset class="mode-toggle" data-mode-toggle hidden>
+        <legend class="visually-hidden">Purchase option</legend>
+        <label class="mode-opt">
+          <input type="radio" name="aplomb-mode-modal" value="onetime" checked>
+          <span class="mode-opt-body">
+            <span class="mode-opt-title">One-time</span>
+            <span class="mode-opt-meta" data-mode-onetime-meta></span>
+          </span>
+        </label>
+        <label class="mode-opt mode-opt-sub">
+          <input type="radio" name="aplomb-mode-modal" value="subscription">
+          <span class="mode-opt-body">
+            <span class="mode-opt-title">Subscribe &amp; save <span data-modal-discount></span></span>
+            <span class="mode-opt-meta" data-mode-sub-meta></span>
+          </span>
+        </label>
+      </fieldset>
+      <button class="product-modal-add" data-aplomb-add="serum">Add to bag · <span data-modal-price2></span></button>
+      <p class="micro" data-renewal-disclosure hidden style="margin-top:8px;color:var(--muted);font-size:12px;line-height:1.5;">By choosing Subscribe, you authorize us to charge your payment method <span data-renewal-price></span> every 30 days. Cancel anytime in one click from your account.</p>
       <p class="micro" data-modal-micro></p>
     </div>
   </div>
@@ -645,43 +696,27 @@
     },
   };
 
-  const STORAGE_KEY = 'aplomb-serum-cart';
-  let cart = {};
+  // Subscribe-discount map (mirrors functions/_lib/products.js)
+  const SUB = { serum: 10, roots: 15, calm: 0, breath: 15, daily: 15 };
 
   // ---- DOM refs ----
-  const backdrop = document.querySelector('[data-backdrop]');
-  const cartDrawer = document.querySelector('[data-cart-drawer]');
   const productModal = document.querySelector('[data-product-modal]');
-  const checkoutModal = document.querySelector('[data-checkout-modal]');
   const scienceModal = document.querySelector('[data-science-modal]');
-  const cartItemsEl = document.querySelector('[data-cart-items]');
-  const cartCountEl = document.querySelector('[data-cart-count]');
-  const cartSubtotalEl = document.querySelector('[data-cart-subtotal]');
-  const checkoutBtn = document.querySelector('[data-open-checkout]');
-
-  // ---- Persistence ----
-  function loadCart() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      cart = raw ? JSON.parse(raw) : {};
-    } catch (e) { cart = {}; }
-  }
-  function saveCart() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
-  }
 
   // ---- Open/close helpers ----
   function openOverlay(el) {
-    backdrop.classList.add('is-open');
+    const backdrop = document.querySelector('[data-backdrop]');
+    if (backdrop) backdrop.classList.add('is-open');
     el.classList.add('is-open');
     document.body.classList.add('no-scroll');
   }
   function closeAll() {
-    backdrop.classList.remove('is-open');
-    cartDrawer.classList.remove('is-open');
-    productModal.classList.remove('is-open');
-    checkoutModal.classList.remove('is-open');
-    scienceModal.classList.remove('is-open');
+    const backdrop = document.querySelector('[data-backdrop]');
+    const cartDrawer = document.querySelector('[data-cart-drawer]');
+    if (backdrop) backdrop.classList.remove('is-open');
+    if (cartDrawer) cartDrawer.classList.remove('is-open');
+    if (productModal) productModal.classList.remove('is-open');
+    if (scienceModal) scienceModal.classList.remove('is-open');
     document.body.classList.remove('no-scroll');
   }
   function openSciencePanel(which) {
@@ -691,72 +726,57 @@
     openOverlay(scienceModal);
   }
 
-  // ---- Render cart ----
-  function renderCart() {
-    let totalQty = 0, totalPrice = 0;
-    const keys = Object.keys(cart);
-    if (keys.length === 0) {
-      cartItemsEl.innerHTML = '<div class="cart-empty">Your bag is empty.</div>';
-    } else {
-      cartItemsEl.innerHTML = keys.map(key => {
-        const p = PRODUCTS[key];
-        const qty = cart[key];
-        totalQty += qty;
-        totalPrice += qty * p.priceVal;
-        return `
-          <div class="cart-item">
-            <img class="cart-item-img" src="${p.img}" alt="">
-            <div>
-              <div class="cart-item-name">${p.title.replace(/<[^>]+>/g, '')}</div>
-              <div class="cart-item-meta">${p.pill}${p.freq}</div>
-              <div class="cart-item-qty">
-                <button data-cart-dec="${key}" aria-label="Decrease">−</button>
-                <span>${qty}</span>
-                <button data-cart-inc="${key}" aria-label="Increase">+</button>
-              </div>
-            </div>
-            <div>
-              <div class="cart-item-price">$${qty * p.priceVal}</div>
-              <button class="cart-item-remove" data-cart-remove="${key}">Remove</button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-    cartCountEl.textContent = totalQty;
-    cartSubtotalEl.textContent = '$' + totalPrice;
-    checkoutBtn.disabled = totalQty === 0;
-  }
-
   // ---- Render product modal ----
   function openProduct(key) {
     const p = PRODUCTS[key];
     if (!p) return;
+    const subPct = SUB[key] || 0;
+    const allowsSub = subPct > 0;
+    const subPrice = Math.round(p.priceVal * (100 - subPct)) / 100;
+    const subPriceLabel = '$' + (subPrice % 1 === 0 ? subPrice.toFixed(0) : subPrice.toFixed(2));
+
     document.querySelector('[data-modal-img]').src = p.img;
     document.querySelector('[data-modal-img]').alt = p.title.replace(/<[^>]+>/g, '');
     document.querySelector('[data-modal-pill]').textContent = p.pill;
     document.querySelector('[data-modal-title]').innerHTML = p.title;
     document.querySelector('[data-modal-price]').textContent = p.price;
-    document.querySelector('[data-modal-price2]').textContent = p.price + (p.freq.includes('/mo') ? '/mo' : '');
+    document.querySelector('[data-modal-price2]').textContent = p.price;
     document.querySelector('[data-modal-freq]').textContent = p.freq;
     document.querySelector('[data-modal-desc]').textContent = p.desc;
     document.querySelector('[data-modal-specs]').innerHTML = p.specs.map(s =>
       `<li><span>${s[0]}</span><span>${s[1]}</span></li>`).join('');
     document.querySelector('[data-modal-micro]').textContent = p.micro;
-    document.querySelector('[data-add-product]').setAttribute('data-add-product', key);
+
+    // ATC button points at this product
+    const addBtn = document.querySelector('[data-aplomb-add]');
+    addBtn.setAttribute('data-aplomb-add', key);
+
+    // Subscribe/One-time toggle
+    const toggle = document.querySelector('[data-mode-toggle]');
+    const discountEl = document.querySelector('[data-modal-discount]');
+    const onetimeMeta = document.querySelector('[data-mode-onetime-meta]');
+    const subMeta = document.querySelector('[data-mode-sub-meta]');
+    const onetimeRadio = document.querySelector('input[name="aplomb-mode-modal"][value="onetime"]');
+    const subRadio = document.querySelector('input[name="aplomb-mode-modal"][value="subscription"]');
+    const renewalDisclosure = document.querySelector('[data-renewal-disclosure]');
+    const renewalPrice = document.querySelector('[data-renewal-price]');
+
+    onetimeRadio.checked = true;
+    onetimeMeta.textContent = p.price + ' · ships once';
+    if (allowsSub) {
+      toggle.hidden = false;
+      discountEl.textContent = subPct + '%';
+      subMeta.textContent = subPriceLabel + ' · auto-renews monthly · cancel anytime';
+      renewalPrice.textContent = subPriceLabel;
+    } else {
+      toggle.hidden = true;
+    }
+    renewalDisclosure.hidden = true;
+
     openOverlay(productModal);
   }
 
-  // ---- Add to cart ----
-  function addToCart(key) {
-    cart[key] = (cart[key] || 0) + 1;
-    saveCart();
-    renderCart();
-    productModal.classList.remove('is-open');
-    openOverlay(cartDrawer);
-  }
-
-  // ---- Event delegation ----
+  // ---- Event delegation (product + science modals only; cart owned by cart.js) ----
   document.addEventListener('click', function(e) {
     const t = e.target.closest('[data-open-product]');
     if (t) { e.preventDefault(); openProduct(t.dataset.openProduct); return; }
@@ -764,62 +784,34 @@
     const sci = e.target.closest('[data-open-science]');
     if (sci) { e.preventDefault(); openSciencePanel(sci.dataset.openScience); return; }
 
-    if (e.target.closest('[data-open-cart]')) { e.preventDefault(); openOverlay(cartDrawer); return; }
-    if (e.target.closest('[data-close-cart]')) { closeAll(); return; }
     if (e.target.closest('[data-close-product]')) { closeAll(); return; }
     if (e.target.closest('[data-close-checkout]')) { closeAll(); return; }
     if (e.target.closest('[data-close-science]')) { closeAll(); return; }
-    if (e.target.closest('[data-backdrop]')) { closeAll(); return; }
+  });
 
-    const addBtn = e.target.closest('[data-add-product]');
-    if (addBtn) { addToCart(addBtn.dataset.addProduct); return; }
+  // Mode-toggle reactive copy update
+  document.addEventListener('change', function (e) {
+    if (e.target.name !== 'aplomb-mode-modal') return;
+    const renewalDisclosure = document.querySelector('[data-renewal-disclosure]');
+    if (renewalDisclosure) renewalDisclosure.hidden = e.target.value !== 'subscription';
+  });
 
-    const inc = e.target.closest('[data-cart-inc]');
-    if (inc) { cart[inc.dataset.cartInc] = (cart[inc.dataset.cartInc] || 0) + 1; saveCart(); renderCart(); return; }
-
-    const dec = e.target.closest('[data-cart-dec]');
-    if (dec) {
-      const k = dec.dataset.cartDec;
-      cart[k] = (cart[k] || 1) - 1;
-      if (cart[k] <= 0) delete cart[k];
-      saveCart(); renderCart(); return;
-    }
-
-    const rm = e.target.closest('[data-cart-remove]');
-    if (rm) { delete cart[rm.dataset.cartRemove]; saveCart(); renderCart(); return; }
-
-    if (e.target.closest('[data-open-checkout]') && !checkoutBtn.disabled) {
-      cartDrawer.classList.remove('is-open');
-      document.querySelector('[data-checkout-form-wrap]').hidden = false;
-      document.querySelector('[data-checkout-success]').hidden = true;
-      openOverlay(checkoutModal);
-      return;
+  // After ATC succeeds, close the product modal (cart.js opens the drawer).
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-aplomb-add]')) {
+      // cart.js opens the drawer asynchronously; close the modal first.
+      if (productModal) productModal.classList.remove('is-open');
     }
   });
 
-  // Checkout: handed off to assets/checkout.js, which mounts Stripe Payment Element
-  // and submits to /api/checkout. We expose what it needs to do its job.
-  window.AplombCheckout = {
-    getCart: () => ({ ...cart }),
-    getCartLineItems: () => Object.entries(cart).map(([key, qty]) => ({
-      productKey: key,
-      quantity: qty,
-      priceId: PRODUCTS[key]?.priceIds?.oneTime || null,
-    })),
-    onCheckoutSuccess: () => {
-      document.querySelector('[data-checkout-form-wrap]').hidden = true;
-      document.querySelector('[data-checkout-success]').hidden = false;
-      cart = {};
-      saveCart();
-      renderCart();
-    },
-    products: PRODUCTS,
+  // Legacy compat — checkout.js still reads window.AplombCheckout for product metadata.
+  window.AplombCheckout = window.AplombCheckout || {};
+  window.AplombCheckout.products = PRODUCTS;
+  window.AplombCheckout.onCheckoutSuccess = () => {
+    if (window.AplombCart) window.AplombCart.clear();
   };
 
   document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeAll(); });
-
-  loadCart();
-  renderCart();
 
   // ---------- Mechanism-cards carousel ----------
   // Auto-advance every 3s. Click anywhere on the carousel to advance + pause

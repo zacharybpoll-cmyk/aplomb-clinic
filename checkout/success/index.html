@@ -11,9 +11,11 @@
 <link rel="icon" type="image/svg+xml" href="/assets/aplomb-mark.svg">
 <link rel="stylesheet" href="/css/site.css">
 <script src="https://js.stripe.com/v3/" defer></script>
+<script src="/assets/analytics.js" defer></script>
 </head>
 <body>
-<div class="site">
+<a class="skip-to-main" href="#main">Skip to main content</a>
+<div class="site" id="main">
 
   <header class="nav">
     <div class="logo">
@@ -42,11 +44,28 @@
     <p class="lede" data-status-message style="margin:0 auto 24px;max-width:48ch;">
       We are confirming your order with Stripe. This usually takes a few seconds.
     </p>
+
     <div data-order-summary hidden style="margin:32px auto 0;max-width:520px;text-align:left;border-top:1px solid var(--ink);padding-top:18px;">
-      <div style="font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:0.16em;color:var(--muted);margin-bottom:6px;">Order reference</div>
-      <div data-order-id style="font-family:var(--serif);font-size:22px;color:var(--ink);"></div>
+      <div style="font-family:'IBM Plex Sans',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:0.16em;color:var(--muted);margin-bottom:6px;">Order reference</div>
+      <div data-order-id style="font-family:var(--serif);font-size:22px;color:var(--ink);margin-bottom:18px;"></div>
+      <div data-order-items style="margin:18px 0;"></div>
+      <div data-order-totals style="border-top:1px solid rgba(26,21,18,0.12);padding-top:12px;display:none;">
+        <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Sans',sans-serif;font-size:14px;color:var(--ink);font-weight:600;">
+          <span>Total charged</span>
+          <span data-order-total></span>
+        </div>
+      </div>
     </div>
-    <p style="margin-top:48px;"><a class="btn btn-dark" href="/" style="text-decoration:none;">Return to the site</a></p>
+
+    <div data-account-cta hidden style="margin:48px auto 0;max-width:520px;padding:24px;background:rgba(122,61,20,0.04);border:1px solid rgba(122,61,20,0.15);border-radius:4px;text-align:left;">
+      <div style="font-family:'IBM Plex Sans',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:0.16em;color:var(--amber);margin-bottom:8px;">Track this order</div>
+      <p style="font-family:'IBM Plex Sans',sans-serif;font-size:14px;line-height:1.6;color:var(--ink);margin:0 0 12px;">
+        Sign in with the email on your order to track shipping, manage subscriptions, and see your order history.
+      </p>
+      <a class="btn btn-dark" data-magic-link-cta href="/account/login/" style="text-decoration:none;display:inline-block;">Sign in to your account</a>
+    </div>
+
+    <p style="margin-top:48px;"><a class="btn btn-dark" href="/" style="text-decoration:none;background:transparent;color:var(--ink);border:1px solid var(--ink);">Return to the site</a></p>
   </div></section>
 
   <footer class="foot">
@@ -73,34 +92,43 @@
       </div>
     </div>
     <div class="foot-legal">
-      <span class="row-sm"><span>&copy; MMXXVI Aplomb Laboratories, Inc.</span></span>
+      <span class="row-sm"><span>&copy; MMXXVI Get Aplomb</span></span>
     </div>
   </footer>
 </div>
 <script>
-// Reads the payment_intent_client_secret returned by Stripe in the URL,
-// confirms the payment status, and updates the page copy. The order detail
-// itself is delivered by email (via our webhook + Resend); this page only
-// confirms the transaction completed.
+// Reads the URL params that Stripe returns on redirect and updates copy.
+// Onetime: payment_intent + payment_intent_client_secret + redirect_status
+// Subscription: session_id (Checkout Session)
+// In both cases we fetch /api/order/[id] for the order summary if it has been
+// persisted by the webhook handler (best-effort; the row may not yet exist for
+// new subscriptions if the webhook hasn't fired).
 (function () {
   function $(s){return document.querySelector(s);}
   function set(eyebrow, msg){ $('[data-status-eyebrow]').textContent = eyebrow; $('[data-status-message]').textContent = msg; }
-  function clearLocalCart(){ try { localStorage.removeItem('aplomb-serum-cart'); } catch(_){} }
+  function clearLocalCart(){
+    try { localStorage.removeItem('aplomb-cart-v2'); } catch(_) {}
+    try { localStorage.removeItem('aplomb-serum-cart'); } catch(_) {}
+  }
+  function fmt(cents){ const d = cents/100; return '$' + (d % 1 === 0 ? d.toFixed(0) : d.toFixed(2)); }
 
   const params = new URLSearchParams(window.location.search);
   const clientSecret = params.get('payment_intent_client_secret');
   const paymentIntentId = params.get('payment_intent');
+  const sessionId = params.get('session_id');
+  const orderRefId = paymentIntentId || sessionId;
 
-  if (paymentIntentId) {
-    const ref = paymentIntentId.replace(/^pi_/, '').slice(0,8).toUpperCase();
+  if (orderRefId) {
+    const ref = orderRefId.replace(/^(pi_|cs_)/, '').slice(0,8).toUpperCase();
     $('[data-order-id]').textContent = '#' + ref;
     $('[data-order-summary]').hidden = false;
   }
 
   function showByStatus(status) {
-    if (status === 'succeeded') {
+    if (status === 'succeeded' || status === 'paid') {
       set('Order confirmed', 'A confirmation email is on its way. The order ships within 48 hours; you will receive tracking when it leaves us.');
       clearLocalCart();
+      $('[data-account-cta]').hidden = false;
     } else if (status === 'processing') {
       set('Processing', 'Your bank is still reviewing the charge. We will email you when it settles, usually within a few minutes.');
     } else if (status === 'requires_payment_method') {
@@ -116,15 +144,64 @@
     return meta && meta.content ? meta.content : null;
   }
 
-  function ready(){ if (typeof window.Stripe !== 'function') return setTimeout(ready, 80); poll(); }
+  // Fetch order from our DB for line-items + total (best-effort).
+  async function fetchOrderSummary() {
+    if (!orderRefId) return;
+    try {
+      const resp = await fetch('/api/order/' + encodeURIComponent(orderRefId));
+      if (!resp.ok) return;
+      const order = await resp.json();
+      if (!order || !Array.isArray(order.line_items)) return;
+      const itemsEl = $('[data-order-items]');
+      itemsEl.innerHTML = order.line_items.map(li => {
+        const lineCents = (li.unitPriceCents || 0) * (li.quantity || 1);
+        return `
+          <div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;font-family:'IBM Plex Sans',sans-serif;font-size:14px;color:var(--ink);">
+            <span>${li.name || li.productKey} <span style="color:var(--muted);">&times; ${li.quantity || 1}</span></span>
+            <span>${fmt(lineCents)}</span>
+          </div>
+        `;
+      }).join('');
+      const totalCents = order.total_cents || order.subtotal_cents;
+      if (totalCents) {
+        $('[data-order-total]').textContent = fmt(totalCents);
+        $('[data-order-totals]').style.display = 'block';
+      }
+      // Pre-fill account CTA with the customer's email if we have it.
+      if (order.email) {
+        const cta = $('[data-magic-link-cta]');
+        if (cta) cta.href = '/account/login/?email=' + encodeURIComponent(order.email);
+      }
+    } catch (_) {}
+  }
+
+  function ready(){
+    if (sessionId) {
+      // Subscription path: assume success on landing; webhook delivers receipt.
+      set('Order confirmed', 'Your subscription is active and your first shipment is on its way. A receipt is in your inbox.');
+      clearLocalCart();
+      $('[data-account-cta]').hidden = false;
+      fetchOrderSummary();
+      return;
+    }
+    if (typeof window.Stripe !== 'function') return setTimeout(ready, 80);
+    poll();
+  }
   function poll(){
-    if (!clientSecret) { set('Order confirmed', 'A confirmation email is on its way. Tracking arrives when the package leaves us.'); clearLocalCart(); return; }
+    if (!clientSecret) {
+      set('Order confirmed', 'A confirmation email is on its way. Tracking arrives when the package leaves us.');
+      clearLocalCart();
+      $('[data-account-cta]').hidden = false;
+      fetchOrderSummary();
+      return;
+    }
     const pk = getPublishableKey();
-    if (!pk) { set('Order received', 'A confirmation email is on its way.'); clearLocalCart(); return; }
+    if (!pk) { set('Order received', 'A confirmation email is on its way.'); clearLocalCart(); fetchOrderSummary(); return; }
     const stripe = window.Stripe(pk);
     stripe.retrievePaymentIntent(clientSecret).then(({paymentIntent, error}) => {
       if (error || !paymentIntent) return set('Status check failed', 'Please write to zachary@getaplomb.com if you do not receive a confirmation email within 10 minutes.');
       showByStatus(paymentIntent.status);
+      fetchOrderSummary();
     });
   }
   document.addEventListener('DOMContentLoaded', ready);

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Admin &mdash; Orders</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/assets/aplomb-mark.svg">
+<link rel="stylesheet" href="/css/site.css">
+<style>
+  .admin-page { max-width: 1240px; margin: 0 auto; padding: 32px 48px; }
+  .admin-page h1 { font-family: var(--serif); font-size: 36px; font-weight: 400; margin: 0 0 24px; color: var(--ink); }
+  .admin-tabs { display:flex; gap: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--border, #d8cdb6); padding-bottom: 12px; }
+  .admin-tabs button {
+    background: transparent; border: 0; padding: 8px 4px;
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; text-transform: uppercase; letter-spacing: 0.16em;
+    color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent;
+  }
+  .admin-tabs button.is-active { color: var(--ink); border-bottom-color: var(--amber); }
+  .admin-table { width: 100%; border-collapse: collapse; font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; }
+  .admin-table th, .admin-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid rgba(26,21,18,0.08); vertical-align: top; }
+  .admin-table th { font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; }
+  .admin-table tr:hover { background: rgba(122,61,20,0.03); }
+  .admin-table input[type="text"], .admin-table select {
+    padding: 6px 8px; border: 1px solid var(--border, #d8cdb6); border-radius: 3px;
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; background: var(--paper);
+  }
+  .admin-table button {
+    background: var(--ink); color: var(--paper); border: 0; padding: 6px 10px;
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; cursor: pointer;
+  }
+  .admin-table button:hover { background: var(--amber); }
+  .admin-table button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .admin-row-addr { color: var(--muted); font-size: 11px; line-height: 1.4; }
+  .admin-empty { padding: 48px; text-align: center; color: var(--muted); font-family: 'IBM Plex Sans', sans-serif; }
+  .admin-status { padding: 8px 12px; margin: 8px 0; font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; border-radius: 3px; }
+  .admin-status.is-ok { background: rgba(52,184,30,0.08); color: #1c7a14; }
+  .admin-status.is-err { background: rgba(184,52,30,0.08); color: #b8341e; }
+</style>
+</head>
+<body>
+<div class="admin-page">
+
+  <h1>APLOMB. &mdash; Operations</h1>
+
+  <div class="admin-tabs">
+    <button type="button" data-tab="paid" class="is-active">Awaiting shipment</button>
+    <button type="button" data-tab="shipped">Recently shipped</button>
+    <button type="button" data-tab="all">All</button>
+  </div>
+
+  <div data-admin-status></div>
+
+  <div data-admin-loading style="color:var(--muted);font-family:'IBM Plex Sans',sans-serif;">Loading orders&hellip;</div>
+
+  <div data-admin-content hidden></div>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+  function $(s){ return document.querySelector(s); }
+  function fmt(cents){ if (cents == null) return '—'; const d = cents/100; return '$' + (d % 1 === 0 ? d.toFixed(0) : d.toFixed(2)); }
+  function fmtDate(s){ if (!s) return '—'; try { return new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); } catch(_){ return s; } }
+  function shortId(id){ return (id || '').toString().slice(0, 8).toUpperCase(); }
+  function escapeHtml(s){ return (s == null ? '' : String(s)).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
+
+  let currentTab = 'paid';
+
+  function showStatus(msg, ok) {
+    const el = $('[data-admin-status]');
+    el.innerHTML = `<div class="admin-status ${ok ? 'is-ok' : 'is-err'}">${escapeHtml(msg)}</div>`;
+    setTimeout(() => { el.innerHTML = ''; }, 4000);
+  }
+
+  async function load(tab) {
+    currentTab = tab;
+    $('[data-admin-loading]').hidden = false;
+    $('[data-admin-content]').hidden = true;
+    let resp;
+    try { resp = await fetch('/api/admin/orders?status=' + encodeURIComponent(tab), { credentials: 'include' }); }
+    catch(_) { showStatus('Network error.', false); return; }
+    if (!resp.ok) {
+      if (resp.status === 401 || resp.status === 403) {
+        showStatus('Not authorized. Make sure Cloudflare Access has approved your email.', false);
+      } else {
+        showStatus('Could not load orders (HTTP ' + resp.status + ').', false);
+      }
+      return;
+    }
+    const { orders } = await resp.json();
+    render(orders || []);
+  }
+
+  function render(orders) {
+    $('[data-admin-loading]').hidden = true;
+    const c = $('[data-admin-content]'); c.hidden = false;
+    if (!orders.length) {
+      c.innerHTML = '<div class="admin-empty">No orders.</div>';
+      return;
+    }
+    c.innerHTML = `
+      <table class="admin-table">
+        <thead><tr>
+          <th>Order</th><th>Customer</th><th>Items</th><th>Address</th><th>Total</th>
+          <th>Status</th><th>Tracking</th><th></th>
+        </tr></thead>
+        <tbody>${orders.map(o => row(o)).join('')}</tbody>
+      </table>
+    `;
+  }
+
+  function row(o) {
+    const id = o.id;
+    const ref = shortId(o.stripe_payment_intent_id || o.stripe_checkout_session_id || id);
+    const items = (o.line_items || []).map(li => `${escapeHtml(li.name || li.productKey)} × ${li.quantity || 1}`).join('<br>');
+    const addr = o.shipping_address || {};
+    const addrLine = `${escapeHtml(addr.line1 || '')}, ${escapeHtml(addr.city || '')}, ${escapeHtml(addr.state || '')} ${escapeHtml(addr.postal_code || '')}`;
+    const total = fmt(o.total_cents || o.total_cents_override || o.subtotal_cents);
+    const isShipped = o.status === 'shipped';
+    return `
+      <tr data-order-id="${escapeHtml(id)}">
+        <td>
+          <div style="font-weight:600;">#${ref}</div>
+          <div style="color:var(--muted);font-size:11px;">${fmtDate(o.paid_at || o.created_at)}</div>
+        </td>
+        <td>
+          <div>${escapeHtml(o.customer_name || '')}</div>
+          <div style="color:var(--muted);font-size:11px;">${escapeHtml(o.email || '')}</div>
+        </td>
+        <td>${items}</td>
+        <td class="admin-row-addr">${addrLine}</td>
+        <td>${total}</td>
+        <td><span class="status-pill status-${escapeHtml(o.status || 'pending')}">${escapeHtml(o.status || 'pending')}</span></td>
+        <td>
+          ${isShipped
+            ? `<div>${escapeHtml(o.tracking_number || '')}<br><span style="color:var(--muted);font-size:11px;">${escapeHtml((o.carrier || '').toUpperCase())}</span></div>`
+            : `<div style="display:flex;gap:6px;align-items:center;">
+                 <input type="text" placeholder="Tracking #" data-tracking-input maxlength="40" style="width:140px;">
+                 <select data-carrier-select>
+                   <option value="usps">USPS</option>
+                   <option value="ups">UPS</option>
+                   <option value="fedex">FedEx</option>
+                   <option value="dhl">DHL</option>
+                   <option value="other">Other</option>
+                 </select>
+               </div>`
+          }
+        </td>
+        <td>
+          ${isShipped ? '' : `<button type="button" data-mark-shipped>Mark shipped</button>`}
+        </td>
+      </tr>
+    `;
+  }
+
+  document.addEventListener('click', async function (e) {
+    const tab = e.target.closest('[data-tab]');
+    if (tab) {
+      document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('is-active', b === tab));
+      load(tab.dataset.tab);
+      return;
+    }
+    const ship = e.target.closest('[data-mark-shipped]');
+    if (!ship) return;
+    const row = ship.closest('tr');
+    const orderId = row.dataset.orderId;
+    const trackingNumber = row.querySelector('[data-tracking-input]').value.trim();
+    const carrier = row.querySelector('[data-carrier-select]').value;
+    if (!trackingNumber) { showStatus('Enter a tracking number first.', false); return; }
+    ship.disabled = true; ship.textContent = 'Working…';
+    let resp;
+    try { resp = await fetch('/api/admin/ship-order', { method: 'POST', credentials: 'include', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ orderId, trackingNumber, carrier }) }); }
+    catch(_) { showStatus('Network error.', false); ship.disabled = false; ship.textContent = 'Mark shipped'; return; }
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      showStatus(err.error || ('Could not ship order (HTTP ' + resp.status + ').'), false);
+      ship.disabled = false; ship.textContent = 'Mark shipped';
+      return;
+    }
+    showStatus('Order shipped. Shipping email sent.', true);
+    load(currentTab);
+  });
+
+  document.addEventListener('DOMContentLoaded', () => load('paid'));
+})();
+</script>
+</body>
+</html>

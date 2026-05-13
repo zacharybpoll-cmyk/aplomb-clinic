@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sign in &mdash; APLOMB.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Sign in to your APLOMB. account.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/assets/aplomb-mark.svg">
+<link rel="stylesheet" href="/css/site.css">
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body>
+<a class="skip-to-main" href="#main">Skip to main content</a>
+<div class="site" id="main">
+
+  <header class="nav nav-checkout">
+    <div class="logo">
+      <a href="/"><svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+      <span class="word">Aplomb<span class="dot">.</span></span></a>
+    </div>
+    <div class="nav-right">
+      <a href="/" style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;color:var(--muted);">&larr; Return to shop</a>
+    </div>
+  </header>
+
+  <section class="pp-section">
+    <div class="inner" style="max-width:520px;">
+      <div class="pp-eyebrow">Account</div>
+      <h1 style="font-family:var(--serif);font-size:48px;line-height:1.05;font-weight:400;margin:8px 0 14px;color:var(--ink);">
+        Sign in<span style="color:var(--amber);">.</span>
+      </h1>
+      <p class="lede" style="margin:0 0 28px;">Enter your email and we'll send you a one-click sign-in link. No password to remember.</p>
+
+      <div class="checkout-error" data-login-error role="alert" aria-live="polite" hidden></div>
+
+      <div data-login-form-wrap>
+        <form data-login-form class="checkout-form" novalidate>
+          <label for="login-email">Email</label>
+          <input type="email" required name="email" id="login-email" autocomplete="email" placeholder="you@example.com">
+          <button type="submit" class="checkout-submit" data-login-submit>
+            <span data-submit-label>Email me a sign-in link</span>
+            <span data-submit-spinner hidden>Sending&hellip;</span>
+          </button>
+          <p class="micro" style="margin-top:14px;color:var(--muted);text-align:center;font-size:11px;line-height:1.6;">
+            We'll send a link that signs you in for the next 15 minutes.
+            <br>By signing in you agree to our
+            <a href="/legal/terms/">Terms</a> and
+            <a href="/legal/privacy/">Privacy Policy</a>.
+          </p>
+        </form>
+      </div>
+
+      <div data-login-sent hidden style="margin-top:16px;padding:24px;background:rgba(122,61,20,0.04);border:1px solid rgba(122,61,20,0.15);border-radius:4px;">
+        <div style="font-family:'IBM Plex Sans',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:0.16em;color:var(--amber);margin-bottom:8px;">Check your inbox</div>
+        <p style="font-family:'IBM Plex Sans',sans-serif;font-size:15px;line-height:1.6;color:var(--ink);margin:0;">
+          We sent a sign-in link to <strong data-sent-to></strong>. The link expires in 15 minutes. If you don't see it within a minute, check your spam folder.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="foot-grid" style="grid-template-columns:1fr 1fr;">
+      <div>
+        <div class="foot-logo">
+          <svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+          <span class="word">Aplomb<span class="dot">.</span></span>
+        </div>
+      </div>
+      <div class="foot-col">
+        <div class="pill">Legal</div>
+        <a class="foot-link" href="/legal/privacy/">Privacy</a>
+        <a class="foot-link" href="/legal/terms/">Terms</a>
+      </div>
+    </div>
+    <div class="foot-legal"><span class="row-sm"><span>&copy; MMXXVI Get Aplomb</span></span></div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  function $(s){ return document.querySelector(s); }
+  function showError(msg){ const el = $('[data-login-error]'); el.hidden = false; el.textContent = msg; }
+  function clearError(){ const el = $('[data-login-error]'); el.hidden = true; el.textContent = ''; }
+  function setSubmitState(working) {
+    const btn = $('[data-login-submit]');
+    btn.disabled = !!working;
+    $('[data-submit-label]', btn).hidden = !!working;
+    $('[data-submit-spinner]', btn).hidden = !working;
+  }
+
+  // Show a friendly error if redirected back here with ?error=...
+  const params = new URLSearchParams(window.location.search);
+  const err = params.get('error');
+  if (err) {
+    const map = {
+      invalid_link: 'That sign-in link was invalid. Please request a new one below.',
+      link_expired: 'That link expired. Please request a new one below.',
+      verify_failed: "We couldn't verify that link. Please request a new one.",
+      no_token: 'Sign-in failed. Please request a new link.',
+    };
+    showError(map[err] || 'Sign-in failed. Please request a new link.');
+  }
+
+  // Pre-fill email if passed via ?email= (e.g. from success page CTA)
+  const emailParam = params.get('email');
+  if (emailParam) $('#login-email').value = emailParam;
+
+  document.addEventListener('submit', async function (e) {
+    const form = e.target.closest('[data-login-form]');
+    if (!form) return;
+    e.preventDefault();
+    clearError();
+    const email = (form.email.value || '').trim();
+    if (!email || !email.includes('@')) { showError('Please enter a valid email address.'); return; }
+
+    setSubmitState(true);
+    let resp;
+    try {
+      resp = await fetch('/api/auth/magic-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+    } catch (e) {
+      setSubmitState(false);
+      showError('Network error. Please try again.');
+      return;
+    }
+    setSubmitState(false);
+
+    if (!resp.ok) {
+      let msg = 'Could not send the sign-in link. Please try again.';
+      try { const err = await resp.json(); if (err && err.error) msg = err.error; } catch (_) {}
+      showError(msg);
+      return;
+    }
+
+    $('[data-sent-to]').textContent = email;
+    $('[data-login-form-wrap]').hidden = true;
+    $('[data-login-sent]').hidden = false;
+  });
+})();
+</script>
+</body>
+</html>

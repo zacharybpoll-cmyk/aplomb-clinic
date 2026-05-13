@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Email preferences &mdash; APLOMB.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/assets/aplomb-mark.svg">
+<link rel="stylesheet" href="/css/site.css">
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body>
+<a class="skip-to-main" href="#main">Skip to main content</a>
+<div class="site" id="main">
+
+  <header class="nav nav-checkout">
+    <div class="logo">
+      <a href="/"><svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+      <span class="word">Aplomb<span class="dot">.</span></span></a>
+    </div>
+    <div class="nav-right">
+      <a href="/" style="font-family:'IBM Plex Sans',sans-serif;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;text-decoration:none;color:var(--muted);">&larr; Return to shop</a>
+    </div>
+  </header>
+
+  <section class="pp-section">
+    <div class="inner" style="max-width:560px;">
+      <div class="pp-eyebrow">Email preferences</div>
+      <h1 style="font-family:var(--serif);font-size:48px;line-height:1.05;font-weight:400;margin:8px 0 24px;color:var(--ink);" data-page-title>
+        Update your preferences<span style="color:var(--amber);">.</span>
+      </h1>
+
+      <div data-preferences-message class="lede" style="margin:0 0 24px;">
+        Loading&hellip;
+      </div>
+
+      <div data-resubscribe-form hidden style="margin-top:24px;padding:24px;background:rgba(122,61,20,0.04);border:1px solid rgba(122,61,20,0.15);border-radius:4px;">
+        <div style="font-family:'IBM Plex Sans',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:0.16em;color:var(--amber);margin-bottom:8px;">Change your mind?</div>
+        <p style="font-family:'IBM Plex Sans',sans-serif;font-size:14px;line-height:1.6;color:var(--ink);margin:0 0 12px;">
+          Re-subscribe with one click.
+        </p>
+        <form data-resubscribe>
+          <label for="resub-email" class="visually-hidden">Email</label>
+          <input type="email" required name="email" id="resub-email" autocomplete="email" placeholder="you@example.com" style="display:block;width:100%;box-sizing:border-box;padding:12px 14px;margin:0 0 12px;border:1px solid var(--border, #d8cdb6);border-radius:4px;font-family:'IBM Plex Sans',sans-serif;font-size:15px;">
+          <button type="submit" class="btn btn-dark" style="width:100%;">Re-subscribe</button>
+        </form>
+        <p data-resubscribe-status hidden style="margin:12px 0 0;font-family:'IBM Plex Sans',sans-serif;font-size:13px;"></p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="foot-grid" style="grid-template-columns:1fr 1fr;">
+      <div>
+        <div class="foot-logo">
+          <svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+          <span class="word">Aplomb<span class="dot">.</span></span>
+        </div>
+      </div>
+      <div class="foot-col">
+        <div class="pill">Legal</div>
+        <a class="foot-link" href="/legal/privacy/">Privacy</a>
+        <a class="foot-link" href="/legal/terms/">Terms</a>
+      </div>
+    </div>
+    <div class="foot-legal"><span class="row-sm"><span>&copy; MMXXVI Get Aplomb</span></span></div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  function $(s){ return document.querySelector(s); }
+
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get('status');
+  const reason = params.get('reason');
+  const titleEl = $('[data-page-title]');
+  const msgEl = $('[data-preferences-message]');
+
+  if (status === 'unsubscribed') {
+    titleEl.innerHTML = 'You’re unsubscribed<span style="color:var(--amber);">.</span>';
+    msgEl.innerHTML = 'You won’t receive any more marketing emails from us. Order receipts and shipping notifications for active orders will still arrive &mdash; those are not marketing.';
+    $('[data-resubscribe-form]').hidden = false;
+  } else if (status === 'error') {
+    titleEl.innerHTML = 'Link expired<span style="color:var(--amber);">.</span>';
+    msgEl.innerHTML = (reason || 'Your unsubscribe link is invalid or expired.') + ' If you’re still getting emails you don’t want, write to <a href="mailto:hello@getaplomb.com" style="color:var(--amber);">hello@getaplomb.com</a> and we’ll handle it manually within a day.';
+  } else {
+    // No status — give them re-subscribe directly
+    msgEl.innerHTML = 'Manage your email preferences below. To unsubscribe, click the link at the bottom of any email we send.';
+    $('[data-resubscribe-form]').hidden = false;
+  }
+
+  document.addEventListener('submit', async function (e) {
+    const form = e.target.closest('[data-resubscribe]');
+    if (!form) return;
+    e.preventDefault();
+    const email = (form.email.value || '').trim();
+    const statusEl = $('[data-resubscribe-status]');
+    statusEl.hidden = false;
+    if (!email || !email.includes('@')) { statusEl.textContent = 'Please enter a valid email.'; statusEl.style.color = '#b8341e'; return; }
+    statusEl.textContent = 'Working…'; statusEl.style.color = 'var(--muted)';
+    let resp;
+    try { resp = await fetch('/api/newsletter/subscribe', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email, source: 'email-preferences-resub' }) }); }
+    catch (_) { statusEl.textContent = 'Network error.'; statusEl.style.color = '#b8341e'; return; }
+    if (!resp.ok) { statusEl.textContent = 'Could not re-subscribe. Please try again.'; statusEl.style.color = '#b8341e'; return; }
+    statusEl.textContent = 'Re-subscribed. Check your inbox for confirmation.';
+    statusEl.style.color = '#1c7a14';
+  });
+})();
+</script>
+</body>
+</html>

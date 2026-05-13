@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Order detail &mdash; APLOMB.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/assets/aplomb-mark.svg">
+<link rel="stylesheet" href="/css/site.css">
+<script src="/assets/analytics.js" defer></script>
+</head>
+<body>
+<a class="skip-to-main" href="#main">Skip to main content</a>
+<div class="site" id="main">
+
+  <header class="nav">
+    <div class="logo">
+      <a href="/"><svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+      <span class="word">Aplomb<span class="dot">.</span></span></a>
+    </div>
+    <div class="nav-right">
+      <a href="/account/">&larr; Back to account</a>
+    </div>
+  </header>
+
+  <section class="pp-section">
+    <div class="inner" style="max-width:720px;">
+      <div class="pp-eyebrow" data-order-eyebrow>Loading order&hellip;</div>
+      <h1 style="font-family:var(--serif);font-size:48px;line-height:1.05;font-weight:400;margin:8px 0 28px;color:var(--ink);">
+        Order <span data-order-ref>—</span><span style="color:var(--amber);">.</span>
+      </h1>
+
+      <div data-order-error class="checkout-error" hidden></div>
+
+      <div data-order-body hidden>
+        <dl class="checkout-summary-totals" style="border-top:none;padding-top:0;">
+          <div><dt>Status</dt><dd><span class="status-pill" data-order-status></span></dd></div>
+          <div><dt>Placed</dt><dd data-order-date></dd></div>
+          <div><dt>Tracking</dt><dd data-order-tracking>—</dd></div>
+        </dl>
+
+        <h2 style="font-family:var(--serif);font-size:24px;font-weight:400;margin:32px 0 12px;color:var(--ink);">Items</h2>
+        <div data-order-items></div>
+
+        <dl class="checkout-summary-totals">
+          <div><dt>Subtotal</dt><dd data-order-subtotal>—</dd></div>
+          <div><dt>Shipping</dt><dd data-order-shipping>—</dd></div>
+          <div class="total"><dt>Total</dt><dd data-order-total>—</dd></div>
+        </dl>
+
+        <div style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="btn btn-dark" type="button" data-buy-again>Buy again</button>
+          <a class="btn btn-dark" style="background:transparent;color:var(--ink);border:1px solid var(--ink);text-decoration:none;" href="mailto:zachary@getaplomb.com?subject=Order%20support">Contact support</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="foot-grid" style="grid-template-columns:1fr 1fr;">
+      <div>
+        <div class="foot-logo">
+          <svg class="mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4" stroke-linecap="square"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+          <span class="word">Aplomb<span class="dot">.</span></span>
+        </div>
+      </div>
+      <div class="foot-col">
+        <div class="pill">Account</div>
+        <a class="foot-link" href="/account/">Dashboard</a>
+        <a class="foot-link" href="/account/subscriptions/">Subscriptions</a>
+      </div>
+    </div>
+    <div class="foot-legal"><span class="row-sm"><span>&copy; MMXXVI Get Aplomb</span></span></div>
+  </footer>
+</div>
+
+<script src="/assets/cart.js" defer></script>
+<script>
+(function () {
+  'use strict';
+  function $(s){ return document.querySelector(s); }
+  function fmt(cents){ if (cents == null) return '—'; const d = cents/100; return '$' + (d % 1 === 0 ? d.toFixed(0) : d.toFixed(2)); }
+  function fmtDate(s){ if (!s) return '—'; try { return new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); } catch(_){ return s; } }
+  function shortId(id){ return (id || '').toString().slice(0, 8).toUpperCase(); }
+  function escapeHtml(s){ return (s == null ? '' : String(s)).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
+
+  function showError(msg){
+    $('[data-order-eyebrow]').textContent = 'Error';
+    const el = $('[data-order-error]'); el.hidden = false; el.textContent = msg;
+  }
+
+  async function load() {
+    const id = new URLSearchParams(window.location.search).get('id');
+    if (!id) { showError('No order ID provided.'); return; }
+    let resp;
+    try { resp = await fetch('/api/order/' + encodeURIComponent(id)); }
+    catch (_) { showError('Network error.'); return; }
+    if (!resp.ok) { showError('Could not load this order.'); return; }
+    const o = await resp.json();
+    render(o);
+  }
+
+  function render(o) {
+    $('[data-order-eyebrow]').textContent = 'Order #' + shortId(o.stripe_payment_intent_id || o.stripe_checkout_session_id || o.id);
+    $('[data-order-ref]').textContent = '#' + shortId(o.stripe_payment_intent_id || o.stripe_checkout_session_id || o.id);
+    $('[data-order-body]').hidden = false;
+    $('[data-order-status]').textContent = o.status || '—';
+    $('[data-order-status]').classList.add('status-' + (o.status || 'pending'));
+    $('[data-order-date]').textContent = fmtDate(o.created_at);
+    $('[data-order-tracking]').textContent = o.tracking_number
+      ? `${o.tracking_number} (${o.carrier || 'carrier'})`
+      : 'Not yet shipped';
+
+    const items = o.line_items || [];
+    $('[data-order-items]').innerHTML = items.map(li => {
+      const lineCents = (li.unitPriceCents || 0) * (li.quantity || 1);
+      return `
+        <div class="checkout-summary-item">
+          <div>
+            <div class="checkout-summary-name">${escapeHtml(li.name || li.productKey)}</div>
+            <div class="checkout-summary-meta">Qty ${li.quantity || 1}${li.mode === 'subscription' ? ' &middot; subscription' : ''}</div>
+          </div>
+          <div class="checkout-summary-price">${fmt(lineCents)}</div>
+        </div>
+      `;
+    }).join('');
+
+    $('[data-order-subtotal]').textContent = fmt(o.subtotal_cents);
+    $('[data-order-shipping]').textContent = o.shipping_cents == null ? '—' : (o.shipping_cents === 0 ? 'Free' : fmt(o.shipping_cents));
+    $('[data-order-total]').textContent = fmt(o.total_cents || o.subtotal_cents);
+
+    // Buy again — populate cart with order's line items
+    $('[data-buy-again]').onclick = function () {
+      if (!window.AplombCart) return;
+      window.AplombCart.clear();
+      for (const li of items) {
+        window.AplombCart.add(li.productKey, li.mode || 'onetime', li.quantity || 1);
+      }
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', load);
+})();
+</script>
+</body>
+</html>

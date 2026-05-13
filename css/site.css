@@ -1073,7 +1073,494 @@
     transition: background 0.18s;
   }
   .cart-checkout:hover { background: var(--amber); }
-  .cart-checkout:disabled { opacity: 0.4; cursor: not-allowed; }
+  .cart-checkout:disabled,
+  .cart-checkout.is-disabled,
+  .cart-checkout[aria-disabled="true"] { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+  a.cart-checkout { text-decoration: none; text-align: center; }
+
+  /* Visually-hidden helper for accessible legends */
+  .visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0);
+    white-space: nowrap; border: 0;
+  }
+
+  /* One-time vs Subscribe mode toggle (PDPs + product modal) */
+  .mode-toggle {
+    margin: 18px 0 0;
+    padding: 0;
+    border: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .mode-opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid var(--border, #d8cdb6);
+    border-radius: 4px;
+    cursor: pointer;
+    background: rgba(247,241,230,0.6);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .mode-opt:hover { border-color: var(--ink); }
+  .mode-opt input[type="radio"] {
+    flex: 0 0 auto;
+    margin-top: 3px;
+    accent-color: #7a3d14;
+  }
+  .mode-opt-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .mode-opt-title {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+  .mode-opt-meta {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .mode-opt:has(input:checked) {
+    border-color: var(--ink);
+    background: rgba(247,241,230,1);
+  }
+  .mode-opt-sub:has(input:checked) {
+    border-color: #7a3d14;
+    background: rgba(122, 61, 20, 0.04);
+  }
+  .mode-opt-sub:has(input:checked) .mode-opt-title { color: #7a3d14; }
+  /* Dark-background PDP buy-box overrides */
+  .pp-buy-box .mode-opt {
+    background: rgba(247,241,230,0.08);
+    border-color: rgba(247,241,230,0.25);
+  }
+  .pp-buy-box .mode-opt:hover { border-color: rgba(247,241,230,0.6); }
+  .pp-buy-box .mode-opt-title { color: var(--paper); }
+  .pp-buy-box .mode-opt-meta { color: rgba(247,241,230,0.7); }
+  .pp-buy-box .mode-opt:has(input:checked) {
+    background: rgba(247,241,230,0.16);
+    border-color: var(--paper);
+  }
+  .pp-buy-box .mode-opt-sub:has(input:checked) {
+    background: rgba(122, 61, 20, 0.35);
+    border-color: var(--amber);
+  }
+  .pp-buy-box .mode-opt-sub:has(input:checked) .mode-opt-title { color: var(--paper); }
+  .pp-buy-box-meta { display: flex; flex-direction: column; }
+  .pp-buy-box-meta .micro { color: rgba(247,241,230,0.65); }
+
+  /* Standalone /checkout/ page */
+  .nav-checkout { border-bottom: 1px solid var(--border, #d8cdb6); }
+  .checkout-page input[type="email"],
+  .checkout-page input[type="text"] {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    margin: 4px 0 14px;
+    border: 1px solid var(--border, #d8cdb6);
+    border-radius: 4px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    background: var(--paper);
+  }
+  .checkout-page input[type="email"]:focus,
+  .checkout-page input[type="text"]:focus {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 0 0 2px rgba(122,61,20,0.12);
+  }
+  .checkout-page label {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+  }
+  .checkout-submit {
+    display: block;
+    width: 100%;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 18px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    cursor: pointer;
+    transition: background 0.18s;
+    margin-top: 6px;
+  }
+  .checkout-submit:hover { background: var(--amber); }
+  .checkout-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .checkout-error {
+    background: rgba(184,52,30,0.08);
+    border-left: 3px solid #b8341e;
+    padding: 12px 14px;
+    margin: 0 0 16px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    color: #b8341e;
+  }
+  .checkout-summary {
+    background: rgba(122,61,20,0.04);
+    padding: 28px;
+    border: 1px solid var(--border, #d8cdb6);
+    border-radius: 4px;
+    align-self: start;
+    position: sticky;
+    top: 24px;
+  }
+  .checkout-summary-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(26,21,18,0.08);
+  }
+  .checkout-summary-item:last-child { border-bottom: none; }
+  .checkout-summary-name {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .checkout-summary-meta {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .checkout-summary-price {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .checkout-summary-totals {
+    margin: 18px 0 0;
+    padding: 18px 0 0;
+    border-top: 1px solid rgba(26,21,18,0.12);
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  .checkout-summary-totals div {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .checkout-summary-totals div dt, .checkout-summary-totals div dd { margin: 0; }
+  .checkout-summary-totals .total {
+    padding-top: 12px;
+    margin-top: 6px;
+    border-top: 1px solid rgba(26,21,18,0.12);
+    font-size: 18px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  @media (max-width: 860px) {
+    .checkout-page { grid-template-columns: 1fr !important; gap: 32px !important; }
+    .checkout-summary { position: static; }
+  }
+
+  /* Account pages */
+  .account-section {
+    margin: 0 0 48px;
+    padding: 0;
+  }
+  .account-section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 0 0 16px;
+    padding: 0 0 10px;
+    border-bottom: 1px solid var(--border, #d8cdb6);
+  }
+  .account-section h2 {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 400;
+    margin: 0;
+    color: var(--ink);
+  }
+  .account-section-link {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .account-section-link:hover { color: var(--amber); }
+  .account-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(26,21,18,0.08);
+    text-decoration: none;
+  }
+  .account-row:last-child { border-bottom: none; }
+  .account-row-link { cursor: pointer; transition: background 0.12s; }
+  .account-row-link:hover { background: rgba(122,61,20,0.03); }
+  .account-row-title {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .account-row-meta {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .account-row-value {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .account-addresses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .account-address {
+    padding: 14px 16px;
+    background: rgba(247,241,230,0.5);
+    border: 1px solid var(--border, #d8cdb6);
+    border-radius: 4px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .status-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    background: rgba(26,21,18,0.08);
+    color: var(--ink);
+  }
+  .status-pill.status-active { background: rgba(52,184,30,0.12); color: #1c7a14; }
+  .status-pill.status-paid { background: rgba(52,184,30,0.12); color: #1c7a14; }
+  .status-pill.status-shipped { background: rgba(122,61,20,0.12); color: #7a3d14; }
+  .status-pill.status-pending { background: rgba(184,148,30,0.12); color: #7a5814; }
+  .status-pill.status-refunded { background: rgba(184,52,30,0.08); color: #b8341e; }
+  .status-pill.status-canceled { background: rgba(120,120,120,0.12); color: var(--muted); }
+  .status-pill.status-past_due { background: rgba(184,52,30,0.12); color: #b8341e; }
+
+  /* Footer newsletter block */
+  .foot-newsletter {
+    background: transparent;
+    padding: 28px 0 32px;
+    margin: 0 0 24px;
+    border-bottom: 1px solid rgba(247,241,230,0.18);
+  }
+  .foot-newsletter-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: end;
+    max-width: 1200px;
+  }
+  .foot-newsletter h3 {
+    font-family: var(--serif);
+    font-size: 30px;
+    font-weight: 400;
+    margin: 8px 0 6px;
+    color: var(--paper);
+    line-height: 1.15;
+  }
+  .foot-newsletter p {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    color: rgba(247,241,230,0.78);
+    margin: 0;
+    line-height: 1.55;
+    max-width: 50ch;
+  }
+  .foot-newsletter-form {
+    display: flex;
+    gap: 0;
+    max-width: 460px;
+    border: 1px solid rgba(247,241,230,0.3);
+    background: rgba(247,241,230,0.04);
+  }
+  .foot-newsletter-form input[type="email"] {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    padding: 14px 16px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    color: var(--paper);
+    outline: none;
+  }
+  .foot-newsletter-form input[type="email"]::placeholder { color: rgba(247,241,230,0.45); }
+  .foot-newsletter-form button {
+    background: var(--paper);
+    color: var(--ink);
+    border: 0;
+    padding: 14px 22px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .foot-newsletter-form button:hover { background: var(--amber); color: var(--paper); }
+  .foot-newsletter-form button:disabled { opacity: 0.6; cursor: not-allowed; }
+  .foot-newsletter-status {
+    grid-column: 1 / -1;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    margin: 12px 0 0;
+    padding: 8px 12px;
+    border-radius: 3px;
+  }
+  .foot-newsletter-status.is-ok { background: rgba(247,241,230,0.08); color: var(--paper); }
+  .foot-newsletter-status.is-err { background: rgba(184,52,30,0.18); color: #ffb5a8; }
+  @media (max-width: 760px) {
+    .foot-newsletter-inner { grid-template-columns: 1fr; gap: 18px; }
+  }
+
+  /* Newsletter soft popup */
+  .newsletter-popup {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: min(420px, calc(100vw - 32px));
+    background: var(--paper);
+    border: 1px solid var(--ink);
+    box-shadow: 0 12px 40px rgba(26,21,18,0.22);
+    padding: 24px 24px 22px;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    z-index: 999;
+    border-radius: 4px;
+  }
+  .newsletter-popup.is-open { transform: translateY(0); opacity: 1; }
+  .newsletter-popup-inner { position: relative; }
+  .newsletter-popup-close {
+    position: absolute;
+    top: -8px; right: -8px;
+    background: transparent;
+    border: 0;
+    font-size: 24px;
+    line-height: 1;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+  .newsletter-popup-close:hover { color: var(--ink); }
+  .newsletter-popup h3 {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 400;
+    margin: 10px 0 8px;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .newsletter-popup p {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: 0 0 14px;
+  }
+  .newsletter-popup .foot-newsletter-form {
+    border-color: var(--ink);
+    background: var(--paper);
+    max-width: 100%;
+  }
+  .newsletter-popup .foot-newsletter-form input[type="email"] { color: var(--ink); }
+  .newsletter-popup .foot-newsletter-form input[type="email"]::placeholder { color: rgba(26,21,18,0.4); }
+  .newsletter-popup .foot-newsletter-form button { background: var(--ink); color: var(--paper); }
+  .newsletter-popup .foot-newsletter-form button:hover { background: var(--amber); }
+  .newsletter-popup-fine {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    margin: 12px 0 0;
+    line-height: 1.4;
+  }
+  .newsletter-popup .foot-newsletter-status.is-ok { background: rgba(122,61,20,0.06); color: var(--ink); }
+  .newsletter-popup .foot-newsletter-status.is-err { background: rgba(184,52,30,0.08); color: #b8341e; }
+
+  /* Accessibility — skip-to-main + global focus rings */
+  .skip-to-main {
+    position: absolute;
+    left: -9999px;
+    top: 8px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 16px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    text-decoration: none;
+    z-index: 99999;
+    border-radius: 4px;
+  }
+  .skip-to-main:focus {
+    left: 8px;
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+  }
+  a:focus-visible, button:focus-visible,
+  input:focus-visible, select:focus-visible, textarea:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Reduced motion — disable carousel auto-advance + newsletter popup slide */
+  @media (prefers-reduced-motion: reduce) {
+    .bio-track { transition: none !important; }
+    .newsletter-popup { transition: none !important; }
+    .cart-drawer { transition: none !important; }
+    .product-modal { transition: none !important; }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  /* Mobile cart drawer fills the screen */
+  @media (max-width: 720px) {
+    .cart-drawer { width: 100vw !important; max-width: none !important; }
+    .nav-links { display: none; }
+    .nav { padding: 12px 16px; }
+    .pp-section .inner { padding: 32px 20px; }
+    .hero-grid { grid-template-columns: 1fr !important; }
+    .checkout-page { padding: 20px !important; }
+  }
   .cart-foot .micro {
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 10px;
