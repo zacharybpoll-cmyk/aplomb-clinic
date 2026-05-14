@@ -1,9 +1,14 @@
 // Shared auth helpers for Cloudflare Pages Functions:
-//  - getSessionFromRequest(): decode + HMAC-verify a Supabase Auth JWT from the
-//    sb-access-token cookie. Returns { email, userId, role, exp } or null.
+//  - getSessionFromRequest(): validate the sb-access-token cookie by hitting
+//    Supabase's /auth/v1/user introspection endpoint. Returns
+//    { email, userId, role } or null. Supabase Auth now signs JWTs with
+//    ES256 (asymmetric) by default, so we delegate verification to Supabase
+//    rather than maintaining ES256 + JWKS verification locally — simpler and
+//    handles key rotation automatically.
 //  - requireSession(): throws a 401 Response when no valid session exists.
-//  - signUnsubscribeToken / verifyUnsubscribeToken: HMAC-signed tokens used in
-//    email footers to let recipients unsubscribe without logging in.
+//  - signUnsubscribeToken / verifyUnsubscribeToken: HMAC-signed tokens used
+//    in email footers to let recipients unsubscribe without logging in
+//    (these are our own tokens, unrelated to Supabase Auth).
 //
 // All crypto uses the Web Crypto API available in the Workers runtime; no
 // Node packages required.
@@ -38,33 +43,27 @@ async function importHmacKey(secret) {
   );
 }
 
-// Verify a Supabase Auth JWT (HS256) and return the decoded payload, or null
-// on any failure (missing, malformed, bad sig, expired). Never throws.
+// Validate the sb-access-token cookie by introspecting against Supabase Auth.
+// Returns { email, userId, role, raw } on success, null otherwise. Never throws.
 export async function getSessionFromRequest(request, env) {
   const token = readCookie(request, 'sb-access-token');
-  if (!token || !env.SUPABASE_JWT_SECRET) return null;
-
-  const parts = token.split('.');
-  if (parts.length !== 3) return null;
-  const [headerB64, payloadB64, sigB64] = parts;
+  if (!token) return null;
+  if (!env.SUPABASE_URL || !env.SUPABASE_ANON_KEY) return null;
 
   try {
-    const header = JSON.parse(b64urlDecode(headerB64));
-    if (header.alg !== 'HS256') return null;
-
-    const key = await importHmacKey(env.SUPABASE_JWT_SECRET);
-    const sigBytes = Uint8Array.from(b64urlDecode(sigB64), (c) => c.charCodeAt(0));
-    const data = new TextEncoder().encode(`${headerB64}.${payloadB64}`);
-    const valid = await crypto.subtle.verify('HMAC', key, sigBytes, data);
-    if (!valid) return null;
-
-    const payload = JSON.parse(b64urlDecode(payloadB64));
-    if (!payload.exp || payload.exp * 1000 < Date.now()) return null;
+    const res = await fetch(`${env.SUPABASE_URL}/auth/v1/user`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'apikey': env.SUPABASE_ANON_KEY,
+      },
+    });
+    if (!res.ok) return null;
+    const user = await res.json();
+    if (!user?.id || !user?.email) return null;
     return {
-      email: (payload.email || '').toLowerCase(),
-      userId: payload.sub,
-      role: payload.role || 'authenticated',
-      exp: payload.exp,
+      email: String(user.email).toLowerCase(),
+      userId: user.id,
+      role: user.role || 'authenticated',
       raw: token,
     };
   } catch (_) {
