@@ -7,35 +7,70 @@ This folder is the canonical source. The previous `AFTER.` and `KEEP.` iteration
 ## What's here
 
 ```
-aplomb.clinic/
+Get-Aplomb/
 ├── README.md                  # this file
-├── index.html                 # full site, monolithic (CSS + JS embedded)
-├── brand/
-│   └── BRAND.md               # palette, type, voice, photo direction, do/don't
-├── assets/                    # 15 images
-│   ├── (4 portraits)          founder-zachary, hero-two-women, portrait-confident, woman-50s-portrait
-│   ├── (3 mechanism art)      roots-mech, calm-mech, breath-mech (gouache illustrations)
-│   ├── (2 face stills)        face-volume-loss, face-volume-preserved
-│   └── (6 product rails)      serum-detail, serum-rail, bundle-detail, daily-rail, roots-rail, calm-rail
-└── scripts/
-    ├── gen-bundle-photos.py   # 5 photographic stills (serum + bundle + face)
-    └── gen-fourpack-photos.py # 3 rails + 3 mechanism illustrations
+├── COMMERCE-RUNBOOK.md        # checkout / Stripe operational notes
+├── wrangler.toml              # Cloudflare Pages config (build dir = website/)
+├── package.json               # npm scripts (dev, deploy)
+├── CNAME                      # custom domain binding
+│
+├── website/                   # THE LIVE SITE — what Cloudflare Pages serves
+│   ├── index.html             # full homepage, monolithic
+│   ├── about/, account/, admin/, biology/, breath/, calm/, checkout/,
+│   │   contact/, email-preferences/, evidence/, faq/, legal/, roots/, serum/
+│   ├── assets/                # images + cart.js, checkout.js, analytics.js
+│   ├── css/                   # site.css
+│   ├── scripts/               # image-gen pipeline (Flux 2 Pro)
+│   ├── sitemap.xml, robots.txt
+│
+├── functions/                 # CF Pages Functions (must stay at repo root)
+├── supabase/                  # database migrations + config
+│
+├── brand/                     # canonical brand identity
+│   ├── BRAND.md               # palette, type, voice, photo direction
+│   └── logo/                  # logo SVGs + build scripts
+│
+├── product-lines/             # per-product mockups, labels, supplier specs
+│   ├── chewables/
+│   ├── hair-growth-serum/
+│   ├── nausea/                # includes aplomb_calm_pouch_v1
+│   ├── packaging/             # mailer artwork
+│   └── peptide-serum/
+│
+├── business-documents/        # research + supplier work + corporate
+│   ├── corporate/             # EIN
+│   ├── product-research/      # category analyses, private-label catalog
+│   └── supplier-analysis/     # alternates, mitigation, RFQs, audits
+│       └── correspondence/    # supplier shortlist, zone snapshots, sessions
+│
+├── social-media/              # drafts and assets for IG/TikTok/X (placeholder)
+│
+├── design-scratch/            # design experiments — not production
+│   ├── avatars/               # heygen avatar generation outputs
+│   ├── logo-iterations/       # earlier logo design rounds
+│   ├── bfl-tests/             # BFL canon test renders
+│   └── TODO-PICTURE-TAGS.md
+│
+└── tasks/                     # project tasks + lessons
 ```
 
 ## Local preview
 
 ```bash
-open index.html
+npm run dev
+# → boots `wrangler pages dev website` on http://localhost:8788
 ```
 
-The site is static and self-contained — no build step, no server needed.
+Functions (`/api/...`, `/cron/...`, `/admin/...`) auto-load from the root-level
+`functions/` directory. Static pages live in `website/`. Both are served
+together at localhost.
 
 ## Regenerate brand-bearing images
 
 All product photography and mechanism art is generated via **Black Forest Labs Flux 2 Pro**. The API key lives in `~/.claude/secrets.env` as `BFL_API_KEY` (already sourced by `~/.zshrc`).
 
 ```bash
-cd scripts
+cd website/scripts
 source ~/.claude/secrets.env
 
 # All bundle photos (face + serum + bundle), 5 images, ~10 min:
@@ -49,7 +84,7 @@ python3 gen-bundle-photos.py     --only serum-rail
 python3 gen-fourpack-photos.py   --only daily-rail
 ```
 
-Outputs land directly in `assets/`. Flux 2 Pro can occasionally misspell "APLOMB" on labels — inspect each generated image, regenerate up to 2x with a different seed if a label is mangled.
+Outputs land directly in `website/assets/` (the scripts compute the target dir relative to their own location). Flux 2 Pro can occasionally misspell "APLOMB" on labels — inspect each generated image, regenerate up to 2x with a different seed if a label is mangled.
 
 ## Brand rules
 
