@@ -82,6 +82,8 @@ export const onRequestPost = async ({ request, env }) => {
     return json({ ok: true });
   }
 
+  // admin/generate_link returns hashed_token at the top level (older versions
+  // nested it under `properties`); accept both.
   const hashedToken = data?.properties?.hashed_token || data?.hashed_token || null;
   if (!hashedToken) return json({ ok: true });
 
