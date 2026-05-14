@@ -15,5 +15,5 @@ node_modules/
 *.pdf
 Screenshot*.png
 
-# But: product-design artifacts (real labels + supplier uploads) ARE tracked
-!product designs/**/*.pdf
+# But: product-line label artwork (real labels + supplier uploads) IS tracked
+!product-lines/**/*.pdf
