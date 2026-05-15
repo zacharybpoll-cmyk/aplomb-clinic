@@ -1,0 +1,34 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: pages-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy website/ + functions/ to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 47f9809c9606c61cb22110fc8e47565c
+          wranglerVersion: "4.76.0"
+          command: >-
+            pages deploy website
+            --project-name=aplomb-clinic
+            --branch=main
+            --commit-hash=${{ github.sha }}
