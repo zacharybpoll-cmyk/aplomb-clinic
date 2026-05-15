@@ -1,0 +1,23 @@
+name = "aplomb-clinic-cron"
+main = "src/index.js"
+compatibility_date = "2026-04-01"
+
+# Cloudflare Workers (not Pages Functions) supports scheduled triggers.
+# This Worker exists solely to call the /cron/* endpoints on the Pages
+# project (aplomb-clinic) on a schedule. Each trigger POSTs with the
+# X-Cron-Secret header. The Worker itself has no public HTTP routes.
+#
+# Times are UTC. Pacific time is UTC-8 (PST) / UTC-7 (PDT). 9am UTC ≈ 2am
+# Pacific, which is the right time of day for low-traffic batch sends.
+[triggers]
+crons = [
+  "0 9 * * *",    # renewal-reminder (subscribers whose renewal is in 4-6 days)
+  "15 9 * * *",   # review-requests  (orders shipped 10-30 days ago, not yet asked)
+  "30 9 * * *",   # welcome-series   (day-3 + day-7 batches)
+]
+
+# Required environment variables (set via `wrangler secret put <NAME>`):
+#   CRON_SHARED_SECRET  — must match the Pages project env var of the same name
+#
+# Optional:
+#   PAGES_BASE_URL      — defaults to https://getaplomb.com if unset
