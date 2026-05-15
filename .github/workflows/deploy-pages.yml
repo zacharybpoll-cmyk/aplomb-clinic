@@ -26,9 +26,9 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: 47f9809c9606c61cb22110fc8e47565c
+          wranglerVersion: "4.76.0"
           command: >-
             pages deploy website
             --project-name=aplomb-clinic
             --branch=main
             --commit-hash=${{ github.sha }}
-            --commit-message=${{ github.event.head_commit.message || github.event.workflow_run.head_commit.message || 'manual dispatch' }}
