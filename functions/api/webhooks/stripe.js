@@ -9,6 +9,79 @@ import { stripeClient } from '../../_lib/stripe.js';
 import { supabaseAdmin } from '../../_lib/supabase.js';
 import { sendOrderConfirmation, sendEmail } from '../../_lib/email.js';
 
+// ─────────────────────────────────────────────────────────────────────────
+// Inventory: decrement on_hand per shipped SKU. Best-effort; failure does
+// not fail the webhook. Inventory rows are seeded in 0001_init.sql and the
+// check constraint (on_hand >= 0) prevents going negative.
+// ─────────────────────────────────────────────────────────────────────────
+async function decrementInventory(sb, lineItems) {
+  if (!sb || !Array.isArray(lineItems)) return;
+  for (const li of lineItems) {
+    const key = (li.productKey || li.k || '').toString();
+    const qty = Math.max(1, parseInt(li.quantity || li.q || 1, 10));
+    if (!key || !qty) continue;
+    try {
+      // Read current then write — Supabase doesn't expose atomic decrement in
+      // its JS client without an RPC. Race is acceptable (single-tenant admin
+      // process owns the table); the check constraint stops negatives.
+      const { data: row } = await sb.from('inventory').select('on_hand').eq('product_key', key).maybeSingle();
+      if (!row) continue;
+      const next = Math.max(0, (row.on_hand || 0) - qty);
+      await sb.from('inventory').update({ on_hand: next, updated_at: new Date().toISOString() }).eq('product_key', key);
+    } catch (_) {
+      // swallow; do not fail webhook on inventory write
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Meta Conversions API — server-side Purchase / Subscribe events. Reads
+// META_PIXEL_ID + META_CAPI_ACCESS_TOKEN from env; no-op if either missing.
+// Hashes email with SHA-256 per Meta's PII requirements. event_id ties the
+// CAPI event to the browser-side fbq Pixel event for deduplication.
+// ─────────────────────────────────────────────────────────────────────────
+async function sha256Hex(input) {
+  const bytes = new TextEncoder().encode(String(input).trim().toLowerCase());
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function sendMetaCapiEvent(env, { eventName, eventId, email, valueCents, currency, productKeys }) {
+  if (!env.META_PIXEL_ID || !env.META_CAPI_ACCESS_TOKEN) return;
+  try {
+    const userData = {};
+    if (email) userData.em = [await sha256Hex(email)];
+    const payload = {
+      data: [{
+        event_name: eventName,
+        event_time: Math.floor(Date.now() / 1000),
+        event_id: eventId || undefined,
+        action_source: 'website',
+        event_source_url: env.SITE_URL || 'https://getaplomb.com',
+        user_data: userData,
+        custom_data: {
+          currency: (currency || 'usd').toUpperCase(),
+          value: valueCents != null ? (valueCents / 100).toFixed(2) : undefined,
+          content_ids: productKeys || [],
+          content_type: 'product',
+        },
+      }],
+    };
+    await fetch(`https://graph.facebook.com/v18.0/${env.META_PIXEL_ID}/events?access_token=${encodeURIComponent(env.META_CAPI_ACCESS_TOKEN)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch (_) {
+    // Best effort; do not fail the webhook on Meta API hiccup
+  }
+}
+
+function extractProductKeys(lineItems) {
+  if (!Array.isArray(lineItems)) return [];
+  return lineItems.map(li => (li.productKey || li.k || '').toString()).filter(Boolean);
+}
+
 export const onRequestPost = async ({ request, env }) => {
   const stripe = stripeClient(env);
   if (!stripe) return serverError('Stripe not configured.');
@@ -105,6 +178,19 @@ async function handlePaymentSucceeded(intent, sb, env, stripe) {
   } catch (_) {
     // email failure must not fail the webhook (stripe will retry forever)
   }
+
+  // Decrement inventory for each line item shipped.
+  await decrementInventory(sb, order.line_items);
+
+  // Server-side Meta CAPI Purchase event.
+  await sendMetaCapiEvent(env, {
+    eventName: 'Purchase',
+    eventId: intent.id,
+    email: order.email,
+    valueCents: order.total_cents || (order.subtotal_cents + (order.tax_cents || 0) + (order.shipping_cents || 0)),
+    currency: order.currency,
+    productKeys: extractProductKeys(order.line_items),
+  });
 }
 
 async function handlePaymentFailed(intent, sb) {
@@ -189,6 +275,19 @@ async function handleCheckoutSessionCompleted(session, sb, env) {
 
   if (order) {
     try { await sendOrderConfirmation(env, order); } catch (_) {}
+
+    // Decrement inventory for Day-1 subscription shipment.
+    await decrementInventory(sb, order.line_items);
+
+    // Server-side Meta CAPI Subscribe event (new subscription start).
+    await sendMetaCapiEvent(env, {
+      eventName: 'Subscribe',
+      eventId: session.id,
+      email: order.email,
+      valueCents: session.amount_total,
+      currency: session.currency,
+      productKeys: extractProductKeys(order.line_items),
+    });
   }
 
   // Upsert into customers table
@@ -269,6 +368,9 @@ async function handleInvoicePaid(invoice, sb, env) {
   // Send renewal receipt
   if (order) {
     try { await sendEmail(env, 'renewal-receipt', { order }); } catch (_) {}
+
+    // Decrement inventory on subscription renewal shipment.
+    await decrementInventory(sb, lineItems);
   }
 }
 

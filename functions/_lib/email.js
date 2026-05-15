@@ -16,6 +16,7 @@ const templates = {
   'newsletter-welcome': () => import('./email-templates/newsletter-welcome.js'),
   'welcome-day-3': () => import('./email-templates/welcome-day-3.js'),
   'welcome-day-7': () => import('./email-templates/welcome-day-7.js'),
+  'review-request': () => import('./email-templates/review-request.js'),
 };
 
 export async function sendEmail(env, templateName, data) {

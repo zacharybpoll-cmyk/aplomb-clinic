@@ -33,12 +33,13 @@ const cases = [
   ['newsletter-welcome', { email: 'test@example.com', discountCode: 'APLOMB10' }],
   ['welcome-day-3', { email: 'test@example.com' }],
   ['welcome-day-7', { email: 'test@example.com', discountCode: 'APLOMB10' }],
+  ['review-request', { order: STUB_ORDER }],
 ];
 
 let ok = 0, fail = 0;
 for (const [name, data] of cases) {
   try {
-    const mod = await import(`../functions/_lib/email-templates/${name}.js`);
+    const mod = await import(`../../functions/_lib/email-templates/${name}.js`);
     const r = await mod.render(env, data);
     if (!r.subject || !r.html || !r.text) throw new Error('missing fields');
     console.log(`✓ ${name.padEnd(28)} subject="${r.subject}" html=${r.html.length}b text=${r.text.length}b`);

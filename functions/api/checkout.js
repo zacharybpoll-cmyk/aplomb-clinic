@@ -220,6 +220,7 @@ async function handleSubscriptionCheckout(validated, email, name, customer, env,
       success_url: `${env.SITE_URL || 'https://getaplomb.com'}/checkout/success/?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${env.SITE_URL || 'https://getaplomb.com'}/checkout/`,
       automatic_tax: { enabled: true },
+      allow_promotion_codes: true,
       shipping_address_collection: { allowed_countries: ['US'] },
       ...(shippingOptions.length ? { shipping_options: shippingOptions } : {}),
       subscription_data: {

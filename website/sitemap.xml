@@ -1,21 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://getaplomb.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://getaplomb.com/serum/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://getaplomb.com/daily/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://getaplomb.com/roots/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://getaplomb.com/calm/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://getaplomb.com/breath/</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://getaplomb.com/about/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://getaplomb.com/biology/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://getaplomb.com/evidence/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://getaplomb.com/faq/</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://getaplomb.com/contact/</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://getaplomb.com/legal/privacy/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://getaplomb.com/legal/terms/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://getaplomb.com/legal/refund-policy/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://getaplomb.com/legal/shipping/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://getaplomb.com/legal/returns/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://getaplomb.com/legal/subscription-terms/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://getaplomb.com/legal/accessibility/</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <url>
+    <loc>https://getaplomb.com/</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://getaplomb.com/assets/hero-two-women.jpg</image:loc>
+      <image:title>APLOMB. — woman in her late fifties at a sash window in warm late-morning light</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://getaplomb.com/serum/</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://getaplomb.com/assets/serum-rail.jpg</image:loc>
+      <image:title>APLOMB. The Serum — frosted glass bottle, cream paper packaging</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://getaplomb.com/roots/</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://getaplomb.com/assets/roots-rail.jpg</image:loc>
+      <image:title>APLOMB. Roots — hair-shed daily, no biotin</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://getaplomb.com/calm/</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://getaplomb.com/assets/calm-pouch-hero.jpg</image:loc>
+      <image:title>APLOMB. Calm — titration-period nausea kit</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://getaplomb.com/breath/</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://getaplomb.com/assets/pharmaloz-tin-hero.jpg</image:loc>
+      <image:title>APLOMB. Breath — zinc-acetate + xylitol lozenge tin</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://getaplomb.com/about/</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://getaplomb.com/assets/founder-zachary.jpg</image:loc>
+      <image:title>Zachary Poll, Founder of APLOMB.</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://getaplomb.com/biology/</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://getaplomb.com/evidence/</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://getaplomb.com/faq/</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://getaplomb.com/contact/</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url><loc>https://getaplomb.com/legal/privacy/</loc><lastmod>2026-05-14</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://getaplomb.com/legal/terms/</loc><lastmod>2026-05-14</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://getaplomb.com/legal/refund-policy/</loc><lastmod>2026-05-14</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://getaplomb.com/legal/shipping/</loc><lastmod>2026-05-14</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://getaplomb.com/legal/returns/</loc><lastmod>2026-05-14</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://getaplomb.com/legal/subscription-terms/</loc><lastmod>2026-05-14</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://getaplomb.com/legal/cookie-policy/</loc><lastmod>2026-05-14</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://getaplomb.com/legal/accessibility/</loc><lastmod>2026-05-14</lastmod><changefreq>yearly</changefreq><priority>0.3</priority></url>
+
 </urlset>

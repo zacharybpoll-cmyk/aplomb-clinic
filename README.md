@@ -9,7 +9,6 @@ This folder is the canonical source. The previous `AFTER.` and `KEEP.` iteration
 ```
 Get-Aplomb/
 ├── README.md                  # this file
-├── COMMERCE-RUNBOOK.md        # checkout / Stripe operational notes
 ├── wrangler.toml              # Cloudflare Pages config (build dir = website/)
 ├── package.json               # npm scripts (dev, deploy)
 ├── CNAME                      # custom domain binding
@@ -38,6 +37,7 @@ Get-Aplomb/
 │   └── peptide-serum/
 │
 ├── business-documents/        # research + supplier work + corporate
+│   ├── COMMERCE-RUNBOOK.md    # checkout / Stripe operational notes
 │   ├── corporate/             # EIN
 │   ├── product-research/      # category analyses, private-label catalog
 │   └── supplier-analysis/     # alternates, mitigation, RFQs, audits
@@ -98,9 +98,11 @@ See [`brand/BRAND.md`](brand/BRAND.md) for the canonical brand spec. Highlights:
 
 ## Deploy
 
-Live at **https://getaplomb.com** (GitHub Pages serving from `main` branch root; DNS on Cloudflare in gray-cloud / DNS-only mode so GitHub manages the Let's Encrypt cert directly).
+Live at **https://getaplomb.com** via **Cloudflare Pages** (project `aplomb-clinic`). CF Pages rebuilds on every push to `main` (takes ~1–2 min) and serves the `website/` directory plus the `functions/` API. Custom domain is set via the repo-root `CNAME` file (single line: `getaplomb.com`) plus the Pages dashboard custom-domain binding.
 
-Custom domain is set via the repo-root `CNAME` file (single line: `getaplomb.com`). Pages rebuilds on every push to `main`; takes ~1–2 min. The old project URL `https://zacharybpoll-cmyk.github.io/aplomb-clinic/` now 301-redirects to the custom domain automatically.
+Manual deploy: `npm run deploy` (`wrangler pages deploy website --project-name=aplomb-clinic`).
+
+Scheduled jobs (`/cron/welcome-series`, `/cron/renewal-reminder`, `/cron/review-requests`) live in `functions/cron/` but **Pages Functions cannot schedule themselves**. A companion Cloudflare Worker in [`companion-worker/`](companion-worker/README.md) handles the cron triggers, POSTing into the Pages endpoints with a shared secret. Deploy that Worker separately via `cd companion-worker && wrangler deploy`.
 
 ## Lineage
 

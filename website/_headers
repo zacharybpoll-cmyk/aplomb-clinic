@@ -1,0 +1,50 @@
+# APLOMB. — Cloudflare Pages security headers
+#
+# Notes:
+# - CSP ships in REPORT-ONLY mode for the first week post-launch. After verifying
+#   zero false-positive reports, switch to enforcing by renaming the header
+#   `Content-Security-Policy-Report-Only` → `Content-Security-Policy`.
+# - frame-src includes Stripe (Payment Element iframes) + Cloudflare Turnstile.
+# - script-src allows: Stripe (checkout JS), Plausible, Sentry CDN, Cloudflare
+#   Turnstile. When Meta Pixel ships, add `https://connect.facebook.net` to
+#   script-src and `https://www.facebook.com` to connect-src + img-src.
+# - When Microsoft Clarity ships, add `https://www.clarity.ms` to script-src and
+#   `https://*.clarity.ms` to connect-src.
+
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(self "https://js.stripe.com"), interest-cohort=()
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://js.stripe.com https://plausible.io https://js.sentry-cdn.com https://browser.sentry-cdn.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.stripe.com https://plausible.io https://*.sentry.io https://*.ingest.sentry.io https://challenges.cloudflare.com; frame-src https://js.stripe.com https://challenges.cloudflare.com https://hooks.stripe.com; form-action 'self' https://checkout.stripe.com; base-uri 'self'; object-src 'none'
+
+/api/*
+  Cache-Control: no-store, no-cache, must-revalidate
+  X-Robots-Tag: noindex, nofollow
+
+/admin/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/account/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/checkout/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/email-preferences/*
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/css/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600
