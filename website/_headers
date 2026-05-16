@@ -55,3 +55,11 @@
 /llms.txt
   Content-Type: text/plain; charset=utf-8
   Cache-Control: public, max-age=3600
+
+# Apple Pay domain verification. Stripe handles merchant validation behind the
+# scenes (Payment Method Domains), but Apple still fetches this exact file from
+# our domain — it MUST be a direct 200 (no redirect) or canMakePayment() returns
+# applePay:false. File contents are Stripe's canonical public association blob.
+/.well-known/apple-developer-merchantid-domain-association
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: public, max-age=3600
