@@ -36,6 +36,12 @@
     } catch (_) {}
     return false;
   }
+  // Single source of truth for cross-context advertising opt-in. Governs BOTH
+  // the browser Meta Pixel and the server-side Meta Conversions API: /api/checkout
+  // forwards this so the Stripe webhook suppresses CAPI when it is false.
+  function adConsentGranted() {
+    return consentGet() === 'accepted' && !isPrivacySignaled();
+  }
 
   // ─────────────────────────────────────────────────────────────────────────
   // Plausible — always on (cookieless)
@@ -308,6 +314,7 @@
 
   window.AplombAnalytics = {
     track,
+    adConsentGranted,
     consent: {
       get: consentGet,
       set: consentSet,

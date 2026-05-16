@@ -96,6 +96,9 @@
         quantity: li.quantity,
         mode: li.mode || 'onetime',
       })),
+      // Cross-context ad-sharing opt-in. Drives server-side Meta CAPI suppression.
+      // Absent/false (e.g. analytics not loaded) → server defaults to no sharing.
+      adConsent: !!(window.AplombAnalytics && window.AplombAnalytics.adConsentGranted && window.AplombAnalytics.adConsentGranted()),
       turnstileToken: getTurnstileToken(),
     };
   }
