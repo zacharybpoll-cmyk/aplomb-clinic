@@ -39,11 +39,18 @@
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
 
+# Asset filenames are NOT content-hashed (we serve /assets/analytics.js, not
+# /assets/analytics.abc123.js). `immutable` + 1yr max-age here means a changed
+# JS/CSS file is NEVER picked up by the edge until eviction — silently shipping
+# stale code (e.g. consent logic). Use revalidation instead: browsers/edge keep
+# a copy but always check ETag; Cloudflare returns a cheap 304 when unchanged
+# and fresh bytes immediately after a deploy. Only switch to immutable if/when
+# filenames become content-hashed.
 /assets/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 /css/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=0, must-revalidate
 
 /llms.txt
   Content-Type: text/plain; charset=utf-8
