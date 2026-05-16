@@ -6,13 +6,17 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler pages dev website --compatibility-flag=nodejs_compat",
-    "deploy": "wrangler pages deploy website --project-name=aplomb-clinic"
+    "deploy": "wrangler pages deploy website --project-name=aplomb-clinic",
+    "smoke": "bash scripts/smoke.sh",
+    "smoke:browser": "playwright test scripts/smoke-browser.spec.mjs",
+    "smoke:webhook": "bash scripts/smoke-webhook.sh"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
     "stripe": "^17.4.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "wrangler": "^3.90.0"
   }
 }
