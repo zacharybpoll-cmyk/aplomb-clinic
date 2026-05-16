@@ -39,6 +39,13 @@ async function decrementInventory(sb, lineItems) {
 // META_PIXEL_ID + META_CAPI_ACCESS_TOKEN from env; no-op if either missing.
 // Hashes email with SHA-256 per Meta's PII requirements. event_id ties the
 // CAPI event to the browser-side fbq Pixel event for deduplication.
+//
+// CONSENT GATE: this no-ops unless the customer opted in to cross-context
+// ad sharing. /api/checkout records the visitor's choice (cookie banner +
+// GPC/DNT) as ad_consent='1' on the Stripe object; callers derive adConsent
+// from that metadata. Missing/'0' → no send. This keeps the published
+// "Essential only / GPC = no sharing" promise true server-side, not just
+// in the browser.
 // ─────────────────────────────────────────────────────────────────────────
 async function sha256Hex(input) {
   const bytes = new TextEncoder().encode(String(input).trim().toLowerCase());
@@ -46,7 +53,8 @@ async function sha256Hex(input) {
   return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-async function sendMetaCapiEvent(env, { eventName, eventId, email, valueCents, currency, productKeys }) {
+async function sendMetaCapiEvent(env, { eventName, eventId, email, valueCents, currency, productKeys, adConsent }) {
+  if (!adConsent) return; // customer did not opt in to cross-context ad sharing
   if (!env.META_PIXEL_ID || !env.META_CAPI_ACCESS_TOKEN) return;
   try {
     const userData = {};
@@ -182,7 +190,7 @@ async function handlePaymentSucceeded(intent, sb, env, stripe) {
   // Decrement inventory for each line item shipped.
   await decrementInventory(sb, order.line_items);
 
-  // Server-side Meta CAPI Purchase event.
+  // Server-side Meta CAPI Purchase event (suppressed unless customer opted in).
   await sendMetaCapiEvent(env, {
     eventName: 'Purchase',
     eventId: intent.id,
@@ -190,6 +198,7 @@ async function handlePaymentSucceeded(intent, sb, env, stripe) {
     valueCents: order.total_cents || (order.subtotal_cents + (order.tax_cents || 0) + (order.shipping_cents || 0)),
     currency: order.currency,
     productKeys: extractProductKeys(order.line_items),
+    adConsent: intent?.metadata?.ad_consent === '1',
   });
 }
 
@@ -279,7 +288,7 @@ async function handleCheckoutSessionCompleted(session, sb, env) {
     // Decrement inventory for Day-1 subscription shipment.
     await decrementInventory(sb, order.line_items);
 
-    // Server-side Meta CAPI Subscribe event (new subscription start).
+    // Server-side Meta CAPI Subscribe event (suppressed unless customer opted in).
     await sendMetaCapiEvent(env, {
       eventName: 'Subscribe',
       eventId: session.id,
@@ -287,6 +296,7 @@ async function handleCheckoutSessionCompleted(session, sb, env) {
       valueCents: session.amount_total,
       currency: session.currency,
       productKeys: extractProductKeys(order.line_items),
+      adConsent: session?.metadata?.ad_consent === '1',
     });
   }
 

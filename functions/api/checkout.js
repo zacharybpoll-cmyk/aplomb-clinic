@@ -28,6 +28,10 @@ export const onRequestPost = async ({ request, env }) => {
   const name = (body?.name || '').trim();
   const lineItems = Array.isArray(body?.lineItems) ? body.lineItems : [];
   const shippingAddress = body?.shippingAddress || null;
+  // Cross-context ad-sharing opt-in (browser Pixel + server CAPI). Stored on the
+  // Stripe object so the webhook can suppress the Meta Conversions API send.
+  // Defaults to false (no sharing) when absent — the privacy-protective default.
+  const adConsent = body?.adConsent === true;
 
   if (!email || !email.includes('@')) return badRequest('A valid email is required.');
   if (!name) return badRequest('Your full name is required.');
@@ -70,13 +74,13 @@ export const onRequestPost = async ({ request, env }) => {
 
   // Branch on cart mode
   if (cartMode === 'subscription') {
-    return handleSubscriptionCheckout(validated, email, name, customer, env, stripe);
+    return handleSubscriptionCheckout(validated, email, name, customer, env, stripe, adConsent);
   } else {
-    return handleOnetimeCheckout(validated, email, name, customer, env, stripe, shippingAddress);
+    return handleOnetimeCheckout(validated, email, name, customer, env, stripe, shippingAddress, adConsent);
   }
 };
 
-async function handleOnetimeCheckout(validated, email, name, customer, env, stripe, shippingAddress) {
+async function handleOnetimeCheckout(validated, email, name, customer, env, stripe, shippingAddress, adConsent) {
   const subtotalCents = computeSubtotalCents(validated);
   const shippingCents = computeShippingCents(validated, env);
 
@@ -147,6 +151,7 @@ async function handleOnetimeCheckout(validated, email, name, customer, env, stri
         shipping_cents: String(shippingCents),
         tax_cents: String(taxCents),
         tax_calculation_id: taxCalculationId || '',
+        ad_consent: adConsent ? '1' : '0',
       },
       ...(stripeShipping ? { shipping: stripeShipping } : {}),
     });
@@ -180,7 +185,7 @@ async function handleOnetimeCheckout(validated, email, name, customer, env, stri
   return json({ clientSecret: intent.client_secret, orderId });
 }
 
-async function handleSubscriptionCheckout(validated, email, name, customer, env, stripe) {
+async function handleSubscriptionCheckout(validated, email, name, customer, env, stripe, adConsent) {
   // Map validated items to Stripe line_items with subscription prices
   const lineItems = [];
   for (const item of validated) {
@@ -222,11 +227,13 @@ async function handleSubscriptionCheckout(validated, email, name, customer, env,
       automatic_tax: { enabled: true },
       allow_promotion_codes: true,
       shipping_address_collection: { allowed_countries: ['US'] },
+      metadata: { ad_consent: adConsent ? '1' : '0' },
       ...(shippingOptions.length ? { shipping_options: shippingOptions } : {}),
       subscription_data: {
         metadata: {
           cart: JSON.stringify(validated.map(v => ({ k: v.productKey, q: v.quantity }))),
           customer_name: name,
+          ad_consent: adConsent ? '1' : '0',
         },
       },
       // consent_collection.terms_of_service requires a ToS URL on the Stripe
