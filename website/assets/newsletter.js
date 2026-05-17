@@ -29,9 +29,8 @@
     block.innerHTML = `
       <div class="foot-newsletter-inner">
         <div class="foot-newsletter-copy">
-          <div class="pill">Newsletter</div>
           <h3>Quiet, intermittent, useful.</h3>
-          <p>The GLP-1 side-effect literature, the cohort data, and the occasional product note. No spam.</p>
+          <p>The GLP-1 side-effect literature, the cohort data, and the occasional product note.</p>
         </div>
         <form class="foot-newsletter-form" data-newsletter-form novalidate>
           <label for="footer-nl-email" class="visually-hidden">Email</label>
@@ -54,7 +53,6 @@
     overlay.innerHTML = `
       <div class="newsletter-popup-inner" role="dialog" aria-labelledby="nl-popup-title" aria-modal="false">
         <button type="button" class="newsletter-popup-close" data-newsletter-popup-close aria-label="Close">&times;</button>
-        <div class="pill">10% off your first order</div>
         <h3 id="nl-popup-title">Built for the side effects nobody is selling you a solution to.</h3>
         <p>Drop your email for 10% off your first order &mdash; and the occasional note when the literature gets interesting.</p>
         <form data-newsletter-popup-form class="foot-newsletter-form">

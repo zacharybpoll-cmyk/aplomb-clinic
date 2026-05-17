@@ -77,6 +77,11 @@
     letter-spacing: 0;
   }
   .hero h1 .num { padding: 0 0.04em; }
+  .hero-statement {
+    font-family: var(--sans); font-size: 34px; line-height: 1.22;
+    font-weight: 600; color: var(--ink); letter-spacing: -0.01em;
+    max-width: 18em; margin: 0 0 40px;
+  }
   .hero-tag {
     font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--amber);
     margin: 0 0 24px; letter-spacing: 0.005em;
@@ -144,8 +149,8 @@
   }
   .rail.reverse .rail-img { order: 2; }
   .rail.reverse .rail-body { order: 1; border-left: none; border-right: 1px solid var(--rule); }
-  .rail-img { background: var(--paper); position: relative; min-height: 720px; }
-  .rail-img img { width: 100%; height: 100%; object-fit: contain; object-position: center center; position: absolute; inset: 0; }
+  .rail-img { background: var(--paper); position: relative; }
+  .rail-img img { width: 100%; height: 100%; object-fit: cover; object-position: center top; position: absolute; inset: 0; }
   .rail-body {
     padding: 110px 80px; background: var(--paper);
     border-left: 1px solid var(--rule);
@@ -396,8 +401,8 @@
     position: relative;
   }
   .voice-card .topic {
-    font-family: var(--sans); font-size: 11px; letter-spacing: 0.18em;
-    text-transform: uppercase; color: var(--amber); font-weight: 600;
+    font-family: var(--sans); font-size: 13px;
+    color: var(--muted); font-weight: 600;
   }
   .voice-card blockquote {
     font-family: var(--serif); font-size: 22px; line-height: 1.4;
@@ -406,9 +411,9 @@
   .voice-card blockquote::before { content: "\201C"; font-size: 32px; color: var(--amber); margin-right: 4px; line-height: 0; }
   .voice-card blockquote em { color: var(--amber); font-style: italic; }
   .voice-card .by { display: flex; flex-direction: column; gap: 4px; padding-top: 16px; border-top: 1px solid var(--rule); }
-  .voice-card .by-name { font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--ink); }
+  .voice-card .by-name { font-family: var(--sans); font-size: 16px; font-weight: 600; color: var(--ink); }
   .voice-card .by-cred { font-family: var(--sans); font-size: 12px; color: var(--muted); line-height: 1.5; }
-  .voice-card .by-source { font-family: var(--sans); font-size: 11px; color: var(--muted); margin-top: 6px; font-style: italic; }
+  .voice-card .by-source { font-family: var(--sans); font-size: 12px; color: var(--muted); margin-top: 6px; font-style: italic; }
   .voice-card .by-source a { color: var(--amber); text-decoration: none; }
   .voice-card .by-source a:hover { text-decoration: underline; }
 
@@ -499,7 +504,7 @@
     font-family: var(--serif); font-style: italic; font-size: 17px;
     color: rgba(247, 241, 230, 0.6); max-width: 400px; margin-top: 16px; line-height: 1.5;
   }
-  .foot-col .pill { color: var(--amber-light); margin-bottom: 20px; }
+  .foot-col .pill { font-size: 13px; letter-spacing: normal; text-transform: none; font-weight: 600; color: rgba(247, 241, 230, 0.62); margin-bottom: 18px; }
   .foot-link { display: block; font-size: 14px; margin-bottom: 10px; color: rgba(247, 241, 230, 0.85); }
   .foot-link:hover { color: var(--amber-light); }
   .foot-legal {
@@ -1592,19 +1597,19 @@
   }
   .product-modal-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 0.85fr 1.15fr;
     gap: 0;
   }
   .product-modal-img {
     background: var(--bg);
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 3 / 4;
   }
   .product-modal-img img {
     width: 100%; height: 100%;
     object-fit: cover; display: block;
   }
   .product-modal-body {
-    padding: 48px 48px 40px;
+    padding: 48px 44px 40px 36px;
     position: relative;
   }
   .product-modal-close {
@@ -1634,6 +1639,14 @@
     margin: 18px 0 8px;
   }
   .product-modal h2 em { color: var(--amber); font-style: italic; }
+  .product-modal .modal-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 19px;
+    line-height: 1.4;
+    font-style: italic;
+    color: var(--muted);
+    margin: 0 0 14px;
+  }
   .product-modal .price-line {
     font-family: 'Cormorant Garamond', serif;
     font-size: 28px;
@@ -1909,7 +1922,7 @@
     .founder-body { padding: 56px 48px; border-left: none; border-top: 1px solid var(--rule); }
     .rail { grid-template-columns: 1fr; }
     .rail.reverse .rail-img { order: 0; }
-    .rail-img img { height: 360px; object-fit: cover; }
+    .rail-img { height: 360px; }
     .rail-body { padding: 56px 48px; }
     .bio-mech { grid-template-columns: 1fr; gap: 24px; }
     .standards-cols { grid-template-columns: 1fr; gap: 32px; }
@@ -2019,7 +2032,7 @@
     /* Product rails */
     .rail { grid-template-columns: 1fr !important; }
     .rail.reverse .rail-img { order: 0; }
-    .rail-img img { height: 300px; }
+    .rail-img { height: 300px; }
     .rail-body { padding: 40px 22px; }
     .rail-body h2 { font-size: 36px !important; }
     .rail-lede { font-size: 16px !important; }
@@ -2116,7 +2129,7 @@
   .pp-hero-img { background: var(--paper); position: relative; min-height: 560px; }
   .pp-hero-img img { width: 100%; height: 100%; object-fit: contain; position: absolute; inset: 0; }
   .pp-hero-body { padding: 96px 72px; display: flex; flex-direction: column; justify-content: center; background: var(--paper); }
-  .pp-eyebrow { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--amber); margin-bottom: 20px; }
+  .pp-eyebrow { font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 14px; }
   .pp-hero-body h1 { font-family: var(--serif); font-size: 80px; line-height: 0.98; font-weight: 400; letter-spacing: -0.025em; margin: 0 0 28px; }
   .pp-hero-body h1 em { color: var(--amber); font-style: italic; font-weight: 400; }
   .pp-hero-body .lede { font-family: var(--serif); font-size: 22px; line-height: 1.45; font-style: italic; color: var(--muted); margin: 0 0 32px; max-width: 540px; }
@@ -2149,6 +2162,22 @@
   }
   .pp-section ul { padding-left: 20px; line-height: 1.7; font-size: 16px; }
   .pp-section ul li { margin-bottom: 8px; max-width: 720px; }
+  .ps-list { border-top: 1px solid var(--rule); }
+  .ps-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 24px; padding: 22px 4px;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none; transition: padding-left 0.18s ease;
+  }
+  .ps-row:hover { padding-left: 12px; }
+  .ps-problem {
+    font-family: var(--serif); font-size: 26px; line-height: 1.2;
+    color: var(--ink);
+  }
+  .ps-product {
+    font-family: var(--sans); font-size: 14px; font-weight: 600;
+    letter-spacing: 0.04em; color: var(--amber); white-space: nowrap;
+  }
 
   /* Ingredient panel (product pages) */
   .ingredient-panel {
@@ -2274,6 +2303,14 @@
     object-fit: cover;
     border: 1px solid var(--rule);
   }
+  .founder-portrait {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 14px;
+  }
+  .founder-caption {
+    font-family: var(--serif); font-size: 22px;
+    color: var(--ink); text-align: center; letter-spacing: -0.01em;
+  }
   .about-hero-body {
     padding: 88px 72px;
     display: flex; flex-direction: column; justify-content: center;
@@ -2295,8 +2332,8 @@
     max-width: 560px;
   }
   .about-why .about-hero-body p.kicker {
-    font-style: italic; color: var(--amber); font-size: 19px;
-    margin-top: 8px;
+    color: var(--ink); font-size: 17px; font-weight: 600;
+    margin-top: 12px;
   }
 
   /* Credentials strip (institution wordmarks) — sits under the
@@ -2306,8 +2343,8 @@
     max-width: 480px;
   }
   .creds-label {
-    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--amber); margin-bottom: 20px; text-align: center;
+    font-family: var(--sans); font-size: 13px; font-weight: 500;
+    color: var(--muted); margin-bottom: 20px; text-align: center;
   }
   .creds-row {
     display: grid;
