@@ -2468,6 +2468,46 @@
   .nav-links { gap: 32px; font-size: 15px; font-weight: 500; color: var(--muted); }
   .nav-links a { transition: color 0.15s; }
   .nav-links a:hover { color: var(--ink); }
+  /* "The products" dropdown. CSS-only (hover + keyboard :focus-within), no JS. */
+  .nav-dd { position: relative; display: inline-flex; align-items: center; }
+  .nav-dd-trigger {
+    font: inherit; font-size: 15px; font-weight: 500; color: var(--muted);
+    background: none; border: 0; padding: 0; margin: 0; cursor: pointer;
+    line-height: inherit; transition: color 0.15s;
+  }
+  .nav-dd-trigger::after { content: "\00a0\25BE"; font-size: 0.82em; }
+  .nav-dd:hover .nav-dd-trigger,
+  .nav-dd:focus-within .nav-dd-trigger { color: var(--ink); }
+  .nav-dd-menu {
+    position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    margin-top: 14px; min-width: 168px;
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 8px; display: flex; flex-direction: column; gap: 2px;
+    box-shadow: 0 14px 36px rgba(26, 21, 18, 0.13);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.16s ease; z-index: 200;
+  }
+  .nav-dd-menu::before {
+    content: ""; position: absolute; top: -14px; left: 0; right: 0; height: 14px;
+  }
+  .nav-dd:hover .nav-dd-menu,
+  .nav-dd:focus-within .nav-dd-menu {
+    opacity: 1; visibility: visible; pointer-events: auto;
+  }
+  .nav-dd-menu a {
+    display: block; padding: 9px 16px; border-radius: 8px;
+    font-size: 14px; font-weight: 500; color: var(--ink); white-space: nowrap;
+    transition: background 0.12s, color 0.12s;
+  }
+  .nav-dd-menu a:hover { background: var(--bg); color: var(--amber); }
+  /* Prominent per-concern frequency stat on the concerns page.
+     Selector is specific enough (0,2,1)/(0,2,2) to beat .pp-section p
+     and .pp-section p strong. */
+  .pp-section p.concern-stat {
+    font-family: var(--sans); font-size: 18px; line-height: 1.5;
+    color: var(--amber); margin: 4px 0 20px;
+  }
+  .pp-section p.concern-stat strong { color: var(--amber); font-weight: 700; }
   .nav-right { gap: 16px; font-size: 15px; font-weight: 500; }
   .nav-right a { color: var(--muted); transition: color 0.15s; }
   .nav-right a:hover { color: var(--ink); }
