@@ -306,8 +306,48 @@ Founder review tweaks after the Midi redesign + audit shipped.
 - [x] Cache-bust `?v=20260517c` → `?v=20260517d` across all 27 HTML.
   Zero JS changed; safety greps clean (no em dash / drug names / Inter / steel-blue).
 
+### Deploy — COMPLETE
+- [x] PR #46 squash-merged (`d78ffb4` on main), CF deploy green, `git pull
+  --ff-only`, sync `0 0`. Prod serves `?v=20260517d`.
+- [x] Prod verified: Calm claim/desc + hero h1 ("The GLP-1 is working.") +
+  uniform "GLP-1s" (no num span) live via curl; About founder image has 36px
+  warm gap above (computed + screenshot); 0 console errors; commerce smoke
+  green (ATC → drawer is-open, "APLOMB. The Serum." price math correct).
+- [x] Zero JS changed; preservation contract intact.
+
+---
+
+## Session 2026-05-17 — Nav restructure: concerns page + products dropdown (round 3)
+
+Founder: "The concerns" should be a page showing the 4 problems + frequency;
+replace "The Serum" nav item with "The products" as a dropdown of the 4.
+Decisions (AskUserQuestion): repurpose /biology/ (keep URL); CSS-only
+hover/focus dropdown, no JS.
+
+### Completed (verified locally at 1440, no-store server)
+- [x] **Repurposed /biology/ → "The concerns"**: retitled title/meta/OG/
+  twitter/JSON-LD; intro reframed ("The four concerns. What the drug does,
+  and how often."); added a prominent amber `.concern-stat` line per concern
+  reusing already-cited figures (Cotofana 2021 onset/volume; Shah 2024
+  1.76x telogen effluvium; STEP-1 44% / SURMOUNT-1 17-22% nausea; ADA ~30%
+  bad breath). No fabricated stats; GLP-1 framing, no molecule names added.
+- [x] **Nav (21 files, scripted exact-block replace, count-verified)**:
+  "The concerns" → `/biology/`; "The Serum" item replaced with "The products"
+  CSS-only dropdown (hover + keyboard `:focus-within`, no JS) listing
+  The Serum / Roots / Calm / Breath. Footer "The biology" → "The concerns"
+  (10 files, same href).
+- [x] **CSS** (Midi layer): `.nav-dd*` dropdown matching `.nav-links a`
+  (15px/500, amber hover, paper card, invisible hover bridge);
+  `.pp-section p.concern-stat` (specificity-correct over `.pp-section p`),
+  amber 18px prominent.
+- [x] Verified: dropdown opens on hover AND keyboard tab (`:focus-within`);
+  concerns page renders with 4 prominent amber stats; nav identical across
+  all 21 marketing pages (checkout/account/legal keep their minimal header,
+  correct); commerce smoke green (ATC → drawer, $129, nav coexists);
+  0 console errors. Cache-bust `?v=20260517d` → `?v=20260517e`. Zero JS.
+
 ### Deploy
-- [ ] Branch `midi-copy-tweaks` off `origin/main`, PR opened; **awaiting founder
-  "merge it"** before production (live commerce). Re-verify prod post-merge.
+- [ ] Branch `nav-concerns-products` off `origin/main`, PR; **awaiting founder
+  "merge it"** (live commerce). Re-verify prod post-merge.
 
 ---
