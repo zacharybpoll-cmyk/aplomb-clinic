@@ -2643,7 +2643,7 @@
   .cta .hero-tag { color: var(--amber); font-weight: 700; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 14px; }
   .cta h2 { font-family: var(--serif); font-size: clamp(32px, 4.4vw, 54px); line-height: 1.1; font-weight: 400; }
   .cta h2 em { color: var(--amber); font-style: italic; }
-  .cta-lede { color: var(--muted); font-size: 17px; max-width: 60ch; margin: 18px auto 30px; }
+  .cta-lede { font-family: var(--sans); font-style: normal; color: var(--muted); font-size: 17px; max-width: 60ch; margin: 18px auto 30px; }
   .cta-row-dual { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
   .cta-sub { color: var(--muted); font-size: 14px; margin-top: 18px; }
 
@@ -2662,7 +2662,7 @@
   .foot-logo { display: inline-flex; align-items: center; gap: 9px; font-family: var(--serif); font-style: italic; font-size: 24px; font-weight: 500; }
   .foot-logo .mark { width: auto; height: 28px; color: var(--amber); }
   .foot-logo .dot { color: var(--amber); font-style: normal; }
-  .foot-tag { color: var(--muted); font-size: 14px; margin-top: 14px; max-width: 30ch; }
+  .foot-tag { font-family: var(--sans); font-style: normal; color: var(--muted); font-size: 14px; margin-top: 14px; max-width: 30ch; }
   .foot .pill {
     font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
     color: var(--amber); margin-bottom: 16px; font-weight: 600;
@@ -2799,6 +2799,7 @@
     font-weight: 700; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
   }
   .product-modal .desc { font-family: var(--sans); font-size: 15px; color: var(--muted); }
+  .checkout-modal .sub { font-family: var(--sans); font-style: normal; }
   .product-modal h2, .checkout-modal h2, .science-panel h2, .science-panel h3 { font-weight: 400; }
   .mode-opt { border-radius: 12px; }
   .mode-opt input { accent-color: var(--amber); }
