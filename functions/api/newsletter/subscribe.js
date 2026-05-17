@@ -81,7 +81,7 @@ export const onRequestPost = async ({ request, env }) => {
   // cron retries. Never fail the request: the subscriber row is already saved.
   if (isNew) {
     try {
-      await sendEmail(env, 'newsletter-welcome', { email, discountCode: 'APLOMB10' });
+      await sendEmail(env, 'newsletter-welcome', { to: email, email, discountCode: 'APLOMB10' });
       await sb
         .from('newsletter_subscribers')
         .update({ welcome_sent_at: new Date().toISOString() })

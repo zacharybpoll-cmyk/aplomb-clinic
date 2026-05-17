@@ -32,7 +32,11 @@ export async function sendEmail(env, templateName, data) {
   // Some templates are async (those that sign unsubscribe tokens). Always await.
   const { subject, html, text } = await template.render(env, data);
 
-  const to = data.to || data.customer?.email || data.order?.email;
+  // `data.email` is how newsletter/welcome-series callers name the recipient;
+  // explicit `data.to` still wins, and customer/order remain the fallbacks for
+  // transactional templates. Without this, a caller that passes only `email`
+  // (e.g. the synchronous welcome in subscribe.js) throws "No recipient found".
+  const to = data.to || data.email || data.customer?.email || data.order?.email;
   if (!to) {
     throw new Error(`No recipient found in data for template ${templateName}`);
   }
