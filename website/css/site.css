@@ -2501,13 +2501,19 @@
   .hero-grid {
     display: grid; grid-template-columns: 1.05fr 1fr; gap: 50px;
     align-items: center; padding: 64px 40px 76px; max-width: 1200px; margin: 0 auto;
+    min-height: 0;
   }
+  .hero-text { padding: 0; display: flex; flex-direction: column; justify-content: center; }
   .hero-text h1 {
     font-family: var(--serif); font-size: clamp(38px, 5.4vw, 76px);
     line-height: 1.06; letter-spacing: -0.02em; margin: 0 0 22px; font-weight: 400;
   }
   .hero-text h1 em { color: var(--amber); font-style: italic; }
-  .hero-lede { font-size: 19px; color: var(--muted); margin: 0 0 30px; max-width: 46ch; }
+  .hero-lede {
+    font-family: var(--sans); font-style: normal; font-size: 19px;
+    line-height: 1.6; color: var(--muted); margin: 0 0 30px; max-width: 46ch;
+  }
+  .hero-lede strong, .hero-lede b { font-style: normal; }
   .hero-img { border-radius: 24px; overflow: hidden; aspect-ratio: 1 / 1; background: var(--paper); }
   .hero-img img { width: 100%; height: 100%; object-fit: cover; }
   .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
@@ -2944,3 +2950,76 @@
     .pdp-rest-grid { grid-template-columns: 1fr; }
     .pdp-page, .pdp-rest { padding-left: 22px; padding-right: 22px; }
   }
+
+  /* ---- Secondary pages: Midi alignment (about/faq/biology/evidence/contact) ----
+     Canonical 1200px wrap + Midi rhythm; paper cards only (no dark alternation);
+     kills the old narrow 880-1080px inline caps (those are stripped from the HTML
+     too — CSS here is the authority once they're gone). ---- */
+  .pp-section {
+    max-width: 1200px; margin: 0 auto; padding: 26px 32px;
+    background: var(--bg); border: none;
+  }
+  .pp-section .inner {
+    background: var(--paper); border-radius: 22px; padding: 44px 52px;
+    max-width: none; margin: 0;
+  }
+  .pp-section.dark, .pp-section.dark .inner { background: var(--paper); }
+  .pp-section.dark { background: var(--bg); }
+  .pp-section h2 {
+    font-family: var(--serif); font-weight: 400; line-height: 1.14;
+    font-size: clamp(28px, 3.2vw, 38px); margin: 0 0 16px; letter-spacing: -0.015em;
+  }
+  .pp-section h2 em { color: var(--amber); font-style: italic; }
+  .pp-section h3 {
+    font-family: var(--serif); font-weight: 400; font-size: 21px; margin: 22px 0 10px;
+  }
+  .pp-section p, .pp-section li { color: var(--muted); }
+  .pp-section p strong, .pp-section li strong { color: var(--ink); }
+  .pp-section ul { padding-left: 20px; line-height: 1.7; }
+  .pp-section ul li { max-width: none; margin-bottom: 8px; }
+
+  .citations { max-width: 1200px; margin: 0 auto; padding: 16px 32px; background: var(--bg); border: none; }
+  .citations .inner { background: var(--paper); border-radius: 22px; padding: 40px 52px; max-width: none; margin: 0; }
+  .pp-eyebrow {
+    font-family: var(--sans); font-size: 12px; font-weight: 700; color: var(--amber);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px;
+  }
+
+  /* Centered Midi page title for secondary pages (wraps the lead H1/H2) */
+  .pp-page-head { text-align: center; max-width: 62ch; margin: 30px auto 8px; padding: 0 32px; }
+  .pp-page-head h1, .pp-page-head h2 {
+    font-family: var(--serif); font-weight: 400; line-height: 1.12;
+    font-size: clamp(32px, 4.4vw, 52px); margin: 0; letter-spacing: -0.018em;
+  }
+  .pp-page-head em { color: var(--amber); font-style: italic; }
+  .pp-page-head p { color: var(--muted); font-size: 17px; margin: 16px auto 0; max-width: 60ch; }
+
+  /* Midi accordion (FAQ) — exact mockup recipe */
+  .faq-list { max-width: 900px; margin: 0 auto; padding: 0 32px; }
+  .acc { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 13px; }
+  .acc-group-label {
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--amber); font-weight: 700; margin: 34px 0 14px;
+  }
+  .acc-group-label:first-child { margin-top: 0; }
+  .acc-item { background: var(--paper); border-radius: 14px; overflow: hidden; }
+  .acc-q {
+    width: 100%; text-align: left; display: flex; justify-content: space-between;
+    gap: 20px; padding: 22px 26px; font-family: var(--serif); font-size: 21px;
+    align-items: center; background: none; border: none; cursor: pointer;
+    color: var(--ink); line-height: 1.3;
+  }
+  .acc-q .pm { font-family: var(--sans); font-size: 22px; color: var(--amber); font-weight: 600; flex-shrink: 0; }
+  .acc-a { display: none; }
+  .acc-item.open .acc-a { display: block; }
+  .acc-a-inner { padding: 0 26px 24px; color: var(--muted); font-size: 15px; line-height: 1.65; }
+  .acc-a-inner p { color: var(--muted); margin: 0; }
+  .acc-item.open .acc-q .pm { color: var(--muted); }
+
+  /* Contact form submit → brand amber (mockup form button is amber, not ink) */
+  .contact-form button[type="submit"], .contact-form button {
+    background: var(--amber); color: #fdf8ee; border: none; border-radius: 10px;
+    padding: 15px 30px; font-weight: 600; font-size: 15px; letter-spacing: 0;
+    text-transform: none; cursor: pointer; transition: background 0.18s;
+  }
+  .contact-form button:hover { background: var(--ink); color: #fdf8ee; }

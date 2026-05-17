@@ -216,3 +216,19 @@ All Tier 1+2 items doable without founder credentials are now in the working tre
 - Cloudflare Pages **Preview** environment lacks the Stripe publishable-key binding (Production-only); preview can't fully exercise Stripe. Bind preview env vars if pre-merge Stripe testing is wanted later.
 
 ---
+
+## Session 2026-05-17 — "Mary" UGC source images for HeyGen
+
+Spokesperson persona named **Mary**. Scratch only (`design-scratch/`), not the deployed site.
+
+### Completed
+- [x] New script `design-scratch/avatars/gen-mary-ugc-set.py` — clone of `gen-heygen-scenes-set.py` (same Flux 2 Pro pipeline, same 2 ref PNGs, same SUBJECT/UGC/anti-AI envelope) with deltas: 1152x2048 vertical 9:16, `mary-ugc-set/` output, `.prompt.txt` sidecars, HeyGen-fit clause (face-to-camera/mouth-closed), batch-resilient (skip+continue+summary, `--only` retry)
+- [x] 10 SHOTS: 6 living-room-sofa (scene-05 family) + 2 home-office-desk (scene-08 family) + 2 fresh (sunroom, reading nook); all neutral mouth-closed for clean lip-sync
+
+- [x] Ran batch — 10/10 succeeded; all `mary-ugc-set/*.jpg` are 1152x2048 (sips-verified); all 10 visually reviewed: identity consistent vs refs, neutral mouth-closed + face-to-camera + hands-low (HeyGen-fit), relaxed scene-05 UGC look. No `--only` regen needed.
+
+### Remaining
+- [ ] Founder manually uploads the 10 finals to HeyGen (no HeyGen API)
+- [ ] Security: a sub-agent log echoed the raw BFL_API_KEY — consider rotating it
+
+---
