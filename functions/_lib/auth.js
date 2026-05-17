@@ -87,9 +87,16 @@ export async function requireSession(request, env) {
 // Token format: base64url(JSON({email, exp})) + "." + base64url(HMAC).
 // 1-year expiry; secret comes from env.EMAIL_UNSUB_SECRET.
 export async function signUnsubscribeToken(email, env) {
+  // Fail with a clear, greppable message rather than a deep Web Crypto
+  // DataError ("HMAC key data must not be empty"). An unset secret here is a
+  // misconfiguration that would otherwise silently kill every marketing email
+  // whose template renders an unsubscribe link.
+  if (!env.EMAIL_UNSUB_SECRET) {
+    throw new Error('EMAIL_UNSUB_SECRET is not configured — cannot sign unsubscribe token');
+  }
   const exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 365;
   const payload = b64urlEncode(new TextEncoder().encode(JSON.stringify({ email, exp })));
-  const key = await importHmacKey(env.EMAIL_UNSUB_SECRET || '');
+  const key = await importHmacKey(env.EMAIL_UNSUB_SECRET);
   const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload));
   return `${payload}.${b64urlEncode(sig)}`;
 }
