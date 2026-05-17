@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Admin &mdash; Orders</title>
+<title>Admin, Orders</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,10 +21,10 @@
   }
   .admin-tabs button.is-active { color: var(--ink); border-bottom-color: var(--amber); }
   .admin-table { width: 100%; border-collapse: collapse; font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; }
-  .admin-table th, .admin-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid rgba(26,21,18,0.08); vertical-align: top; }
+  .admin-table th.admin-table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid rgba(26,21,18,0.08); vertical-align: top; }
   .admin-table th { font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; }
   .admin-table tr:hover { background: rgba(122,61,20,0.03); }
-  .admin-table input[type="text"], .admin-table select {
+  .admin-table input[type="text"].admin-table select {
     padding: 6px 8px; border: 1px solid var(--border, #d8cdb6); border-radius: 3px;
     font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; background: var(--paper);
   }
@@ -44,7 +44,7 @@
 <body>
 <div class="admin-page">
 
-  <h1>APLOMB. &mdash; Operations</h1>
+  <h1>APLOMB. Operations</h1>
 
   <div class="admin-tabs">
     <button type="button" data-tab="paid" class="is-active">Awaiting shipment</button>
@@ -64,8 +64,8 @@
 (function () {
   'use strict';
   function $(s){ return document.querySelector(s); }
-  function fmt(cents){ if (cents == null) return '—'; const d = cents/100; return '$' + (d % 1 === 0 ? d.toFixed(0) : d.toFixed(2)); }
-  function fmtDate(s){ if (!s) return '—'; try { return new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); } catch(_){ return s; } }
+  function fmt(cents){ if (cents == null) return ', '; const d = cents/100; return '$' + (d % 1 === 0 ? d.toFixed(0) : d.toFixed(2)); }
+  function fmtDate(s){ if (!s) return ', '; try { return new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); } catch(_){ return s; } }
   function shortId(id){ return (id || '').toString().slice(0, 8).toUpperCase(); }
   function escapeHtml(s){ return (s == null ? '' : String(s)).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
 

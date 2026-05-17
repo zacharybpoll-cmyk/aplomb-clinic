@@ -1,4 +1,4 @@
-// APLOMB. — newsletter capture module
+// APLOMB. Newsletter capture module
 //
 // Auto-injects a signup form into the page footer (the `.foot` element) on
 // every page that includes this script. Submits to /api/newsletter/subscribe;
@@ -54,7 +54,7 @@
       <div class="newsletter-popup-inner" role="dialog" aria-labelledby="nl-popup-title" aria-modal="false">
         <button type="button" class="newsletter-popup-close" data-newsletter-popup-close aria-label="Close">&times;</button>
         <h3 id="nl-popup-title">Built for the side effects nobody is selling you a solution to.</h3>
-        <p>Drop your email for 10% off your first order &mdash; and the occasional note when the literature gets interesting.</p>
+        <p>Drop your email for 10% off your first order, and the occasional note when the literature gets interesting.</p>
         <form data-newsletter-popup-form class="foot-newsletter-form">
           <label for="popup-nl-email" class="visually-hidden">Email</label>
           <input type="email" required name="email" id="popup-nl-email" autocomplete="email" placeholder="you@example.com">
