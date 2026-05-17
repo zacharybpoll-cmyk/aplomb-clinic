@@ -77,11 +77,6 @@
     letter-spacing: 0;
   }
   .hero h1 .num { padding: 0 0.04em; }
-  .hero-statement {
-    font-family: var(--sans); font-size: 34px; line-height: 1.22;
-    font-weight: 600; color: var(--ink); letter-spacing: -0.01em;
-    max-width: 18em; margin: 0 0 40px;
-  }
   .hero-tag {
     font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--amber);
     margin: 0 0 24px; letter-spacing: 0.005em;
@@ -2135,6 +2130,30 @@
   .pp-hero-body .lede { font-family: var(--serif); font-size: 22px; line-height: 1.45; font-style: italic; color: var(--muted); margin: 0 0 32px; max-width: 540px; }
   .pp-hero-price { font-family: var(--serif); font-size: 32px; color: var(--ink); margin: 0 0 6px; }
   .pp-hero-price-sub { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+
+  /* --- Conversion assets: editorial figures + restrained hero motion --- */
+  .pp-figure { margin: 48px 0 8px; }
+  .pp-figure img { width: 100%; height: auto; display: block; background: var(--paper); }
+  .pp-figure figcaption {
+    font-family: var(--serif); font-style: italic; font-size: 16px;
+    color: var(--muted); text-align: center; margin-top: 16px;
+    letter-spacing: 0.01em; max-width: 620px; margin-left: auto; margin-right: auto;
+  }
+  .pp-figure.feature { max-width: 1180px; margin-left: auto; margin-right: auto; }
+  .pp-figure.diagram img { border: 1px solid var(--rule); }
+  .pp-section .inner > .pp-figure:first-child { margin-top: 0; }
+
+  /* Restrained hero motion — slow breath + a soft paper-toned light drift.
+     Auto-disabled by the prefers-reduced-motion guard above. */
+  .pp-hero-img { overflow: clip; }
+  .pp-hero-img img { animation: pp-breath 22s ease-in-out infinite alternate; will-change: transform; }
+  .pp-hero-img::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(115deg, transparent 40%, rgba(247,241,230,0.26) 50%, transparent 60%);
+    animation: pp-sweep 15s ease-in-out infinite alternate;
+  }
+  @keyframes pp-breath { from { transform: scale(1); } to { transform: scale(1.045); } }
+  @keyframes pp-sweep { from { transform: translateX(-32%); } to { transform: translateX(32%); } }
 
   /* Long-form section wrapper */
   .pp-section {
