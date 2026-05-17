@@ -74,12 +74,20 @@ export const onRequestPost = async ({ request, env }) => {
     }
   }
 
-  // If new: send welcome email
+  // If new: send welcome email. On success, stamp welcome_sent_at so the
+  // welcome-series cron's day-0 batch knows not to re-send. On failure, log
+  // loudly (this was previously swallowed silently — the reason a misconfigured
+  // EMAIL_UNSUB_SECRET went unnoticed) and leave welcome_sent_at NULL so the
+  // cron retries. Never fail the request: the subscriber row is already saved.
   if (isNew) {
     try {
       await sendEmail(env, 'newsletter-welcome', { email, discountCode: 'APLOMB10' });
-    } catch (_) {
-      // Tolerate email failures
+      await sb
+        .from('newsletter_subscribers')
+        .update({ welcome_sent_at: new Date().toISOString() })
+        .eq('email', email);
+    } catch (e) {
+      console.error('[newsletter/subscribe] welcome email failed for', email, e?.message || e);
     }
   }
 

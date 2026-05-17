@@ -2,41 +2,12 @@
 //
 // Auth: X-Cron-Secret header must match env.CRON_SHARED_SECRET.
 //
-// Runs the day-3 and day-7 batches of the newsletter welcome series.
+// Runs the day-0 (self-healing), day-3, and day-7 batches of the newsletter
+// welcome series. Scheduled daily by the companion Worker (30 9 * * *).
 
 import { json, serverError } from '../_lib/json.js';
 import { supabaseAdmin } from '../_lib/supabase.js';
-import { sendEmail } from '../_lib/email.js';
-
-async function runBatch(sb, env, { ageMinDays, ageMaxDays, sentColumn, templateName }) {
-  const minDate = new Date(Date.now() - ageMaxDays * 24 * 60 * 60 * 1000).toISOString();
-  const maxDate = new Date(Date.now() - ageMinDays * 24 * 60 * 60 * 1000).toISOString();
-  const { data: subs, error } = await sb.from('newsletter_subscribers')
-    .select('*')
-    .is('unsubscribed_at', null)
-    .is(sentColumn, null)
-    .gte('subscribed_at', minDate)
-    .lte('subscribed_at', maxDate);
-  if (error) throw new Error(error.message);
-
-  let processed = 0;
-  for (const sub of subs || []) {
-    try {
-      await sendEmail(env, templateName, {
-        to: sub.email,
-        email: sub.email,
-        discountCode: 'APLOMB10',
-      });
-      await sb.from('newsletter_subscribers')
-        .update({ [sentColumn]: new Date().toISOString() })
-        .eq('id', sub.id);
-      processed++;
-    } catch (e) {
-      console.warn(`${templateName} send failed for`, sub.id, e?.message || e);
-    }
-  }
-  return processed;
-}
+import { runWelcomeBatch } from '../_lib/newsletter.js';
 
 export const onRequestPost = async ({ request, env }) => {
   const provided = request.headers.get('x-cron-secret') || '';
@@ -48,13 +19,20 @@ export const onRequestPost = async ({ request, env }) => {
   if (!sb) return serverError('Database not configured.');
 
   try {
-    const day3 = await runBatch(sb, env, {
+    // Day-0 recovery: re-send the welcome to anyone whose synchronous send in
+    // subscribe.js failed in the last ~3 days (transient error, or the
+    // EMAIL_UNSUB_SECRET-unset window). Idempotent — subscribe.js stamps
+    // welcome_sent_at on success, so already-welcomed rows are skipped.
+    const day0 = await runWelcomeBatch(sb, env, {
+      ageMinDays: 0, ageMaxDays: 3, sentColumn: 'welcome_sent_at', templateName: 'newsletter-welcome',
+    });
+    const day3 = await runWelcomeBatch(sb, env, {
       ageMinDays: 3, ageMaxDays: 4, sentColumn: 'welcome_day_3_sent_at', templateName: 'welcome-day-3',
     });
-    const day7 = await runBatch(sb, env, {
+    const day7 = await runWelcomeBatch(sb, env, {
       ageMinDays: 7, ageMaxDays: 8, sentColumn: 'welcome_day_7_sent_at', templateName: 'welcome-day-7',
     });
-    return json({ day3, day7 });
+    return json({ day0: day0.processed, day3: day3.processed, day7: day7.processed });
   } catch (e) {
     return serverError(e.message);
   }

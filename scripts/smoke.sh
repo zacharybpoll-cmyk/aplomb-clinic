@@ -229,6 +229,18 @@ redirect_to "https://aplomb-clinic.pages.dev/admin" "cloudflareaccess.com" \
 post_4xx "$BASE_URL/api/webhooks/stripe" '{"id":"evt_smoke","type":"payment_intent.succeeded"}' \
   "" "2.7 /api/webhooks/stripe rejects an unsigned event (no handler runs)"
 
+# 2.8 newsletter subscribe is live + validates input. Invalid email bails at
+# the regex (subscribe.js) BEFORE any Supabase write or email send — prod-safe,
+# creates no subscriber row. (Coverage gap that let the EMAIL_UNSUB_SECRET
+# welcome-email failure ship unnoticed: there was zero newsletter smoke.)
+post_4xx "$BASE_URL/api/newsletter/subscribe" '{"email":"not-an-email"}' \
+  "A valid email is required." "2.8 /api/newsletter/subscribe rejects invalid email"
+
+# 2.9 unsubscribe with a garbage token must fail closed, never 5xx. Exercises
+# verifyUnsubscribeToken (the EMAIL_UNSUB_SECRET consumer) on the read path.
+redirect_to "$BASE_URL/api/newsletter/unsubscribe?token=deadbeef.deadbeef" \
+  "status=error" "2.9 /api/newsletter/unsubscribe (bad token) -> error, no 5xx"
+
 # ─────────────────────────────────────────────────────────── Tier 4.1 ────────
 hdr "Tier 4.1 — transactional email templates"
 if out=$(node website/scripts/smoke-emails.mjs 2>&1); then
