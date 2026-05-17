@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Subscriptions &mdash; APLOMB.</title>
+<title>Subscriptions, APLOMB.</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="clarity-project-id" content="wrmssgjnox">
 <meta name="meta-pixel-id" content="998365759355238">
@@ -88,8 +88,8 @@
 (function () {
   'use strict';
   function $(s){ return document.querySelector(s); }
-  function fmt(cents){ if (cents == null) return '—'; const d = cents/100; return '$' + (d % 1 === 0 ? d.toFixed(0) : d.toFixed(2)); }
-  function fmtDate(s){ if (!s) return '—'; try { return new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); } catch(_){ return s; } }
+  function fmt(cents){ if (cents == null) return ', '; const d = cents/100; return '$' + (d % 1 === 0 ? d.toFixed(0) : d.toFixed(2)); }
+  function fmtDate(s){ if (!s) return ', '; try { return new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); } catch(_){ return s; } }
   function escapeHtml(s){ return (s == null ? '' : String(s)).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c]); }
 
   function showError(msg){

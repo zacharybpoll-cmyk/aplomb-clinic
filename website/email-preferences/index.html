@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Email preferences &mdash; APLOMB.</title>
+<title>Email preferences, APLOMB.</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="clarity-project-id" content="wrmssgjnox">
 <meta name="meta-pixel-id" content="998365759355238">
@@ -93,13 +93,13 @@
 
   if (status === 'unsubscribed') {
     titleEl.innerHTML = 'You’re unsubscribed<span style="color:var(--amber);">.</span>';
-    msgEl.innerHTML = 'You won’t receive any more marketing emails from us. Order receipts and shipping notifications for active orders will still arrive &mdash; those are not marketing.';
+    msgEl.innerHTML = 'You won’t receive any more marketing emails from us. Order receipts and shipping notifications for active orders will still arrive, those are not marketing.';
     $('[data-resubscribe-form]').hidden = false;
   } else if (status === 'error') {
     titleEl.innerHTML = 'Link expired<span style="color:var(--amber);">.</span>';
     msgEl.innerHTML = (reason || 'Your unsubscribe link is invalid or expired.') + ' If you’re still getting emails you don’t want, write to <a href="mailto:hello@getaplomb.com" style="color:var(--amber);">hello@getaplomb.com</a> and we’ll handle it manually within a day.';
   } else {
-    // No status — give them re-subscribe directly
+    // No status, give them re-subscribe directly
     msgEl.innerHTML = 'Manage your email preferences below. To unsubscribe, click the link at the bottom of any email we send.';
     $('[data-resubscribe-form]').hidden = false;
   }
