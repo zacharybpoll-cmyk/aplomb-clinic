@@ -192,3 +192,43 @@ All Tier 1+2 items doable without founder credentials are now in the working tre
 - Companion Worker source valid; SCHEDULE map ↔ wrangler.toml crons match
 
 ---
+
+## Session 2026-05-17 — Midi Health redesign (live site)
+
+### Completed
+- [x] Transform getaplomb.com to the Midi Health design system (per approved `design-scratch/redesign-mockups/05-midi-health.html`)
+- [x] CSS-led re-skin: Midi layer appended to `website/css/site.css` (cascade wins; JS-required class names restyled, never renamed) — carries every page
+- [x] Homepage content restructured: hero → credibility strip → 4-concern card grid (`mh-*` namespaced) → "How Aplomb works" steps → voices → founder/lossy → CTA
+- [x] Concerns-IA nav standardized across all 21 pages (text/href only; dropped nonexistent `/daily/` link)
+- [x] Em/en dashes purged site-wide (HTML body+titles+meta + `newsletter.js` popup string), founder-approved; 0 remain
+- [x] Local verify (Playwright): home desktop+mobile, product modal, cart drawer, checkout, serum PDP, about, FAQ — 0 console errors, commerce intact
+- [x] Branched off `origin/main` (parked unrelated `wip/product-brand` edits in `git stash@{0}`), PR #39, isolated CF preview reviewed, founder said "merge it"
+- [x] Squash-merged #39 → `main` (8598036), `git pull --ff-only`, production deploy green (ignored known `Workers Builds` fail)
+- [x] Live verify on getaplomb.com: Midi renders, 0 dashes, Stripe Address Element mounts, order summary correct, 0 console errors
+
+### Output
+- Live: https://getaplomb.com (Midi Health design)
+- 2 commits on main: `1c4cf0f` (redesign) + `c5adf52` (dash purge), squashed as `8598036`
+- No JS logic touched except the `newsletter.js` popup copy string (founder-approved)
+
+### Follow-ups / parked
+- `git stash@{0}` holds unrelated pre-existing `wip/product-brand` edits (site.css motion-gating + serum tweaks + tasks/*) — restore onto that branch when resumed
+- Cloudflare Pages **Preview** environment lacks the Stripe publishable-key binding (Production-only); preview can't fully exercise Stripe. Bind preview env vars if pre-merge Stripe testing is wanted later.
+
+---
+
+## Session 2026-05-17 — "Mary" UGC source images for HeyGen
+
+Spokesperson persona named **Mary**. Scratch only (`design-scratch/`), not the deployed site.
+
+### Completed
+- [x] New script `design-scratch/avatars/gen-mary-ugc-set.py` — clone of `gen-heygen-scenes-set.py` (same Flux 2 Pro pipeline, same 2 ref PNGs, same SUBJECT/UGC/anti-AI envelope) with deltas: 1152x2048 vertical 9:16, `mary-ugc-set/` output, `.prompt.txt` sidecars, HeyGen-fit clause (face-to-camera/mouth-closed), batch-resilient (skip+continue+summary, `--only` retry)
+- [x] 10 SHOTS: 6 living-room-sofa (scene-05 family) + 2 home-office-desk (scene-08 family) + 2 fresh (sunroom, reading nook); all neutral mouth-closed for clean lip-sync
+
+- [x] Ran batch — 10/10 succeeded; all `mary-ugc-set/*.jpg` are 1152x2048 (sips-verified); all 10 visually reviewed: identity consistent vs refs, neutral mouth-closed + face-to-camera + hands-low (HeyGen-fit), relaxed scene-05 UGC look. No `--only` regen needed.
+
+### Remaining
+- [ ] Founder manually uploads the 10 finals to HeyGen (no HeyGen API)
+- [ ] Security: a sub-agent log echoed the raw BFL_API_KEY — consider rotating it
+
+---
