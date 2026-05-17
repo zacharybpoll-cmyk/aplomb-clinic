@@ -50,3 +50,34 @@ Conducted three-lane parallel research for hair-loss product sourcing (Lane A: S
 - Don't assume Lane completion will happen on schedule; design reporting for partial delivery
 
 ---
+
+## 2026-05-15 — Production smoke harness (scripts/smoke*.{sh,mjs})
+
+**Reusable verification patterns:**
+- `npm run smoke` / `:browser` / `:webhook` re-runs the full launch battery; run it after any prod-affecting change before claiming done.
+- getaplomb.com is an SPA 200-fallback: assert on response **body** (page-unique marker), never status code. A 404-that-200s passes a status check silently.
+- CF zone clamps asset `max-age` (0 → 14400). Assert `cache-control` *contains* `must-revalidate` (the directive `_headers` controls), never an exact max-age. A lingering pre-fix `immutable` entry on the *bare* asset URL is a WARN, not FAIL — live HTML is `DYNAMIC` and references the `?v=` URL.
+
+**Bugs to avoid (cost iterations this session):**
+- `set -o pipefail` + `curl | grep -q`: grep -q exits on first match, SIGPIPEs curl (141), pipefail false-fails large pages. Always capture body to a var, then match.
+- Meta CAPI access tokens are event-ingestion-scoped: dataset-node GET → `(#100) Missing Permission`. Liveness probe = `POST /events` with a `test_event_code` (any string; Test Events tab only, zero pollution).
+- `wrangler dev` scheduled triggers need `--test-scheduled` AND ~8s workerd cold-start before `/__scheduled?cron=...` works; a POST-only Pages fn 404s on a GET readiness probe (probe with POST).
+- Tier W against PROD Supabase is safe ONLY with synthetic sentinel rows + a `trap` teardown that runs on ANY exit; ALWAYS independently re-query post-run to prove zero residue + inventory restored. Never solicit `SUPABASE_SERVICE_ROLE_KEY` into chat (full-DB credential); env-gate + SKIP instead.
+
+---
+
+## 2026-05-15 — Apple Pay on a Stripe + custom-domain (CF Pages) site
+
+**Root cause of `canMakePayment()` → `{"applePay":false,...}` despite Stripe Dashboard showing the domain "enabled":**
+- Apple verifies the domain by fetching `https://<domain>/.well-known/apple-developer-merchantid-domain-association`. If that path 404s, Apple never verifies → `applePay:false` forever, even with the payment method toggled on and the domain listed in Stripe.
+- Stripe's modern Payment Method Domains flow ("Stripe handles merchant validation behind the scenes", no Dashboard download button) does **NOT** auto-host this file for a custom Cloudflare Pages domain. You MUST self-host it.
+- The file is Stripe's **canonical public blob**, identical for every merchant: `curl https://stripe.com/files/apple-pay/apple-developer-merchantid-domain-association` (9094 bytes, hex `{"pspId":...}`). Not a secret — safe to commit.
+- Serve it as a **direct 200, `text/plain`, NO redirect** (a redirect fails Apple's check). On CF Pages: a real static file at `website/.well-known/...` + a `_headers` content-type rule (mirror the `/llms.txt` rule).
+
+**Process errors that cost this + prior sessions (do not repeat):**
+- NEVER conclude "the 404 on .well-known is fine / Stripe auto-hosts it." That theory was wrong and caused multi-session whiplash. Verify the authoritative signal first: `canMakePayment()` in real Safari + `curl` the well-known path. Two facts (path 404 + `applePay:false`) = definitive.
+- The bare `paymentRequest().canMakePayment()` snippet is the right isolator (account+domain+device only, no PaymentIntent). `link:true` proves Stripe.js + publishable key are fine, so a `false` alongside it points at domain/account config, not code.
+- Stripe Dashboard is MCP-navigation-blocked (financial-site safety). Don't promise to "look at it via MCP" — pull the fix from official docs / Stripe's canonical file URL and DO it in the repo instead.
+- Production deploy of an agent-inferred fix to a live commerce site needs **explicit founder approval in chat** (the auto-mode classifier will and should block auto-merge). Stage everything in an isolated `git worktree` off `main` (never disturb founder WIP), open the PR, then wait for "merge it."
+
+---
