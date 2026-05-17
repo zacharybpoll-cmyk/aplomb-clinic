@@ -232,3 +232,82 @@ Spokesperson persona named **Mary**. Scratch only (`design-scratch/`), not the d
 - [ ] Security: a sub-agent log echoed the raw BFL_API_KEY — consider rotating it
 
 ---
+
+## Session 2026-05-17 — Midi fidelity: cache-bust + serif-italic audit completion
+
+Continuation after the Midi redesign (#40) shipped. Made the redesign actually
+visible to returning visitors and closed the plan's mandatory computed-style
+audit gate.
+
+### Completed
+- [x] **PR #43** — cache-bust: `site.css` linked with no `?v=`, CF clamps asset
+  max-age 0→14400, so returning visitors saw stale CSS up to 4h. Added
+  `?v=20260517` across all 27 HTML files. Squash-merged, CF deploy green,
+  prod confirmed serving versioned + correct CSS.
+- [x] **Computed-style audit of PRODUCTION vs the Midi mockup** (not local;
+  the deployed page is the source of truth). Found the redesign faithful at
+  1920 (Account+Bag visible, full-bleed, hero correct) BUT 3 elements still
+  leaking the original Cormorant-italic where the mockup is IBM Plex Sans
+  normal: `.cta-lede`, `.foot-tag`, `.checkout-modal .sub` (same bug class as
+  the hero-lede: Midi override set color/size, never reset font-family/style).
+- [x] **PR #44** — 3 typography-only resets in the Midi override layer +
+  cache-bust `?v=20260517b`. Zero JS, zero modal/drawer mechanics. Verified
+  local computed-style + screenshot, squash-merged, CF deploy green, prod
+  re-verified (all 3 now IBM Plex Sans normal).
+- [x] **Final sweep on prod found 1 more same-class leak**: `.checkout-success p`
+  (order-confirmation) Cormorant-italic vs mockup's sans-normal `.confirm p`.
+  Also confirmed `.cart-empty` IS intentionally serif-italic in the mockup
+  (line 156) — left as-is (prod already matches; decided by mockup, not detector).
+- [x] **PR #45** — `.checkout-success p` reset (1 line) + cache-bust
+  `?v=20260517c` + lessons.md. Swept home + serum PDP + faq at prod-equivalent:
+  **zero genuine serif-italic leaks remain**; FAQ accordion mechanic preserved;
+  0 console errors. Squash-merged.
+
+### Output
+- Live: https://getaplomb.com — Midi design, faithful to `05-midi-health.html`,
+  CSS at `?v=20260517c` (forces fresh fetch for cached/returning visitors).
+- 3 squash commits on `main`: `e475c42` (#43), `91ea5eb` (#44), `ec9816e` (#45).
+- Preservation contract intact: no JS changed across all three PRs.
+
+### Verification (post-deploy) — COMPLETE
+- [x] CF deploy `ec9816e` green. Prod serves `?v=20260517c`; all 5 fixes live
+  (cta-lede / foot-tag / checkout-modal .sub / checkout-success p / hero-lede
+  = IBM Plex Sans normal); `.cart-empty` correctly preserved serif-italic
+  (intentional per mockup line 156).
+- [x] Prod computed-style sweep: **zero genuine serif-italic leaks** on home;
+  serum PDP + faq swept clean; FAQ accordion mechanic preserved.
+- [x] Prod screenshots 1920 + 768 faithful to the Midi mockup; nav Account+Bag
+  fully visible (the founder's specific complaint, resolved). 0 console errors
+  on home + checkout.
+- [x] Commerce smoke green: ATC → Midi-styled cart drawer (`--bg`, is-open
+  mechanic intact) → "APLOMB. The Serum." $129, subtotal $129, count 1 →
+  `/checkout/` Stripe Address Element mounted, order total $129, 0 errors.
+- [x] Preservation contract intact: zero JS changed across #43/#44/#45.
+
+---
+
+## Session 2026-05-17 — Founder copy/UX tweaks (round 2)
+
+Founder review tweaks after the Midi redesign + audit shipped.
+
+### Completed (verified locally at 1440, no-store server)
+- [x] **4 PDPs** (serum/roots/calm/breath): removed the reason text after the
+  amber kicker. `.pdp-claim` now shows only the kicker (The face / The hair /
+  The first month / The breath); "For sagging facial skin." etc. removed.
+- [x] **Calm PDP desc**: de-temporalized. "A 30-day kit for nausea in the first
+  weeks of the drug:..." → "A 30-day kit for when you have nausea: ginger,
+  vitamin B6, and electrolytes." (founder: stop framing nausea as first-month).
+- [x] **About**: founder image was flush to the top of the warm rounded
+  rectangle (`.about-hero-img padding:0`). Added `padding: 36px 0 0` so there
+  is a balanced warm gap above the photo. Verified before/after screenshots.
+- [x] **Hero h1**: "The drug is working." → "The GLP-1 is working."
+- [x] **Hero lede**: `GLP-<span class="num">1</span>s` rendered the "1" at
+  weight 600 (awkward). Removed the span → plain uniform "GLP-1s".
+- [x] Cache-bust `?v=20260517c` → `?v=20260517d` across all 27 HTML.
+  Zero JS changed; safety greps clean (no em dash / drug names / Inter / steel-blue).
+
+### Deploy
+- [ ] Branch `midi-copy-tweaks` off `origin/main`, PR opened; **awaiting founder
+  "merge it"** before production (live commerce). Re-verify prod post-merge.
+
+---
