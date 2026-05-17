@@ -81,3 +81,13 @@ Conducted three-lane parallel research for hair-loss product sourcing (Lane A: S
 - Production deploy of an agent-inferred fix to a live commerce site needs **explicit founder approval in chat** (the auto-mode classifier will and should block auto-merge). Stage everything in an isolated `git worktree` off `main` (never disturb founder WIP), open the PR, then wait for "merge it."
 
 ---
+
+## Session 2026-05-17 — Midi redesign (live site)
+
+- **Scripted copy cleanup must be LOCALIZED.** A global `re.sub(r' {2,}', ' ', s)` added as a "punctuation tidy" in an em-dash purge collapsed every HTML indentation run → a 3900-line whitespace-mangle commit. Caught only because the diff stat read `3900 insertions / 3900 deletions` (1:1 = mass reformat, not targeted). RULE: after any scripted multi-file edit, sanity-check `git diff --stat`; a balanced huge count means you reformatted, not edited. Replacement regexes must match the token + its *immediately adjacent* whitespace only (`r' ?(&mdash;|—) ?'`), never a global whitespace normalizer on source files.
+- **Re-skinning a mature stylesheet: override surface, never fight mechanics.** Appending a Midi layer (later same-specificity rules win) was the right low-risk move over a destructive rewrite. But my `.product-modal{position:fixed;inset:0;display:flex}` override fought the un-overridden original `translate(-50%,-50%)`+opacity centering mechanic and broke the modal. RULE: when restyling a pre-existing component you didn't fully read, change colors/radius/spacing only; leave position/transform/display/`.is-open` mechanics alone (new tokens flow into them automatically).
+- **Inverting a section's bg requires resetting inherited `color`.** The dark→light footer flip left original `.foot{color:var(--paper)}` in force → wordmark/newsletter text invisible (light-on-light). Always reset `color` when you flip a background light/dark.
+- **Cloudflare Pages Preview ≠ Production env.** Stripe/Supabase secrets bound to the Production environment are absent in branch/preview deployments (`metaKey:null` on preview, `present` on prod). A preview can't fully exercise gated commerce; this is config scoping, not a code regression. Verify such flows on production post-merge instead.
+- **Check real branch/tree state before executing a plan that assumed clean main.** Repo was on `wip/product-brand` (5 ahead/10 behind, a "do NOT merge" logo commit, uncommitted edits). Stopped and asked rather than building on it; branched fresh off `origin/main`, parked the WIP in a labeled stash. Plan assumptions about VCS state are assumptions, not facts.
+
+---
