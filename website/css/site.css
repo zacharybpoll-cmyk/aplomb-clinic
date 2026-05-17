@@ -2800,6 +2800,7 @@
   }
   .product-modal .desc { font-family: var(--sans); font-size: 15px; color: var(--muted); }
   .checkout-modal .sub { font-family: var(--sans); font-style: normal; }
+  .checkout-success p { font-family: var(--sans); font-style: normal; }
   .product-modal h2, .checkout-modal h2, .science-panel h2, .science-panel h3 { font-weight: 400; }
   .mode-opt { border-radius: 12px; }
   .mode-opt input { accent-color: var(--amber); }
