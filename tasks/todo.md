@@ -346,9 +346,90 @@ hover/focus dropdown, no JS.
   correct); commerce smoke green (ATC → drawer, $129, nav coexists);
   0 console errors. Cache-bust `?v=20260517d` → `?v=20260517e`. Zero JS.
 
-### Deploy
-- [ ] Branch `nav-concerns-products` off `origin/main`, PR; **awaiting founder
-  "merge it"** (live commerce). Re-verify prod post-merge.
+### Deploy — COMPLETE
+- [x] PR #47 squash-merged (`dc348e9` on main), CF deploy green, `git pull
+  --ff-only`, sync `0 0`. Prod serves `?v=20260517e`.
+- [x] Prod verified: nav "The concerns"→/biology/ + "The products" dropdown
+  opens on hover (Midi `--paper` card, 4 PDP links), present on home + PDPs;
+  /biology/ titled "The concerns" with 4 prominent amber 18px stat lines;
+  0 console errors; commerce smoke green (ATC → drawer, line item renders,
+  cart.js coexists with new nav). Zero JS changed.
+
+---
+
+## Session 2026-05-17 — Facebook Page control via Graph API (Claude-driven)
+
+Founder: browser-MCP click-through of facebook.com is unreliable; wants Claude
+to fully drive the getaplomb.com Page via API. Confirmed it is a Page in a
+Business portfolio; chose the thin-script architecture (no third party holds
+the token). Plan: `~/.claude/plans/radiant-fluttering-fog.md` (approved).
+
+### Completed (code)
+- [x] New `scripts/fb-page.mjs` — Node ESM, native fetch, **zero new deps**.
+  Commands: `whoami`, `bootstrap-token`, `posts`, `comments`, `insights`,
+  `post` (+`--link`/`--schedule`), `photo`, `reply`, `hide`, `delete`.
+- [x] Conventions matched to the smoke harness: env-only secrets (fail loud,
+  no hard-coded fallback), real Graph API error surfaced verbatim
+  (message/code/`fbtrace_id`), **read-only by default — writes refuse without
+  `--confirm`/`FB_CONFIRM=1`** (outward-facing, hard to reverse).
+- [x] `scripts/.fb.env` gitignored (+ `!scripts/.fb.env.example` negation);
+  `scripts/.fb.env.example` documents vars. Token never echoed;
+  `bootstrap-token` writes it straight to `.fb.env`, prints only `…abcd`.
+- [x] `package.json` → `"fb": "node scripts/fb-page.mjs"`. README section added.
+
+### Verification — PASSED
+- [x] `node --check` clean (Node v22.18 → native fetch/FormData/Blob OK).
+- [x] Guard paths exercised: missing token → clean error exit 1 (no stack, no
+  token solicited); `post` without `--confirm` → refusal; missing
+  message/link → usage error; unknown cmd → help + exit 1.
+- [x] Live Graph API call (bogus token) → formatted `OAuthException code 190`
+  with `fbtrace_id`, **token not leaked** in output. HTTP path proven.
+- [x] git safety: `scripts/.fb.env` confirmed ignored; `.fb.env.example` not
+  ignored; `git grep` finds no embedded tokens; only intended files changed.
+
+### Remaining (founder-only — needs Meta login; I cannot do these)
+- [ ] In portfolio "Get Aplomb" `1183365767175630`: confirm the Page is owned
+  by it, create a System User (Admin), assign the Page, generate a token with
+  `pages_manage_posts`,`pages_read_engagement`,`pages_show_list`
+  (+`pages_manage_engagement`). App stays in Development mode (no App Review).
+- [ ] Paste `FB_PAGE_ID` + token into `scripts/.fb.env`.
+- [ ] Then I run the end-to-end live check: `whoami` → `posts` → `post --confirm`
+  → confirm via `posts` → `delete --confirm` (no residue), and update
+  `project_aplomb_deployment_state.md` with the new external state (no token).
+
+---
+
+## Session 2026-05-17 — Facebook cover photo via BFL Flux 2 Pro
+
+Founder request (plan-mode, approved plan `radiant-fluttering-fog.md`): generate
+an on-brand Facebook cover for the "Get Aplomb" Page (ID `1125204640675045`,
+exists, founder Full control, brand-new/empty). Decision via AskUserQuestion:
+**clean still-life, NO text** (mark lives in profile pic).
+
+### Completed
+- [x] New `website/scripts/gen-fb-cover.py` — mirrors `gen-logo-designs.py`
+  conventions (BFL_API_KEY loader, post_json/poll/download, `.prompt.txt`
+  sidecars). Deltas: 1640×924, 3 concepts, `--only`/`--force`, skip-existing,
+  summary; inlined BRAND envelope + NO_TEXT + verbatim BRAND.md anti-AI tail.
+- [x] Generated 3 → `website/assets/fb-cover/`: `cover-01-serum-travertine`,
+  `cover-02-botanical-stillife`, `cover-03-plumb-bob` (+ prompt sidecars).
+
+### Verification — PASSED
+- [x] Dimensions: all 1632×912 (Flux snapped from 1640×924; correct ≈16:9 FB
+  cover ratio, high-res, focal centered → survives safe-zone crop).
+- [x] Visual self-review (Read tool, all 3): warm palette only (no
+  blue/teal/grey/black), real Kinfolk medium-format quality (no AI-gloss/CGI),
+  ZERO text/letters/watermark/logo. Caveat: cover-02 olive foliage is muted
+  natural sage (brand botanical motif) — only non-warm element, flagged.
+
+### Decision + Remaining
+- [x] Founder chose **`cover-03-plumb-bob.jpg`** (2026-05-17) after weighing
+  faces-vs-still-life: cover ≠ ad (faces belong in ads), this buyer rejects
+  stock/AI faces, brand book lineage is Aesop/Augustinus Bader still-life.
+- [ ] Founder uploads `website/assets/fb-cover/cover-03-plumb-bob.jpg` to the
+  Page manually (no API/dev account).
+- [ ] Follow-up: profile picture from `assets/aplomb-mark.svg` (plumb-bob mark)
+  to pair with the no-text cover.
 
 ---
 
