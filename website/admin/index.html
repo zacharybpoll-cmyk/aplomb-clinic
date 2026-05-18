@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="/assets/aplomb-mark.svg">
-<link rel="stylesheet" href="/css/site.css?v=20260518b">
+<link rel="stylesheet" href="/css/site.css?v=20260518c">
 <style>
   .admin-page { max-width: 1240px; margin: 0 auto; padding: 32px 48px; }
   .admin-page h1 { font-family: var(--serif); font-size: 36px; font-weight: 400; margin: 0 0 24px; color: var(--ink); }
@@ -50,6 +50,7 @@
     <button type="button" data-tab="paid" class="is-active">Awaiting shipment</button>
     <button type="button" data-tab="shipped">Recently shipped</button>
     <button type="button" data-tab="all">All</button>
+    <button type="button" data-tab="reviews">Reviews</button>
   </div>
 
   <div data-admin-status></div>
@@ -162,7 +163,29 @@
     const tab = e.target.closest('[data-tab]');
     if (tab) {
       document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('is-active', b === tab));
-      load(tab.dataset.tab);
+      if (tab.dataset.tab === 'reviews') { loadReviews('pending'); }
+      else { load(tab.dataset.tab); }
+      return;
+    }
+    const reviewFilter = e.target.closest('[data-review-filter]');
+    if (reviewFilter) { loadReviews(reviewFilter.value); return; }
+    const rAct = e.target.closest('[data-review-action]');
+    if (rAct) {
+      const tr = rAct.closest('tr');
+      const id = tr.dataset.reviewId;
+      const action = rAct.dataset.reviewAction;
+      rAct.disabled = true; rAct.textContent = 'Working…';
+      let resp;
+      try { resp = await fetch('/api/admin/reviews', { method: 'POST', credentials: 'include', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id, action }) }); }
+      catch(_) { showStatus('Network error.', false); rAct.disabled = false; return; }
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        showStatus(err.error || ('Could not update review (HTTP ' + resp.status + ').'), false);
+        rAct.disabled = false; return;
+      }
+      showStatus('Review ' + action + 'ed.', true);
+      const sel = document.querySelector('[data-review-filter]');
+      loadReviews(sel ? sel.value : 'pending');
       return;
     }
     const ship = e.target.closest('[data-mark-shipped]');
@@ -185,6 +208,69 @@
     showStatus('Order shipped. Shipping email sent.', true);
     load(currentTab);
   });
+
+  async function loadReviews(status) {
+    status = status || 'pending';
+    $('[data-admin-loading]').hidden = false;
+    $('[data-admin-content]').hidden = true;
+    let resp;
+    try { resp = await fetch('/api/admin/reviews?status=' + encodeURIComponent(status), { credentials: 'include' }); }
+    catch(_) { showStatus('Network error.', false); return; }
+    if (!resp.ok) {
+      if (resp.status === 401 || resp.status === 403) {
+        showStatus('Not authorized. Make sure Cloudflare Access has approved your email.', false);
+      } else {
+        showStatus('Could not load reviews (HTTP ' + resp.status + ').', false);
+      }
+      return;
+    }
+    const { reviews } = await resp.json();
+    renderReviews(reviews || [], status);
+  }
+
+  function renderReviews(reviews, status) {
+    $('[data-admin-loading]').hidden = true;
+    const c = $('[data-admin-content]'); c.hidden = false;
+    const filter = `
+      <div style="margin-bottom:16px;">
+        <select data-review-filter style="padding:6px 8px;border:1px solid var(--border,#d8cdb6);font-family:'IBM Plex Sans',sans-serif;font-size:12px;background:var(--paper);">
+          <option value="pending"${status==='pending'?' selected':''}>Pending</option>
+          <option value="published"${status==='published'?' selected':''}>Published</option>
+          <option value="rejected"${status==='rejected'?' selected':''}>Rejected</option>
+        </select>
+      </div>`;
+    if (!reviews.length) {
+      c.innerHTML = filter + '<div class="admin-empty">No ' + escapeHtml(status) + ' reviews.</div>';
+      return;
+    }
+    c.innerHTML = filter + `
+      <table class="admin-table">
+        <thead><tr>
+          <th>Product</th><th>Rating</th><th>Review</th><th>Name</th><th>Submitted</th><th></th>
+        </tr></thead>
+        <tbody>${reviews.map(r => reviewRow(r)).join('')}</tbody>
+      </table>`;
+  }
+
+  function reviewRow(r) {
+    let stars = ''; for (let i = 1; i <= 5; i++) stars += i <= r.rating ? '★' : '☆';
+    const actions = r.status === 'published'
+      ? `<button type="button" data-review-action="unpublish">Unpublish</button>`
+      : `<button type="button" data-review-action="publish">Publish</button>
+         <button type="button" data-review-action="reject">Reject</button>`;
+    return `
+      <tr data-review-id="${escapeHtml(r.id)}">
+        <td>${escapeHtml(r.product_key)}</td>
+        <td><span style="color:var(--amber);letter-spacing:0.1em;">${stars}</span></td>
+        <td style="max-width:420px;">
+          ${r.title ? `<div style="font-weight:600;">${escapeHtml(r.title)}</div>` : ''}
+          <div style="color:var(--ink);">${escapeHtml(r.body)}</div>
+        </td>
+        <td>${escapeHtml(r.customer_name || '-')}</td>
+        <td style="color:var(--muted);font-size:11px;">${fmtDate(r.created_at)}</td>
+        <td style="white-space:nowrap;display:flex;gap:6px;">${actions}</td>
+      </tr>`;
+  }
 
   document.addEventListener('DOMContentLoaded', () => load('paid'));
 })();

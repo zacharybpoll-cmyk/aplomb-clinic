@@ -122,6 +122,49 @@ export async function verifyUnsubscribeToken(token, env) {
   }
 }
 
+// Review tokens — same HMAC scheme as unsubscribe, with a `kind` discriminator
+// so a review token can never be replayed as an unsubscribe token (or vice
+// versa) even though they share EMAIL_UNSUB_SECRET. Embedded in the T+10-day
+// review-request email as ?rt=…, this proves the submitter is the buyer of a
+// real shipped order without asking them to type their email (no enumeration).
+// 90-day window — long enough to actually try the product, then it closes.
+export async function signReviewToken({ orderId, email }, env) {
+  if (!env.EMAIL_UNSUB_SECRET) {
+    throw new Error('EMAIL_UNSUB_SECRET is not configured — cannot sign review token');
+  }
+  const exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 90;
+  const payload = b64urlEncode(
+    new TextEncoder().encode(JSON.stringify({ kind: 'review', orderId, email, exp }))
+  );
+  const key = await importHmacKey(env.EMAIL_UNSUB_SECRET);
+  const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload));
+  return `${payload}.${b64urlEncode(sig)}`;
+}
+
+// Returns { orderId, email } on a valid, unexpired review token, else null.
+// Never throws.
+export async function verifyReviewToken(token, env) {
+  try {
+    const [payloadB64, sigB64] = String(token || '').split('.');
+    if (!payloadB64 || !sigB64) return null;
+    const key = await importHmacKey(env.EMAIL_UNSUB_SECRET || '');
+    const sigBytes = Uint8Array.from(b64urlDecode(sigB64), (c) => c.charCodeAt(0));
+    const valid = await crypto.subtle.verify(
+      'HMAC',
+      key,
+      sigBytes,
+      new TextEncoder().encode(payloadB64)
+    );
+    if (!valid) return null;
+    const { kind, orderId, email, exp } = JSON.parse(b64urlDecode(payloadB64));
+    if (kind !== 'review' || !orderId || !email) return null;
+    if (!exp || exp < Math.floor(Date.now() / 1000)) return null;
+    return { orderId: String(orderId), email: String(email).toLowerCase() };
+  } catch (_) {
+    return null;
+  }
+}
+
 // Convenience: set the session cookie on a Response object.
 export function setSessionCookie(response, accessToken, { maxAgeSeconds = 60 * 60 * 24 * 7 } = {}) {
   response.headers.append(
