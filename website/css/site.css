@@ -3190,3 +3190,64 @@
   @media (prefers-reduced-motion: reduce) {
     .reveal-init { opacity: 1 !important; transform: none !important; }
   }
+
+  /* ─────────────────────────────────────────────────────────────
+     Conversion UI  (added 2026-05-17)
+     Subscription-primary PDP option + price anchor, trust badges,
+     cart free-shipping progress + add-to-unlock / routine bump.
+     ───────────────────────────────────────────────────────────── */
+
+  /* PDP: the (now default) subscription option reads as primary */
+  .mode:has(input:checked) { border-color: var(--ink); background: #fffaf0; }
+  .mode b s { color: var(--muted); font-weight: 400; margin-right: 5px; }
+
+  /* PDP trust badges under add-to-bag */
+  .pdp-trust {
+    margin: 12px 0 0;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Cart: free-shipping progress + suggested add-on */
+  .cart-freeship { margin: 4px 0 18px; }
+  .cart-freeship-msg {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .cart-freeship-msg strong { color: var(--ink); font-weight: 600; }
+  .cart-freeship-track {
+    height: 4px;
+    border-radius: 999px;
+    background: var(--rule);
+    overflow: hidden;
+  }
+  .cart-freeship-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--amber);
+    border-radius: 999px;
+    transition: width 0.4s var(--ease-out, ease-out);
+  }
+  .cart-suggest {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 11px 14px;
+    background: transparent;
+    border: 1px solid var(--ink);
+    border-radius: 10px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 0.18s var(--ease-out, ease-out),
+                color 0.18s var(--ease-out, ease-out);
+  }
+  .cart-suggest:hover { background: var(--ink); color: var(--paper); }

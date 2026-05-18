@@ -172,6 +172,11 @@
           <span class="label">Shipping</span>
           <span data-cart-shipping>$0</span>
         </div>
+        <div class="cart-freeship" data-cart-freeship hidden>
+          <div class="cart-freeship-msg" data-cart-freeship-msg></div>
+          <div class="cart-freeship-track" aria-hidden="true"><div class="cart-freeship-fill" data-cart-freeship-fill></div></div>
+          <button type="button" class="cart-suggest" data-cart-suggest hidden></button>
+        </div>
         <a class="cart-checkout" data-checkout-link href="/checkout/" aria-disabled="true">Checkout</a>
         <p class="micro" data-cart-disclosure></p>
       </div>
@@ -182,6 +187,24 @@
   function fmt(cents) {
     const dollars = (cents / 100);
     return '$' + (dollars % 1 === 0 ? dollars.toFixed(0) : dollars.toFixed(2));
+  }
+
+  function shortName(key) {
+    const p = PRODUCTS[key]; if (!p) return key;
+    return p.name.replace(/^APLOMB\.\s*/, '').replace(/\.\s*$/, '');
+  }
+
+  // Pick the single best add-on to suggest: the cheapest SKU not already in
+  // the bag that, added once, would cross the free-shipping line (near-miss);
+  // failing that, the cheapest remaining SKU (routine-completion bump).
+  function pickSuggestion() {
+    // Cheapest SKU not already in the bag (price-ascending order). The render
+    // layer decides whether adding it crosses the free-ship line and labels
+    // it accordingly — we never push the $129 SKU just to "unlock" $8 shipping.
+    const order = ['breath', 'calm', 'roots', 'serum'];
+    const key = order.find(k => PRODUCTS[k] && !state.items[k]);
+    if (!key) return null;
+    return { key, priceCents: PRODUCTS[key].priceVal * 100, shortName: shortName(key) };
   }
 
   function renderDrawer() {
@@ -228,6 +251,47 @@
         shipRow.hidden = true;
       }
     }
+    const fsWrap = document.querySelector('[data-cart-freeship]');
+    const fsMsg = document.querySelector('[data-cart-freeship-msg]');
+    const fsFill = document.querySelector('[data-cart-freeship-fill]');
+    const fsBtn = document.querySelector('[data-cart-suggest]');
+    if (fsWrap && fsMsg && fsFill && fsBtn) {
+      const fsMode = cartMode();
+      if (subtotal <= 0) {
+        fsWrap.hidden = true;
+      } else if (fsMode !== 'subscription' && subtotal < FREE_SHIPPING_THRESHOLD_CENTS) {
+        // Under the threshold on a one-time order: progress + add-to-unlock.
+        const remaining = FREE_SHIPPING_THRESHOLD_CENTS - subtotal;
+        const pct = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD_CENTS) * 100));
+        fsWrap.hidden = false;
+        fsMsg.innerHTML = `<strong>${fmt(remaining)}</strong> away from free shipping`;
+        fsFill.style.width = pct + '%';
+        const s = pickSuggestion();
+        if (s) {
+          fsBtn.hidden = false;
+          fsBtn.textContent = (s.priceCents >= remaining)
+            ? `Add ${s.shortName} (${fmt(s.priceCents)}) and ship free`
+            : `Add ${s.shortName} (${fmt(s.priceCents)})`;
+          fsBtn.setAttribute('data-cart-suggest', s.key);
+        } else { fsBtn.hidden = true; }
+      } else if (fsMode !== 'subscription' && subtotal >= FREE_SHIPPING_THRESHOLD_CENTS) {
+        // One-time order already ships free: positive confirm + gentle bump.
+        const s = pickSuggestion();
+        fsWrap.hidden = false;
+        fsMsg.innerHTML = `Free shipping unlocked.`;
+        fsFill.style.width = '100%';
+        if (s) {
+          fsBtn.hidden = false;
+          fsBtn.textContent = `Complete the routine · add ${s.shortName} (${fmt(s.priceCents)})`;
+          fsBtn.setAttribute('data-cart-suggest', s.key);
+        } else { fsBtn.hidden = true; }
+      } else {
+        // Subscription cart: no free-shipping claim (shipping is not waived for
+        // subscriptions in pricing logic). Keep the panel out of the way.
+        fsWrap.hidden = true;
+      }
+    }
+
     const checkoutBtn = document.querySelector('[data-checkout-link]');
     if (checkoutBtn) {
       if (totalQty === 0) {
@@ -284,6 +348,17 @@
 
       const backdrop = e.target.closest('[data-backdrop]');
       if (backdrop && backdrop === e.target) { closeDrawer(); return; }
+
+      const sug = e.target.closest('button[data-cart-suggest]');
+      if (sug && !sug.hidden) {
+        e.preventDefault();
+        const k = sug.getAttribute('data-cart-suggest');
+        if (k && PRODUCTS[k]) {
+          const m = cartMode();
+          add(k, m === 'subscription' ? 'subscription' : 'onetime', 1);
+        }
+        return;
+      }
 
       const addBtn = e.target.closest('[data-aplomb-add]');
       if (addBtn) {
