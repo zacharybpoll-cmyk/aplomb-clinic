@@ -351,3 +351,33 @@ hover/focus dropdown, no JS.
   "merge it"** (live commerce). Re-verify prod post-merge.
 
 ---
+
+## 2026-05-17 — Conversion/AOV remaining 5 · PR-A: #3 Reviews
+
+Verified-buyer, moderated, honestly-displayed reviews. Reuses existing
+patterns (HMAC token like unsubscribe, CF-Access admin auth, supabaseAdmin,
+json helpers) — no new infra, no new required env.
+
+- [x] `supabase/migrations/0006_reviews.sql` — `reviews` table (note: 0005
+  was already taken by newsletter_welcome; used 0006). RLS on, server-only.
+- [x] `functions/_lib/auth.js` — `signReviewToken`/`verifyReviewToken`
+  (HMAC, `kind:'review'` discriminator, 90-day exp, reuses EMAIL_UNSUB_SECRET).
+- [x] `functions/api/reviews.js` — GET published+aggregate (first-name only,
+  honest empty), POST token-gated → status=pending, dup-safe (23505).
+- [x] `functions/api/admin/reviews.js` — list + publish/reject/unpublish
+  (CF Access edge auth, same trust model as orders.js/ship-order.js).
+- [x] `functions/_lib/email-templates/review-request.js` — append signed
+  `?rt=` to the per-order PDP link (dropped `daily` — it has no PDP, 404 bug).
+- [x] `website/assets/reviews.js` — fetch/render/submit, XSS-safe
+  (textContent), no deps, no animation; hides whole widget when empty + no
+  token (never an empty box, never fabricated).
+- [x] PDP markup on serum/roots/calm/breath + `.reviews*`/`.sr-only` CSS.
+- [x] Admin "Reviews" moderation tab.
+- [x] Site-wide cache-bust `?v=20260518b` → `?v=20260518c` (27 HTML).
+- [x] Verified: ESM syntax all files; Playwright on static server — empty
+  PDP keeps section hidden, `?rt=` reveals form, all 404/network paths
+  degrade gracefully, 0 JS crashes; admin Reviews tab renders + degrades.
+- [ ] Ship via worktree→PR→squash→pull-ff; post-deploy live verify (#9,
+  needs 0006 migration applied — Supabase configured on prod, not local).
+
+---

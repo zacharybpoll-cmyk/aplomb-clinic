@@ -104,3 +104,11 @@ Conducted three-lane parallel research for hair-loss product sourcing (Lane A: S
 - **CF asset cache makes a same-URL CSS redeploy invisible.** PR #43 added `?v=20260517`; a later PR changed `site.css` again but the URL `?v=20260517` was already CF-cached (max-age clamped 0 to 14400). A CSS content change with an unchanged `?v=` does NOT reach returning visitors for ~4h. RULE: every `site.css` content change must also bump the `?v=` token in the same commit, or the deploy is a silent no-op for exactly the people judging it.
 
 ---
+
+## 2026-05-17 — Conversion remaining-5: verify state in code, never trust the audit summary
+
+- **Migration numbering: never trust an Explore/summary count — `ls` the dir.** The exploration report said migrations were `0001–0004`; the tree actually had `0005_newsletter_welcome_sent_at.sql`. Had I trusted the summary, `0006_reviews.sql` would have collided as a second `0005`. RULE: before adding migration N+1, `ls supabase/migrations` in the worktree and take max+1 from the filesystem, not from any prose.
+- **The first-order discount code is `APLOMB10`, not `WELCOME10`.** The plan/summary assumed `WELCOME10`; the live `newsletter-welcome` + `welcome-day-7` emails (and `_lib/newsletter.js`) already promise **`APLOMB10` — 10% off first order**, with zero redemption mechanism anywhere. PR-B (#8) MUST honor the code customers were already told (`WELCOME_COUPON_CODE` default `APLOMB10`, `WELCOME_COUPON_PCT` default `10`), and the Stripe promotion_code for the subscription path must be `APLOMB10`. Inventing `WELCOME10` would orphan every welcome email already sent.
+- **`functions/checkout/_middleware.js` only injects the Turnstile site key for `/checkout/*`.** A reviews form on a PDP can't rely on Turnstile (no site-key meta there). The signed per-order HMAC token (`?rt=`) is the correct, stronger gate for PDP review submission — no CAPTCHA plumbing, no email enumeration. Turnstile-on-checkout server-verification is a real but *separate* gap (Explore found it) — track it as its own follow-up, do NOT bundle a payment-path change into the reviews PR.
+
+---

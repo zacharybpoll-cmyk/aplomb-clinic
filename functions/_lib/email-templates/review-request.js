@@ -2,7 +2,7 @@
 // per order; idempotency via orders.review_request_sent_at.
 
 import { BRAND, layoutEmail, escapeHtml } from './_layout.js';
-import { signUnsubscribeToken } from '../auth.js';
+import { signUnsubscribeToken, signReviewToken } from '../auth.js';
 
 export const SUBJECT = 'How is APLOMB. working for you?';
 
@@ -19,9 +19,13 @@ export async function render(env, data) {
   const firstItem = Array.isArray(order?.line_items) && order.line_items[0] ? order.line_items[0] : null;
   const productName = firstItem?.name || 'your APLOMB. order';
   const productKey = (firstItem?.productKey || firstItem?.k || '').toString();
-  // Review form lives on the PDP (once reviews tool is wired). For now point at the PDP itself.
-  const reviewUrl = productKey && ['serum','daily','roots','calm','breath'].includes(productKey)
-    ? `${siteUrl}/${productKey}/#reviews`
+  // Review form lives on the PDP, unlocked by a signed per-order token (?rt=)
+  // so the buyer can submit without re-entering anything and we can trust it.
+  const reviewToken = order?.id && email
+    ? await signReviewToken({ orderId: order.id, email }, env)
+    : null;
+  const reviewUrl = productKey && reviewToken && ['serum','roots','calm','breath'].includes(productKey)
+    ? `${siteUrl}/${productKey}/?rt=${encodeURIComponent(reviewToken)}#reviews`
     : `${siteUrl}/faq/`;
 
   const html = layoutEmail(`

@@ -3251,3 +3251,98 @@
                 color 0.18s var(--ease-out, ease-out);
   }
   .cart-suggest:hover { background: var(--ink); color: var(--paper); }
+
+  /* ----------------------------------------------------------------------
+     Reviews (#3) - verified-buyer, moderated. Section is JS-revealed only
+     when there is something to show or a review token is present, so an
+     empty widget never renders. Matches the warm editorial system.
+     ---------------------------------------------------------------------- */
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .reviews { max-width: 1200px; margin: 0 auto; padding: 8px 40px 72px; }
+  .reviews-inner {
+    border-top: 1px solid var(--rule);
+    padding-top: 44px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .reviews h3 {
+    font-family: var(--serif); font-size: 30px; font-weight: 400;
+    margin: 0 0 18px; color: var(--ink);
+  }
+  .reviews h3 .dot { color: var(--amber); }
+  .reviews-head {
+    display: flex; align-items: baseline; gap: 12px;
+    margin: 0 0 28px; flex-wrap: wrap;
+  }
+  .reviews-stars {
+    color: var(--amber); letter-spacing: 0.12em; font-size: 17px;
+    line-height: 1;
+  }
+  .reviews-avg {
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 13px;
+    letter-spacing: 0.04em; color: var(--muted);
+  }
+  .reviews-empty {
+    font-family: var(--serif); font-style: italic; font-size: 19px;
+    line-height: 1.5; color: var(--muted); margin: 0 0 28px;
+  }
+  .reviews-list { display: flex; flex-direction: column; gap: 28px; }
+  .review { border-bottom: 1px solid var(--rule); padding-bottom: 26px; }
+  .review:last-child { border-bottom: 0; padding-bottom: 0; }
+  .review-top .reviews-stars { font-size: 15px; }
+  .review-title {
+    font-family: var(--serif); font-size: 20px; color: var(--ink);
+    margin: 10px 0 6px;
+  }
+  .review-body {
+    font-size: 15px; line-height: 1.65; color: var(--ink);
+    margin: 8px 0 10px;
+  }
+  .review-meta {
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 12px;
+    letter-spacing: 0.04em; color: var(--muted);
+  }
+  .reviews-form {
+    margin-top: 40px; padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    display: flex; flex-direction: column; gap: 14px; max-width: 520px;
+  }
+  .reviews-form .rf-rating {
+    border: 0; padding: 0; margin: 0;
+    display: flex; gap: 16px; flex-wrap: wrap;
+  }
+  .reviews-form .rf-rating legend {
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 12px;
+    text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .reviews-form .rf-rating label {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 14px; color: var(--ink); cursor: pointer;
+  }
+  .reviews-form input[type="text"],
+  .reviews-form textarea {
+    width: 100%; padding: 11px 13px;
+    border: 1px solid var(--rule); border-radius: 8px;
+    background: var(--paper); color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 14px;
+  }
+  .reviews-form textarea { resize: vertical; line-height: 1.55; }
+  .reviews-form .btn { align-self: flex-start; }
+  .reviews-form .rf-note,
+  .reviews-form .rf-done {
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 12px;
+    color: var(--muted); margin: 2px 0 0; line-height: 1.5;
+  }
+  .reviews-form .rf-note.is-error { color: #9a2c14; }
+  .reviews-form .rf-done {
+    font-size: 14px; color: var(--ink);
+  }
+  @media (max-width: 640px) {
+    .reviews { padding: 8px 22px 56px; }
+    .reviews-inner { padding-top: 36px; }
+    .reviews h3 { font-size: 26px; }
+  }
