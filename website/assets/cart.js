@@ -180,30 +180,39 @@
     return Math.round((subtotalCents * WELCOME_PCT) / 100);
   }
 
-  // Add a curated routine (#5) in one click: all component SKUs, one-time,
-  // single state update + one drawer open. Honest by construction — it adds
-  // each product at its real price (no fabricated bundle markup/discount) and
-  // pre-applies the first-order code the bundle page promises; the server
-  // still re-validates that code and enforces first-order-only.
+  // Add the full routine in one click: all component SKUs at their real price
+  // (no fabricated bundle markup/discount), in the mode the bundle page's
+  // purchase-option radios chose. One state update + one drawer open. One-time
+  // adds pre-apply the first-order code the bundle page promises; the server
+  // still re-validates it and enforces first-order-only. Subscription adds get
+  // their per-product subscribe & save price via unitPriceCents().
   function addBundle(keys, opts) {
     keys = (Array.isArray(keys) ? keys : String(keys || '').split(','))
       .map(k => k.trim())
       .filter(k => PRODUCTS[k]);
     if (!keys.length) return { ok: false, error: 'No valid products.' };
 
+    // Default one-time; honor subscription only if every component allows it.
+    let mode = (opts && opts.mode === 'subscription') ? 'subscription' : 'onetime';
+    if (mode === 'subscription' && !keys.every(k => PRODUCTS[k].allowsSubscription)) mode = 'onetime';
+
     const existing = cartMode();
-    if (existing && existing !== 'onetime') {
+    if (existing && existing !== mode) {
       const ok = window.confirm(
-        'Your bag has subscription items. Adding the full routine (one-time) will clear the bag. Continue?'
+        existing === 'subscription'
+          ? 'Your bag has subscription items. Adding the full routine as a one-time order will clear the bag. Continue?'
+          : 'Your bag has one-time items. Adding the full routine as a subscription will clear the bag. Continue?'
       );
       if (!ok) return { ok: false, error: 'Cart not modified.' };
       state.items = {};
     }
     keys.forEach(k => {
-      if (state.items[k]) { state.items[k].qty += 1; state.items[k].mode = 'onetime'; }
-      else state.items[k] = { qty: 1, mode: 'onetime' };
+      if (state.items[k]) { state.items[k].qty += 1; state.items[k].mode = mode; }
+      else state.items[k] = { qty: 1, mode };
     });
-    if (!opts || opts.coupon !== false) {
+    // Welcome code is one-time only; subscription discounts run through
+    // Stripe's promotion-code field. Server re-validates either way.
+    if (mode === 'onetime' && (!opts || opts.coupon !== false)) {
       try { localStorage.setItem(COUPON_KEY, WELCOME_CODE); } catch (_) {}
     }
     save();
@@ -433,7 +442,14 @@
       const bundleBtn = e.target.closest('[data-bundle-add]');
       if (bundleBtn) {
         e.preventDefault();
-        addBundle(bundleBtn.dataset.bundleAdd);
+        // Mode from the nearest buy-box radio group (mirrors data-aplomb-add).
+        let mode = 'onetime';
+        const grp = bundleBtn.closest('[data-buy-box]');
+        if (grp) {
+          const chosen = grp.querySelector('input[name^="aplomb-mode"]:checked');
+          if (chosen) mode = chosen.value;
+        }
+        addBundle(bundleBtn.dataset.bundleAdd, { mode });
         return;
       }
 
