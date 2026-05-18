@@ -81,3 +81,9 @@ Conducted three-lane parallel research for hair-loss product sourcing (Lane A: S
 - Production deploy of an agent-inferred fix to a live commerce site needs **explicit founder approval in chat** (the auto-mode classifier will and should block auto-merge). Stage everything in an isolated `git worktree` off `main` (never disturb founder WIP), open the PR, then wait for "merge it."
 
 ---
+
+## 2026-05-16 — Design-mockup builds: bake brand bans into the template, not the cleanup
+- Wrote file 01 with em dashes + literal "Ozempic"-titled citations, then had to scrub. Cost a fix pass before replicating.
+- **Rule**: before forking a reference mockup into N variants, run the banned-token grep (em dash `—`, drug trademarks, `Inter`, `#5B8DB8`/cool hexes, emoji/arrows) on the reference FIRST and fix there, so the corrected copy propagates. En dashes in numeric ranges (`2169–2178`, `30–50%`) are correct typography, not the AI tell — keep them; only em dashes are banned.
+- Playwright MCP profile can be locked ("Browser is already in use"); never pkill it. Fall back to claude-in-chrome MCP. `localhost` navigates without the 127.0.0.1 permission prompt.
+- Slide-in drawer screenshots taken immediately after the open click look "clipped/undimmed" — it's mid-transition, not a bug. Confirm with getBoundingClientRect (left/right vs innerWidth) before chasing a phantom overflow.

@@ -192,3 +192,15 @@ All Tier 1+2 items doable without founder credentials are now in the working tre
 - Companion Worker source valid; SCHEDULE map ↔ wrangler.toml crons match
 
 ---
+
+## 2026-05-16 — Inspiration-brand redesign mockups (design-scratch)
+- [x] Built 7 standalone click-through redesign mockups + gallery in `design-scratch/redesign-mockups/`
+- [x] Studies: 01 The Ordinary, 02 Augustinus Bader, 03 Aesop, 04 Hims, 05 Midi Health, 06 Function Health, 07 Maude
+- [x] Hybrid fidelity: Cormorant Garamond + IBM Plex Sans + amber period constant; palette/grid/composition flex per brand
+- [x] Reused existing on-brand Flux assets from `website/assets/` (no new generation needed) → shared `redesign-mockups/assets/`
+- [x] Each: home + product PDP + science + about + FAQ + cart drawer + mock checkout via in-file hash router
+- [x] Real APLOMB copy/pricing (Serum $129, Roots $39, Calm $35, Breath $35); content unchanged from live site
+- [x] Static-clean: 0 em dashes, 0 drug trademarks, no Inter, no steel-blue/cool hexes, no emoji (all 8 files)
+- [x] Verified in browser: routing, subscribe price calc, add-to-cart, cart persistence, checkout→confirmation, FAQ accordion — 0 console errors
+- Note: Ozempic-titled citations genericized to "Cleveland Clinic · patient education" to honor BRAND.md trademark rule (live site still uses literal titles; mockups are conservative)
+- Not deployed; design-evaluation artifact only
