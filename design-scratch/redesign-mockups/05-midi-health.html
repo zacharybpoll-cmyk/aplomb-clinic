@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APLOMB. · warm telehealth (Midi Health study)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3ecdf; --paper:#fdf8ee; --warm:#efe2cb; --ink:#1a1512; --amber:#7a3d14;
+    --amber-light:#d9a06b; --rule:#ddd0b8; --muted:#6b5d4c;
+    --serif:'Cormorant Garamond',Garamond,'Times New Roman',serif;
+    --sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.62;-webkit-font-smoothing:antialiased}
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  h1,h2,h3{font-weight:400;font-variant-numeric:lining-nums;font-feature-settings:"lnum" 1}
+  [hidden]{display:none!important}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+
+  /* ---- Midi: warm, empathetic, soft rounded, credibility-led ---- */
+  .nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+       padding:20px 32px;background:rgba(243,236,223,.94);backdrop-filter:blur(8px)}
+  .logo{display:inline-flex;align-items:center;gap:9px;font-family:var(--serif);font-style:italic;font-size:26px;font-weight:500;letter-spacing:-.02em;line-height:1}
+  .logo .mark{width:11px;height:30px;color:var(--amber);flex-shrink:0}
+  .logo .dot{color:var(--amber);font-style:normal}
+  .nav-links{display:flex;gap:32px;font-size:15px;font-weight:500;color:var(--muted)}
+  .nav-links a:hover,.nav-links a.is-active{color:var(--ink)}
+  .nav-right{display:flex;gap:14px;align-items:center}
+  .btn{display:inline-block;background:var(--amber);color:#fdf8ee;font-size:15px;font-weight:600;padding:15px 30px;border-radius:10px}
+  .btn:hover{background:var(--ink)}
+  .btn-soft{background:var(--paper);color:var(--ink);border:1px solid var(--rule)}
+  .btn-soft:hover{background:var(--warm)}
+  .bag-btn{font-size:15px;font-weight:600;color:var(--ink)}
+
+  /* Hero */
+  .hero{background:var(--warm);border-radius:0 0 36px 36px}
+  .hero .inner{display:grid;grid-template-columns:1.05fr 1fr;gap:50px;align-items:center;padding:64px 0 76px}
+  .hero h1{font-family:var(--serif);font-size:clamp(38px,5.4vw,76px);line-height:1.06;letter-spacing:-.02em;margin-bottom:22px}
+  .hero h1 em{color:var(--amber);font-style:italic}
+  .hero-lede{font-size:19px;color:var(--muted);margin-bottom:30px;max-width:46ch}
+  .hero-lede b{color:var(--ink);font-weight:600}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+  .hero-pic{border-radius:24px;overflow:hidden;aspect-ratio:1/1;background:var(--paper)}
+  .hero-pic img{width:100%;height:100%;object-fit:cover}
+
+  .cred{display:flex;justify-content:center;gap:50px;flex-wrap:wrap;padding:34px 0;font-size:14px;font-weight:600;color:var(--muted)}
+  .cred span::before{content:"●";color:var(--amber);font-size:9px;margin-right:9px;vertical-align:middle}
+
+  .section{padding:80px 0}
+  .section-head{text-align:center;max-width:62ch;margin:0 auto 52px}
+  .section-head h2{font-family:var(--serif);font-size:clamp(30px,4.4vw,52px);line-height:1.12;letter-spacing:-.018em}
+  .section-head h2 em{color:var(--amber);font-style:italic}
+  .section-head p{margin-top:16px;color:var(--muted);font-size:17px}
+
+  /* Concern cards (products framed as concerns) */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
+  .card{background:var(--paper);border-radius:22px;overflow:hidden;display:grid;grid-template-columns:42% 1fr}
+  .card-img{overflow:hidden;background:var(--warm)}
+  .card-img img{width:100%;height:100%;object-fit:cover;min-height:280px}
+  .card-body{padding:34px 32px;display:flex;flex-direction:column}
+  .card-kicker{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:9px}
+  .card h3{font-family:var(--serif);font-size:30px;margin-bottom:6px}
+  .card h3 .dot{color:var(--amber)}
+  .card-claim{font-size:16px;color:var(--ink);font-weight:500;margin-bottom:12px}
+  .card-desc{font-size:14px;color:var(--muted);margin-bottom:20px}
+  .card-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .card-price{font-family:var(--serif);font-size:25px}
+  .card-acts{display:flex;gap:10px}
+  .mini{font-size:14px;font-weight:600;padding:10px 16px;border-radius:9px;background:var(--warm)}
+  .mini.solid{background:var(--amber);color:#fdf8ee}
+  .mini:hover{filter:brightness(.95)}
+
+  /* Steps */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  .step{background:var(--paper);border-radius:18px;padding:30px 26px}
+  .step .n{width:38px;height:38px;border-radius:999px;background:var(--amber);color:#fdf8ee;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:20px;margin-bottom:16px}
+  .step h3{font-size:18px;font-weight:600;margin-bottom:8px;font-family:var(--sans)}
+  .step p{font-size:14px;color:var(--muted)}
+
+  /* Voices - patient/clinician */
+  .voices{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+  .voice{background:var(--paper);border-radius:20px;padding:36px 34px}
+  .voice .topic{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:16px}
+  .voice blockquote{font-family:var(--serif);font-size:23px;line-height:1.42;margin-bottom:18px}
+  .voice .by b{display:block;font-weight:700;font-size:15px}
+  .voice .by span{color:var(--muted);font-size:14px}
+
+  /* PDP */
+  .crumb{font-size:14px;color:var(--muted);font-weight:500;margin-bottom:26px}
+  .pdp{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start}
+  .pdp-img{border-radius:22px;overflow:hidden;aspect-ratio:4/5;background:var(--paper);position:sticky;top:86px}
+  .pdp-img img{width:100%;height:100%;object-fit:cover}
+  .pdp-body h1{font-family:var(--serif);font-size:50px}
+  .pdp-body h1 .dot{color:var(--amber)}
+  .pdp-claim{font-size:19px;color:var(--ink);font-weight:600;margin:6px 0 8px}
+  .pdp-claim small{display:block;color:var(--amber);font-weight:700;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+  .pdp-desc{font-size:16px;color:var(--muted);margin:18px 0 24px}
+  .pdp-specs{background:var(--paper);border-radius:18px;padding:8px 22px;margin-bottom:22px}
+  .spec{display:flex;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:1px solid var(--rule);font-size:14px}
+  .spec:last-child{border-bottom:none}
+  .spec span:first-child{color:var(--muted);font-weight:500}
+  .spec span:last-child{text-align:right;max-width:58%}
+  .modes{display:flex;flex-direction:column;gap:11px;margin-bottom:20px}
+  .mode{display:flex;gap:12px;padding:17px 20px;border:1px solid var(--rule);border-radius:13px;cursor:pointer;align-items:flex-start;background:var(--paper)}
+  .mode input{margin-top:3px;accent-color:var(--amber)}
+  .mode b{font-weight:600}
+  .mode small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+  .pdp-body .btn{width:100%;text-align:center}
+  .pdp-micro{font-size:13px;color:var(--muted);margin-top:15px;line-height:1.6}
+
+  /* FAQ */
+  .acc{max-width:840px;margin:0 auto;display:flex;flex-direction:column;gap:13px}
+  .acc-item{background:var(--paper);border-radius:14px;overflow:hidden}
+  .acc-q{width:100%;text-align:left;display:flex;justify-content:space-between;gap:20px;padding:23px 28px;font-family:var(--serif);font-size:23px;align-items:center}
+  .acc-q .pm{font-family:var(--sans);font-size:22px;color:var(--amber);font-weight:600}
+  .acc-a{padding:0 28px 25px;color:var(--muted);font-size:15px;display:none}
+  .acc-item.open .acc-a{display:block}
+
+  /* About */
+  .about{display:grid;grid-template-columns:1fr 1.15fr;gap:48px;align-items:center}
+  .about-pic{border-radius:24px;overflow:hidden;aspect-ratio:4/5;background:var(--paper)}
+  .about-pic img{width:100%;height:100%;object-fit:cover}
+  .about h2{font-family:var(--serif);font-size:clamp(32px,4.4vw,52px);line-height:1.12;margin-bottom:18px}
+  .about h2 em{color:var(--amber);font-style:italic}
+  .about .tribute{color:var(--muted);margin-bottom:28px}
+  .lossy{list-style:none;display:flex;flex-direction:column;gap:13px}
+  .lossy li{background:var(--paper);border-radius:14px;padding:20px 24px;display:flex;gap:18px}
+  .lossy .n{font-family:var(--serif);font-size:25px;color:var(--amber)}
+  .lossy b{font-weight:600}
+  .lossy div{color:var(--muted);font-size:15px}
+  .lossy-close{margin-top:22px;font-family:var(--serif);font-size:22px}
+
+  /* Cart */
+  .backdrop{position:fixed;inset:0;background:rgba(26,21,18,.5);opacity:0;pointer-events:none;transition:opacity .3s;z-index:90}
+  .backdrop.open{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:430px;max-width:92vw;background:var(--bg);
+          transform:translateX(100%);transition:transform .35s ease;z-index:100;display:flex;flex-direction:column}
+  .drawer.open{transform:none}
+  .drawer-head{display:flex;justify-content:space-between;align-items:center;padding:26px 30px}
+  .drawer-head h3{font-family:var(--serif);font-size:26px}
+  .drawer-close{font-size:24px;width:36px;height:36px;border-radius:999px;background:var(--paper)}
+  .drawer-items{flex:1;overflow-y:auto;padding:6px 30px}
+  .ci{display:flex;gap:15px;padding:17px;background:var(--paper);border-radius:14px;margin-bottom:11px}
+  .ci img{width:60px;height:60px;object-fit:cover;border-radius:10px;background:var(--warm)}
+  .ci-main{flex:1}
+  .ci-main b{font-family:var(--serif);font-size:18px;display:block}
+  .ci-main .m{color:var(--muted);font-size:13px;margin-top:2px}
+  .ci-x{font-size:13px;color:var(--muted);text-decoration:underline;margin-top:6px}
+  .ci-price{font-family:var(--serif);font-size:18px}
+  .cart-empty{padding:70px 0;text-align:center;color:var(--muted);font-style:italic;font-family:var(--serif);font-size:20px}
+  .drawer-foot{padding:22px 30px}
+  .sub-row{display:flex;justify-content:space-between;font-family:var(--serif);font-size:22px;margin-bottom:6px}
+  .drawer-foot .micro{font-size:13px;color:var(--muted);margin:10px 0 16px}
+  .drawer-foot .btn{width:100%;text-align:center}
+
+  /* Checkout */
+  .checkout{max-width:580px;margin:0 auto;padding:64px 32px}
+  .checkout h1{font-family:var(--serif);font-size:46px;margin-bottom:6px}
+  .checkout .sub{color:var(--muted);margin-bottom:32px}
+  .order-sum{background:var(--paper);border-radius:18px;padding:22px 26px;margin-bottom:24px}
+  .order-sum .r{display:flex;justify-content:space-between;padding:7px 0;font-size:15px}
+  .order-sum .t{font-family:var(--serif);font-size:21px;border-top:1px solid var(--rule);margin-top:8px;padding-top:13px}
+  .field{margin-bottom:15px}
+  .field label{display:block;font-size:14px;font-weight:600;margin-bottom:7px}
+  .field input{width:100%;padding:14px 16px;border:1px solid var(--rule);border-radius:11px;background:var(--paper);font:inherit;color:var(--ink)}
+  .field input:focus{outline:none;border-color:var(--amber)}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .checkout .btn{width:100%;text-align:center;margin-top:8px}
+  .confirm{max-width:560px;margin:0 auto;padding:120px 32px;text-align:center}
+  .confirm .mark-big{width:38px;height:94px;color:var(--amber);margin:0 auto 26px}
+  .confirm h1{font-family:var(--serif);font-size:50px;margin-bottom:14px}
+  .confirm p{color:var(--muted);max-width:46ch;margin:0 auto 26px}
+
+  /* Footer */
+  footer{background:var(--warm);border-radius:36px 36px 0 0;padding:60px 0 42px;margin-top:60px}
+  footer .wrap{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:34px}
+  .foot-tag{color:var(--muted);font-size:14px;margin-top:14px;max-width:30ch}
+  .foot-col h4{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);margin-bottom:16px}
+  .foot-col a{display:block;color:var(--muted);font-size:15px;padding:6px 0}
+  .foot-col a:hover{color:var(--ink)}
+  .foot-legal{border-top:1px solid var(--rule);margin-top:44px;padding-top:24px;font-size:12px;color:var(--muted);line-height:1.7}
+
+  @media(max-width:980px){
+    .hero .inner,.pdp,.about{grid-template-columns:1fr}
+    .grid,.voices{grid-template-columns:1fr}
+    .card{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr 1fr}
+    .pdp-img{position:static}
+    .nav-links{display:none}
+    footer .wrap{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:560px){.steps{grid-template-columns:1fr}.field-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="logo" href="#/" data-nav="home" aria-label="Aplomb home">
+    <svg class="mark" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+    <span>Aplomb<span class="dot">.</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="#/" data-nav="home">The concerns</a>
+    <a href="#/p-serum" data-nav="product">The Serum</a>
+    <a href="#/science" data-nav="science">The evidence</a>
+    <a href="#/about" data-nav="about">About</a>
+    <a href="#/faq" data-nav="faq">FAQ</a>
+  </div>
+  <div class="nav-right">
+    <button class="bag-btn" data-open-cart>Bag · <span data-cart-count>0</span></button>
+    <a class="btn" href="#/p-serum">Get started</a>
+  </div>
+</nav>
+
+<main>
+  <!-- HOME -->
+  <section data-route="home">
+    <div class="hero">
+      <div class="wrap">
+        <div class="inner">
+          <div>
+            <h1>The drug is working. <em>You should not have to lose yourself to it.</em></h1>
+            <p class="hero-lede">GLP-1s can do incredible work. They can also cause <b>a hollow face, hair loss, horrible nausea, and bad breath.</b> Aplomb is for keeping you from losing your best self.</p>
+            <div class="hero-cta">
+              <a class="btn" href="#/p-serum">Find your concern</a>
+              <a class="btn btn-soft" href="#/science">See the evidence</a>
+            </div>
+          </div>
+          <div class="hero-pic"><img src="assets/portrait-confident.webp" alt="A woman in her fifties, composed, in warm natural light."></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="cred"><span>No prescription required</span><span>Third-party tested</span><span>GMP-certified manufacturing</span><span>Designed to sit alongside your care</span></div>
+
+      <div class="section" style="padding-top:30px">
+        <div class="section-head"><h2>Start with the concern <em>that worries you most.</em></h2><p>Four products, each for one side effect the drug creates and no one is treating. Each works on its own.</p></div>
+        <div class="grid" data-product-grid></div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><h2>How Aplomb <em>works</em></h2></div>
+        <div class="steps">
+          <div class="step"><div class="n">1</div><h3>Pick your concern</h3><p>The face, the hair, the first month, or the breath. Choose the one that matters now.</p></div>
+          <div class="step"><div class="n">2</div><h3>Start on time</h3><p>Calm the day you titrate up. Roots in month two, before the shed begins.</p></div>
+          <div class="step"><div class="n">3</div><h3>Use it daily</h3><p>Simple routines that sit alongside your existing care. No prescription required.</p></div>
+          <div class="step"><div class="n">4</div><h3>Subscribe or reorder</h3><p>Save up to 15 percent on subscription. Cancel in one click, any time.</p></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><h2>This isn't APLOMB. saying it. <em>This is the field saying it.</em></h2><p>The most-listened-to voices in dermatology, endocrinology, and clinical nutrition. Verbatim, with sources. We chose them; we did not pay them.</p></div>
+        <div class="voices">
+          <article class="voice"><div class="topic">On facial change</div><blockquote>“Gauntness, sunken cheeks, new wrinkles and loose skin on the face and neck.”</blockquote><div class="by"><b>Cleveland Clinic</b><span>On GLP-1 facial change · patient education</span></div></article>
+          <article class="voice"><div class="topic">On hair thinning</div><blockquote>“The body can perceive weight loss as a stress, and holds on to resources for vital organs.”</blockquote><div class="by"><b>Cleveland Clinic</b><span>On GLP-1 hair thinning · patient education</span></div></article>
+          <article class="voice"><div class="topic">On telogen effluvium</div><blockquote>“A diffuse shedding of hair when a stressor moves follicles into their resting phase.”</blockquote><div class="by"><b>Nashville Dermatology Physicians</b><span>Hair loss and GLP-1s</span></div></article>
+          <article class="voice"><div class="topic">On nausea and GI</div><blockquote>“Forty-four percent reported nausea; median episode eight days; worst in the titration window.”</blockquote><div class="by"><b>New England Journal of Medicine</b><span>STEP-1 trial, 2021</span></div></article>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><h2>The face. The hair. <em>The first month. The breath.</em></h2><p>Whether you are two weeks from your first injection or seven months into the drug, APLOMB. is built for the side effects nobody is selling you a solution to.</p>
+          <div style="margin-top:26px"><a class="btn" href="#/p-serum">Begin with the Serum</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT -->
+  <section data-route="product">
+    <div class="wrap" style="padding:42px 32px 80px">
+      <p class="crumb"><a href="#/">The concerns</a> · <span data-pdp-crumb></span></p>
+      <div class="pdp" data-pdp></div>
+    </div>
+  </section>
+
+  <!-- SCIENCE -->
+  <section data-route="science">
+    <div class="wrap section">
+      <div class="section-head"><h2>What we cite, <em>in full.</em></h2><p>No GLP-1-specific topical trials exist for the Serum category. We say so, and we show the adjacent evidence we extrapolate from.</p></div>
+      <div class="voices">
+        <article class="voice"><div class="topic">Face · dermal half</div><blockquote style="font-size:18px;font-family:var(--sans);line-height:1.6">Sederma Matrixyl 3000 dossier: 45% reduction in deep-wrinkle surface area at twice-daily, eight weeks (manufacturer-sponsored). Li Y et al., J Cosmet Dermatol 2023;22(8):2169–2178: +55% dermal collagen density at 12 weeks, N=37, no placebo arm.</blockquote><div class="by"><b>The evidence base for the Serum</b><span>Extrapolated from general dermal-aging populations</span></div></article>
+        <article class="voice"><div class="topic">Hair · incidence</div><blockquote style="font-size:18px;font-family:var(--sans);line-height:1.6">Shah et al., 2024, JAAD: EHR cohort, 187,400 GLP-1 users matched to controls, adjusted odds ratio 1.76 for telogen effluvium. Famenini et al., 2014, JAMA Dermatology: ferritin under 30 and vitamin D under 30 ng/mL associated with TE. FDA 2017: biotin interferes with thyroid assays.</blockquote><div class="by"><b>Why iron, D, zinc, not biotin</b><span>Roots</span></div></article>
+        <article class="voice"><div class="topic">Nausea · RCT</div><blockquote style="font-size:18px;font-family:var(--sans);line-height:1.6">Wilding et al., STEP-1, 2021, NEJM: 44% report nausea, median episode eight days. Cochrane Review 2014: ginger for nausea, 26 RCTs, 30–50% reduction at one gram per day. Matthews et al., 2015: B6 for nausea, same delayed-emptying mechanism.</blockquote><div class="by"><b>Adjacent-population evidence</b><span>Calm</span></div></article>
+        <article class="voice"><div class="topic">Breath · mechanism</div><blockquote style="font-size:18px;font-family:var(--sans);line-height:1.6">ADA News 2025: roughly 30% of users self-report bad breath in dental-practice surveys. PMC12729639, 2025: review of hyposalivation, early-ketosis acetone, and gastric-stasis fermentation. Quirynen et al., 2002: zinc-acetate lozenges bind volatile sulfur compounds dose-dependently.</blockquote><div class="by"><b>Three converging pathways</b><span>Breath</span></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section data-route="about">
+    <div class="wrap section">
+      <div class="about">
+        <div class="about-pic"><img src="assets/woman-50s-portrait.webp" alt="A woman in her late fifties, silver-streaked hair, looking calmly into the camera."></div>
+        <div>
+          <h2>Sometimes the most credible response to a gap is to <em>close it yourself.</em></h2>
+          <p class="tribute">Thanks to the others. The clinicians and the women on the drug. The columns of evidence are theirs. We just put the products in front of them.</p>
+          <ul class="lossy">
+            <li><span class="n">01</span><div><b>The dermal layer thins fastest.</b> Texture changes, fine lines deepen, the layer above the hollows reads older.</div></li>
+            <li><span class="n">02</span><div><b>The hair does not stay.</b> The shed begins in month four and lasts until you address what triggered it.</div></li>
+            <li><span class="n">03</span><div><b>The first month does not stay easy.</b> Forty-four percent hit nausea hard enough to consider quitting.</div></li>
+            <li><span class="n">04</span><div><b>The breath does not stay yours.</b> Roughly thirty percent develop persistent bad breath.</div></li>
+          </ul>
+          <p class="lossy-close">The drug works. <em style="color:var(--amber);font-style:italic">The damage is the part nobody is selling you a solution to.</em> APLOMB. is.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section data-route="faq">
+    <div class="wrap section">
+      <div class="section-head"><h2>Questions, <em>answered plainly.</em></h2></div>
+      <div class="acc" data-accordion>
+        <div class="acc-item"><button class="acc-q">Do I need a prescription? <span class="pm">+</span></button><div class="acc-a">No. The Serum is a topical cosmetic. Roots, Calm, and Breath are dietary supplements, third-party tested and made in a GMP-certified US facility. None requires a prescription. They are designed to sit alongside your existing care.</div></div>
+        <div class="acc-item"><button class="acc-q">Will the Serum restore my facial volume? <span class="pm">+</span></button><div class="acc-a">No. It will not restore facial volume. The hollows are fat-pad loss. For those, see a board-certified dermatologist about HA fillers or biostimulators. The Serum is for the dermal layer above: the appearance of firmness and texture.</div></div>
+        <div class="acc-item"><button class="acc-q">When should I start Roots? <span class="pm">+</span></button><div class="acc-a">Begin in month two, before the shed begins, for the cleanest result. The shed typically starts around month four. Roots is best paired with a baseline lab panel and a follow-up review at month four.</div></div>
+        <div class="acc-item"><button class="acc-q">Why no biotin in Roots? <span class="pm">+</span></button><div class="acc-a">Biotin has no RCT support in this pattern, and at supplement doses it produces false readings on thyroid and troponin assays. We left it out on purpose and dose iron, vitamin D, and zinc instead.</div></div>
+        <div class="acc-item"><button class="acc-q">What does subscription cost? <span class="pm">+</span></button><div class="acc-a">Subscribe and save: Serum 10 percent, Roots 15 percent, Breath 15 percent. Calm ships one-time or on the next titration. Cancel any time in one click from your account.</div></div>
+        <div class="acc-item"><button class="acc-q">Shipping and returns? <span class="pm">+</span></button><div class="acc-a">Ships within 48 hours. 15-day returns on every product. Each product works on its own; you do not need the full line.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHECKOUT -->
+  <section data-route="checkout">
+    <div class="checkout">
+      <h1>Checkout</h1>
+      <p class="sub">Order ships within 48 hours. This is a design mockup; no payment is processed.</p>
+      <div class="order-sum" data-checkout-summary></div>
+      <form data-checkout-form>
+        <div class="field"><label>Email</label><input type="email" required placeholder="you@example.com"></div>
+        <div class="field"><label>Full name</label><input type="text" required placeholder="Jane Powell"></div>
+        <div class="field"><label>Address</label><input type="text" required placeholder="Street address"></div>
+        <div class="field-row"><div class="field"><label>City</label><input type="text" required></div><div class="field"><label>ZIP</label><input type="text" required></div></div>
+        <div class="field"><label>Card number</label><input type="text" required placeholder="0000 0000 0000 0000"></div>
+        <div class="field-row"><div class="field"><label>Expiry</label><input type="text" required placeholder="MM / YY"></div><div class="field"><label>CVC</label><input type="text" required placeholder="000"></div></div>
+        <button class="btn" type="submit">Place order</button>
+        <p class="pdp-micro" style="text-align:center">Secured by Stripe in production. We never see or store card details.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- CONFIRMATION -->
+  <section data-route="done">
+    <div class="confirm">
+      <svg class="mark-big" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg>
+      <h1>Thank you.</h1>
+      <p>Your order is on its way. A confirmation will arrive in your inbox within minutes. Begin APLOMB. now and you preserve what you have.</p>
+      <a class="btn" href="#/">Back to the concerns</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <span class="logo"><svg class="mark" viewBox="0 0 24 64" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="38" stroke="currentColor" stroke-width="1.4"/><path d="M 12 38 L 17.5 46 L 12 60 L 6.5 46 Z" fill="currentColor"/></svg><span>Aplomb<span class="dot">.</span></span></span>
+      <p class="foot-tag">Built to mitigate the side effects of GLP-1s.</p>
+    </div>
+    <div class="foot-col"><h4>Concerns</h4><a href="#/p-serum">The Serum</a><a href="#/p-roots">Roots</a><a href="#/p-calm">Calm</a><a href="#/p-breath">Breath</a></div>
+    <div class="foot-col"><h4>Read</h4><a href="#/science">The biology</a><a href="#/science">Evidence</a><a href="#/faq">FAQ</a></div>
+    <div class="foot-col"><h4>House</h4><a href="#/about">About</a><a href="#/about">Contact</a></div>
+  </div>
+  <div class="wrap"><div class="foot-legal"><strong>The Serum:</strong> a topical cosmetic product with seven active clinical ingredients. Vegan, cruelty-free, paraben-free, made in Australia, no prescription required. <strong>Roots, Calm, Breath:</strong> dietary supplements, third-party tested, manufactured in a GMP-certified US facility. Not intended to diagnose, treat, cure, or prevent any disease. These statements have not been evaluated by the Food and Drug Administration. Individual response varies. © MMXXVI Get Aplomb. Design mockup: Midi Health study.</div></div>
+</footer>
+
+<div class="backdrop" data-backdrop></div>
+<aside class="drawer" data-cart aria-label="Shopping bag">
+  <div class="drawer-head"><h3>Your bag</h3><button class="drawer-close" data-close-cart aria-label="Close">×</button></div>
+  <div class="drawer-items" data-cart-items></div>
+  <div class="drawer-foot">
+    <div class="sub-row"><span>Subtotal</span><span data-cart-subtotal>$0</span></div>
+    <p class="micro">Ships in 48 hours · 15-day returns on every product</p>
+    <button class="btn" data-checkout-go>Checkout</button>
+  </div>
+</aside>
+
+<script>
+/* ===== APLOMB shared core (identical across all 7 mockups) ===== */
+(function(){
+  const PRODUCTS={
+    serum:{name:'The Serum',claim:'To keep your skin from sagging.',price:129,img:'assets/serum-detail.webp',rail:'assets/serum-rail.webp',
+      desc:'Seven active clinical ingredients: three peptides (Matrixyl 3000 and Synthe’6) plus four plant actives (Centella, Kakadu Plum, Bearberry, Licorice). Formulated for the dermal-thinning fraction of GLP-1 facial change. Not a substitute for volume restoration. One to two drops to clean skin, AM and PM, layered under SPF.',
+      specs:[['Format','30 mL frosted-glass bottle'],['Routine','AM and PM, under SPF'],['Actives','Matrixyl 3000, Synthe’6, Centella, Kakadu Plum'],['Evidence','Sederma dossier; Li 2023, J Cosmet Dermatol'],['Will not do','Restore facial volume'],['Made in','Australia']],
+      sub:10,subline:'30 mL · 60-day supply · about $2 a day',micro:'A topical cosmetic. Not evaluated by the FDA. Discontinue if irritation occurs.'},
+    roots:{name:'Roots',claim:'To keep your hair from falling out.',price:39,img:'assets/roots-rail.webp',rail:'assets/roots-rail.webp',
+      desc:'A three-capsule daily for the telogen effluvium that follows rapid weight loss: ferrous bisglycinate iron, vitamin D3, zinc picolinate, plus saw palmetto for the androgenetic component. No biotin (zero RCTs in this pattern; interferes with thyroid panels).',
+      specs:[['Format','90 capsules · 30-day supply'],['Routine','3 capsules daily, with food'],['Actives','Iron, D3, zinc, saw palmetto'],['Free of','Biotin, gluten, dairy, soy'],['Made in','USA · GMP facility'],['Shelf life','24 months']],
+      sub:15,subline:'30-day supply · 3 capsules daily · about $1.30 a day',micro:'Not evaluated by the FDA. Begin in month two for the cleanest result.'},
+    calm:{name:'Calm',claim:'To get you through the nausea.',price:35,img:'assets/calm-rail.webp',rail:'assets/calm-rail.webp',
+      desc:'A 30-day kit timed for the first dose escalation: ginger root capsules at 1 g/day (Cochrane evidence base), vitamin B6, sugar-free electrolyte stick packs, and a one-page card on titration timing. Open it the day you titrate up.',
+      specs:[['Format','30 capsules + 30 stick packs'],['Routine','1 capsule + 1 stick daily'],['Actives','Ginger root, B6, electrolytes'],['Free of','Sugar, sweeteners, gluten'],['Made in','USA · GMP facility'],['Shelf life','24 months']],
+      sub:0,subline:'30-day starter kit · about $1.17 a day',micro:'Not evaluated by the FDA. Discuss with your prescriber if nausea persists past week eight.'},
+    breath:{name:'Breath',claim:'To stop the bad breath.',price:35,img:'assets/pharmaloz-tin-hero.webp',rail:'assets/pharmaloz-tin-hero.webp',
+      desc:'A 30-day lozenge tin dosed for the three GLP-1 oral-health mechanisms: hyposalivation (zinc-acetate binds volatile sulfur compounds), oral-bacteria load (xylitol + green-tea polyphenols), and gastric stasis (B6 + ginger micro-dose). Four lozenges daily.',
+      specs:[['Format','120 lozenges · 30-day tin'],['Routine','4 lozenges daily'],['Actives','Zinc acetate, xylitol, green tea, B6'],['Free of','Sugar, sweeteners, gluten'],['Made in','USA · GMP facility'],['Shelf life','24 months']],
+      sub:15,subline:'30-day tin · 4 lozenges daily · about $1.17 a day',micro:'Not evaluated by the FDA. If oral malodor persists past week eight, see your dentist.'}
+  };
+  const ORDER=['serum','roots','calm','breath'];
+  const cart=[];
+  const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+  const money=n=>'$'+n.toLocaleString('en-US');
+
+  function renderGrid(){
+    const g=$('[data-product-grid]'); if(!g) return;
+    g.innerHTML=ORDER.map(k=>{const p=PRODUCTS[k];return `
+      <div class="card">
+        <a class="card-img" href="#/p-${k}"><img src="${p.rail}" alt="APLOMB. ${p.name}" loading="lazy"></a>
+        <div class="card-body">
+          <div class="card-kicker">APLOMB. ${k.toUpperCase()}</div>
+          <h3>${p.name}<span class="dot">.</span></h3>
+          <div class="card-claim">${p.claim}</div>
+          <div class="card-desc">${p.desc.split('. ').slice(0,2).join('. ')}.</div>
+          <div class="card-foot">
+            <div class="card-price">${money(p.price)}</div>
+            <div class="card-acts">
+              <a class="mini" href="#/p-${k}">Details</a>
+              <button class="mini solid" data-add="${k}">Add to bag</button>
+            </div>
+          </div>
+        </div>
+      </div>`}).join('');
+  }
+
+  function renderPDP(key){
+    const p=PRODUCTS[key]; const host=$('[data-pdp]'); if(!host||!p) return;
+    const crumb=$('[data-pdp-crumb]'); if(crumb) crumb.textContent='APLOMB. '+p.name;
+    const subPrice=p.sub?Math.round(p.price*(1-p.sub/100)):p.price;
+    host.innerHTML=`
+      <div class="pdp-img"><img src="${p.img}" alt="APLOMB. ${p.name}"></div>
+      <div class="pdp-body">
+        <h1>${p.name}<span class="dot">.</span></h1>
+        <div class="pdp-claim"><small>APLOMB. ${key.toUpperCase()}</small>${p.claim}</div>
+        <p class="pdp-desc">${p.desc}</p>
+        <div class="pdp-specs">${p.specs.map(s=>`<div class="spec"><span>${s[0]}</span><span>${s[1]}</span></div>`).join('')}</div>
+        <div class="modes">
+          <label class="mode"><input type="radio" name="mode" value="onetime" checked><span><b>One-time · ${money(p.price)}</b><small>${p.subline}</small></span></label>
+          ${p.sub?`<label class="mode"><input type="radio" name="mode" value="subscription"><span><b>Subscribe &amp; save ${p.sub}% · ${money(subPrice)}</b><small>Auto-renews every 30 days. Cancel any time in one click.</small></span></label>`:''}
+        </div>
+        <button class="btn" data-add="${key}">Add to bag · <span data-pdp-price>${money(p.price)}</span></button>
+        <p class="pdp-micro">${p.micro}</p>
+      </div>`;
+    host.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener('change',e=>{
+      const pr=e.target.value==='subscription'?subPrice:p.price;
+      const t=host.querySelector('[data-pdp-price]'); if(t) t.textContent=money(pr);
+    }));
+  }
+
+  function addToCart(key){
+    const p=PRODUCTS[key];
+    const sel=document.querySelector('[data-pdp] input[name="mode"]:checked');
+    const useMode=(location.hash.indexOf('p-'+key)>-1&&sel)?sel.value:'onetime';
+    const unit=(useMode==='subscription'&&p.sub)?Math.round(p.price*(1-p.sub/100)):p.price;
+    const found=cart.find(c=>c.key===key&&c.mode===useMode);
+    if(found) found.qty++; else cart.push({key,mode:useMode,qty:1,unit});
+    renderCart(); openCart();
+  }
+  function renderCart(){
+    const wrap=$('[data-cart-items]'),cnt=$('[data-cart-count]'),sub=$('[data-cart-subtotal]');
+    const total=cart.reduce((s,c)=>s+c.unit*c.qty,0), qty=cart.reduce((s,c)=>s+c.qty,0);
+    if(cnt) cnt.textContent=qty;
+    if(sub) sub.textContent=money(total);
+    if(!wrap) return;
+    if(!cart.length){wrap.innerHTML='<div class="cart-empty">Your bag is empty.</div>';return;}
+    wrap.innerHTML=cart.map((c,i)=>{const p=PRODUCTS[c.key];return `
+      <div class="ci">
+        <img src="${p.rail}" alt="${p.name}">
+        <div class="ci-main"><b>APLOMB. ${p.name}</b>
+          <div class="m">${c.mode==='subscription'?('Subscription · save '+p.sub+'%'):'One-time'} · Qty ${c.qty}</div>
+          <button class="ci-x" data-remove="${i}">Remove</button>
+        </div>
+        <div class="ci-price">${money(c.unit*c.qty)}</div>
+      </div>`}).join('');
+  }
+  function openCart(){$('[data-cart]').classList.add('open');$('[data-backdrop]').classList.add('open');}
+  function closeCart(){$('[data-cart]').classList.remove('open');$('[data-backdrop]').classList.remove('open');}
+
+  function renderCheckoutSummary(){
+    const host=$('[data-checkout-summary]'); if(!host) return;
+    const total=cart.reduce((s,c)=>s+c.unit*c.qty,0);
+    if(!cart.length){host.innerHTML='<div class="r">Your bag is empty. <a class="btn" href="#/">Return to the concerns</a></div>';return;}
+    host.innerHTML=cart.map(c=>{const p=PRODUCTS[c.key];return `<div class="r"><span>APLOMB. ${p.name} ${c.mode==='subscription'?'· subscription':''} ×${c.qty}</span><span>${money(c.unit*c.qty)}</span></div>`}).join('')
+      +`<div class="r"><span>Shipping</span><span>Free</span></div><div class="r t"><span>Total</span><span>${money(total)}</span></div>`;
+  }
+
+  const ROUTES=['home','product','science','about','faq','checkout','done'];
+  function parseHash(){let h=(location.hash||'#/').replace(/^#\/?/,'');if(h.indexOf('p-')===0)return{route:'product',key:h.slice(2)};if(!ROUTES.includes(h))h='home';return{route:h,key:null};}
+  function route(){
+    const {route,key}=parseHash();
+    $$('[data-route]').forEach(s=>s.hidden=s.dataset.route!==route);
+    $$('[data-nav]').forEach(a=>a.classList.toggle('is-active',a.dataset.nav===route));
+    if(route==='product') renderPDP(key||'serum');
+    if(route==='checkout') renderCheckoutSummary();
+    window.scrollTo(0,0);
+  }
+  window.addEventListener('hashchange',route);
+
+  document.addEventListener('click',e=>{
+    const add=e.target.closest('[data-add]');
+    if(add){e.preventDefault();addToCart(add.dataset.add);return;}
+    const rm=e.target.closest('[data-remove]');
+    if(rm){cart.splice(+rm.dataset.remove,1);renderCart();renderCheckoutSummary();return;}
+    if(e.target.closest('[data-open-cart]')){e.preventDefault();openCart();return;}
+    if(e.target.closest('[data-close-cart]')||e.target.closest('[data-backdrop]')){closeCart();return;}
+    if(e.target.closest('[data-checkout-go]')){closeCart();location.hash='#/checkout';return;}
+    const q=e.target.closest('.acc-q');
+    if(q){const it=q.closest('.acc-item');const op=it.classList.contains('open');
+      it.parentElement.querySelectorAll('.acc-item').forEach(x=>{x.classList.remove('open');const m=x.querySelector('.pm');if(m)m.textContent='+';});
+      if(!op){it.classList.add('open');const m=it.querySelector('.pm');if(m)m.textContent='–';}
+      return;}
+  });
+  const cf=$('[data-checkout-form]');
+  if(cf) cf.addEventListener('submit',e=>{e.preventDefault();if(!cart.length){location.hash='#/';return;}cart.length=0;renderCart();location.hash='#/done';});
+
+  renderGrid(); renderCart(); route();
+})();
+</script>
+</body>
+</html>

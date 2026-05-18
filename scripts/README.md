@@ -75,3 +75,40 @@ operator has it exported in their own shell.
 
 Run order: `smoke.sh` first (fast, catches deploy/cache regressions), then
 `smoke-browser`, then `smoke-webhook` (boots local wrangler).
+
+---
+
+# APLOMB. — Facebook Page control (`fb-page.mjs`)
+
+Thin Meta Graph API control of the getaplomb.com Page (publish, schedule,
+read, moderate, insights), driven by `npm run fb -- <command>`. No browser,
+no third party — this script is the only thing that holds the Page token.
+Out of scope by design: the live v18.0 CAPI code, the Ads/Marketing API, and
+Facebook Groups (Meta killed the Groups API in 2024 — group work stays manual).
+
+```bash
+npm run fb -- help
+npm run fb -- whoami                       # verify token + identity
+npm run fb -- posts                        # read paths need no flag
+npm run fb -- post --message "…" --confirm  # writes need --confirm
+```
+
+**Secrets** (`scripts/.fb.env`, gitignored — see `.fb.env.example`):
+`FB_PAGE_ID`, `FB_PAGE_ACCESS_TOKEN`, optional `FB_API_VERSION` (default
+`v23.0`). `process.env` always wins. The token is never echoed and never
+solicited into chat; `bootstrap-token` writes it straight to `.fb.env`.
+
+**Conventions kept consistent with the smoke harness:** env-only secrets that
+fail loudly when absent (never a hard-coded fallback), the real Graph API
+error surfaced verbatim (message/code/`fbtrace_id`), and — because publishing
+is outward-facing and hard to reverse — **read-only by default; every write
+refuses without `--confirm` (or `FB_CONFIRM=1`).**
+
+**Founder-only (Meta side, needs the founder's login):** generate a System
+User token (non-expiring) inside the controllable "Get Aplomb" portfolio
+`1183365767175630` with scopes `pages_manage_posts`, `pages_read_engagement`,
+`pages_show_list` (+ `pages_manage_engagement` to moderate comments). The Page
+must be owned by that portfolio or Meta's "must be an admin of this business
+portfolio" gate blocks token generation — the same trap that bit the CAPI
+setup. App stays in Development mode, so no full App Review is needed for an
+owned Page.
