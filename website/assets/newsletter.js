@@ -12,6 +12,7 @@
   'use strict';
 
   const STORAGE_KEY = 'aplomb-nl-seen';
+  let shownPopup = false;
 
   function isSuppressedPath() {
     const p = window.location.pathname;
@@ -107,16 +108,43 @@
     foot.insertBefore(buildFooterBlock(), foot.firstChild);
   }
 
+  function showPopup() {
+    if (shownPopup) return;
+    if (document.querySelector('[data-newsletter-popup]')) return;
+    shownPopup = true;
+    document.body.appendChild(buildPopup());
+    requestAnimationFrame(() => {
+      const el = document.querySelector('[data-newsletter-popup]');
+      if (el) el.classList.add('is-open');
+    });
+  }
+
+  // Show on whichever comes first: a 20s dwell, scrolling past ~55% of the
+  // page, or desktop exit-intent (pointer leaving through the top). Still
+  // once per browser (STORAGE_KEY, set on dismiss) and never on suppressed
+  // paths. Slide-in style is unchanged — trigger quality, not size.
   function maybeShowPopup() {
     if (isSuppressedPath()) return;
     try { if (localStorage.getItem(STORAGE_KEY)) return; } catch (_) {}
-    setTimeout(() => {
-      if (document.querySelector('[data-newsletter-popup]')) return;
-      document.body.appendChild(buildPopup());
-      requestAnimationFrame(() => {
-        document.querySelector('[data-newsletter-popup]').classList.add('is-open');
-      });
-    }, 30000);
+
+    let armed = true;
+    function cleanup() {
+      armed = false;
+      window.removeEventListener('scroll', onScroll);
+      document.removeEventListener('mouseout', onExit);
+      clearTimeout(timer);
+    }
+    function fire() { if (!armed) return; cleanup(); showPopup(); }
+    function onScroll() {
+      const sc = window.scrollY || document.documentElement.scrollTop || 0;
+      const h = (document.documentElement.scrollHeight - window.innerHeight) || 1;
+      if (sc / h >= 0.55) fire();
+    }
+    function onExit(e) { if (e.clientY <= 0) fire(); }
+
+    const timer = setTimeout(fire, 20000);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    document.addEventListener('mouseout', onExit);
   }
 
   function dismissPopup() {
