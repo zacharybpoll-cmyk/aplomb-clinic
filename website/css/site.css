@@ -8,6 +8,12 @@
     --muted: #6b5d4c;
     --serif: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
     --sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    /* Motion tokens (added 2026-05-17) */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+    --dur-fast: 0.18s;
+    --dur: 0.28s;
+    --lift-shadow: 0 12px 28px rgba(26, 21, 18, 0.10);
   }
   /* Use lining (full-height) figures in all serif display headings,
      so "GLP-1" / "9-16" / "$5,000" don't render with old-style numerals
@@ -3065,3 +3071,122 @@
     text-transform: none; cursor: pointer; transition: background 0.18s;
   }
   .contact-form button:hover { background: var(--ink); color: #fdf8ee; }
+
+  /* ─────────────────────────────────────────────────────────────
+     Motion & micro-interactions  (added 2026-05-17)
+     Tasteful hover lift / in-frame image zoom / button press /
+     animated nav underline + scroll-reveal states.
+     Transforms & opacity only — GPU-composited, no layout reflow.
+     Durations collapse under the prefers-reduced-motion block above
+     (universal !important rule); motion.js never applies
+     .reveal-init when the user requests reduced motion.
+     ───────────────────────────────────────────────────────────── */
+
+  /* Cards — gentle lift + soft warm shadow on hover */
+  .mh-card,
+  .voice-card,
+  .bio-card,
+  .cross-sell a,
+  .pdp-rest-grid a {
+    transition: transform var(--dur) var(--ease-out),
+                box-shadow var(--dur) var(--ease-out),
+                border-color var(--dur-fast) var(--ease-out);
+  }
+  .mh-card:hover,
+  .voice-card:hover,
+  .bio-card:hover,
+  .cross-sell a:hover,
+  .pdp-rest-grid a:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--lift-shadow);
+  }
+
+  /* Image zoom within its frame (containers already clip overflow) */
+  .hero-img img,
+  .mh-card-img img,
+  .cross-sell .cs-img img {
+    transition: transform 0.6s var(--ease-out);
+  }
+  .hero-img:hover img,
+  .mh-card:hover .mh-card-img img,
+  .cross-sell a:hover .cs-img img {
+    transform: scale(1.04);
+  }
+
+  /* Buttons — keep the colour shift, add a slight lift + tactile press */
+  .btn,
+  .btn-dark,
+  .btn-outline,
+  .contact-form button {
+    transition: background var(--dur-fast) var(--ease-out),
+                color var(--dur-fast) var(--ease-out),
+                transform var(--dur-fast) var(--ease-out),
+                box-shadow var(--dur-fast) var(--ease-out);
+  }
+  .btn:hover,
+  .btn-dark:hover,
+  .btn-outline:hover,
+  .contact-form button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--lift-shadow);
+  }
+  .btn:active,
+  .btn-dark:active,
+  .btn-outline:active,
+  .contact-form button:active {
+    transform: translateY(0) scale(0.985);
+    box-shadow: none;
+  }
+
+  /* Bag pill — match the button feel */
+  .bag {
+    transition: background var(--dur-fast) var(--ease-out),
+                color var(--dur-fast) var(--ease-out),
+                transform var(--dur-fast) var(--ease-out);
+  }
+  .bag:hover { transform: translateY(-1px); }
+  .bag:active { transform: scale(0.97); }
+
+  /* Nav links — left-anchored underline that grows in on hover/focus */
+  .nav-links a,
+  .nav-dd-trigger { position: relative; }
+  .nav-links a::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -4px;
+    height: 1px; background: currentColor;
+    transform: scaleX(0); transform-origin: left;
+    transition: transform var(--dur) var(--ease-out);
+  }
+  .nav-links a:hover::after,
+  .nav-links a:focus-visible::after { transform: scaleX(1); }
+
+  /* Footer links — gentle nudge alongside the existing colour shift */
+  .foot-link {
+    transition: color var(--dur-fast) var(--ease-out),
+                transform var(--dur-fast) var(--ease-out);
+  }
+  .foot-link:hover { transform: translateX(2px); }
+
+  /* FAQ accordion — hover cue + soft answer fade-in (mechanics unchanged) */
+  .acc-q,
+  .acc-q .pm { transition: color var(--dur-fast) var(--ease-out); }
+  .acc-q:hover { color: var(--amber); }
+  .acc-item.open .acc-a-inner { animation: acc-fade var(--dur) var(--ease-out); }
+  @keyframes acc-fade {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Scroll-reveal — the initial hidden state is added by motion.js
+     only, so no-JS and reduced-motion visitors never see hidden
+     content. */
+  .reveal-init { opacity: 0; transform: translateY(16px); }
+  .reveal-init.is-visible {
+    opacity: 1; transform: none;
+    transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+  }
+
+  /* Defence-in-depth: under reduced motion, never hide content even
+     if .reveal-init were somehow applied. */
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-init { opacity: 1 !important; transform: none !important; }
+  }
