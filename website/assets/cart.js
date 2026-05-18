@@ -180,6 +180,37 @@
     return Math.round((subtotalCents * WELCOME_PCT) / 100);
   }
 
+  // Add a curated routine (#5) in one click: all component SKUs, one-time,
+  // single state update + one drawer open. Honest by construction — it adds
+  // each product at its real price (no fabricated bundle markup/discount) and
+  // pre-applies the first-order code the bundle page promises; the server
+  // still re-validates that code and enforces first-order-only.
+  function addBundle(keys, opts) {
+    keys = (Array.isArray(keys) ? keys : String(keys || '').split(','))
+      .map(k => k.trim())
+      .filter(k => PRODUCTS[k]);
+    if (!keys.length) return { ok: false, error: 'No valid products.' };
+
+    const existing = cartMode();
+    if (existing && existing !== 'onetime') {
+      const ok = window.confirm(
+        'Your bag has subscription items. Adding the full routine (one-time) will clear the bag. Continue?'
+      );
+      if (!ok) return { ok: false, error: 'Cart not modified.' };
+      state.items = {};
+    }
+    keys.forEach(k => {
+      if (state.items[k]) { state.items[k].qty += 1; state.items[k].mode = 'onetime'; }
+      else state.items[k] = { qty: 1, mode: 'onetime' };
+    });
+    if (!opts || opts.coupon !== false) {
+      try { localStorage.setItem(COUPON_KEY, WELCOME_CODE); } catch (_) {}
+    }
+    save();
+    openDrawer();
+    return { ok: true };
+  }
+
   // ---- Drawer rendering ----
   function ensureDrawer() {
     if (document.querySelector('[data-cart-drawer]')) return;
@@ -399,6 +430,13 @@
         return;
       }
 
+      const bundleBtn = e.target.closest('[data-bundle-add]');
+      if (bundleBtn) {
+        e.preventDefault();
+        addBundle(bundleBtn.dataset.bundleAdd);
+        return;
+      }
+
       const addBtn = e.target.closest('[data-aplomb-add]');
       if (addBtn) {
         e.preventDefault();
@@ -448,7 +486,7 @@
   // ---- Exposed API ----
   window.AplombCart = {
     PRODUCTS,
-    add, setQty, remove, clear,
+    add, addBundle, setQty, remove, clear,
     getLineItems, getSubtotalCents, getShippingCents, getTotalCents, getTotalQty,
     cartMode,
     getCoupon, setCoupon, clearCoupon, welcomeDiscountCents,
