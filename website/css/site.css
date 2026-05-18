@@ -2328,6 +2328,18 @@
     object-fit: cover;
     border: 1px solid var(--rule);
   }
+  /* Founder "why I started APLOMB" video replaces the square portrait.
+     Source is 720x1280 (9:16 portrait, stitched clips 08+09). */
+  .about-hero-img video.founder-video {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+    border: 1px solid var(--rule);
+    display: block;
+    background: #000;
+  }
   .founder-portrait {
     display: flex; flex-direction: column;
     align-items: center; gap: 14px;
