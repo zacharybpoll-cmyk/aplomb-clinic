@@ -13,22 +13,12 @@
 <link rel="icon" type="image/svg+xml" href="/assets/aplomb-mark.svg">
 <link rel="stylesheet" href="/css/site.css?v=20260519a">
 <style>
-  .bundle-ladder { display:flex; flex-direction:column; gap:14px; margin:22px 0 8px; }
-  .bundle-opt { border:1px solid var(--rule,#d9cfbd); border-radius:14px; padding:18px 20px; }
-  .bundle-opt.is-best { border-color:var(--ink); border-width:1.5px; }
-  .bundle-opt .bo-top { display:flex; justify-content:space-between; align-items:baseline; gap:14px; }
-  .bundle-opt .bo-name { font-family:var(--serif); font-size:21px; color:var(--ink); }
-  .bundle-opt .bo-price { font-family:var(--serif); font-size:21px; color:var(--ink); white-space:nowrap; }
-  .bundle-opt .bo-price s { color:var(--muted); font-size:16px; margin-right:8px; }
-  .bundle-opt .bo-sub { font-family:'IBM Plex Sans',sans-serif; font-size:12.5px; color:var(--muted); margin-top:6px; line-height:1.55; }
-  .bundle-opt.is-best .bo-name .dot { color:var(--amber); }
   .bundle-parts { display:flex; flex-direction:column; gap:8px; margin:6px 0 0; padding:0; list-style:none; }
   .bundle-parts li { display:flex; justify-content:space-between; font-family:'IBM Plex Sans',sans-serif; font-size:13px; color:var(--ink); border-bottom:1px solid var(--rule,#d9cfbd); padding:8px 0; }
   .bundle-parts li:last-child { border-bottom:0; }
   .bundle-parts .bp-sum { font-weight:600; border-bottom:0; padding-top:12px; }
-  @media (max-width:640px){ .bundle-opt .bo-top { flex-direction:column; gap:4px; } }
 </style>
-<script src="/assets/cart.js?v=20260518e" defer></script>
+<script src="/assets/cart.js?v=20260518f" defer></script>
 <script src="/assets/newsletter.js?v=20260518d" defer></script>
 <script src="/assets/analytics.js?v=20260515" defer></script>
 <script src="/assets/motion.js?v=20260518" defer></script>
@@ -124,20 +114,23 @@
           <li class="bp-sum"><span>Bought separately</span><span>$238</span></li>
         </ul>
 
-        <div class="bundle-ladder">
-          <div class="bundle-opt">
-            <div class="bo-top"><span class="bo-name">Just one concern</span><span class="bo-price">from $35</span></div>
-            <div class="bo-sub">Start with a single product if only one thing is bothering you. Each works on its own.</div>
-          </div>
-          <div class="bundle-opt">
-            <div class="bo-top"><span class="bo-name">The Full Routine</span><span class="bo-price">$238</span></div>
-            <div class="bo-sub">All four, the exact sum of the parts. No markup. Ships free (over $75), in 48 hours.</div>
-          </div>
-          <div class="bundle-opt is-best">
-            <div class="bo-top"><span class="bo-name">The Full Routine, first order<span class="dot">.</span></span><span class="bo-price"><s>$238</s>$214.20</span></div>
-            <div class="bo-sub">Your newsletter code <strong>APLOMB10</strong> takes 10% off your first order, applied for you at checkout. Ships free, in 48 hours.</div>
-          </div>
-        </div>
+        <fieldset class="mode-toggle">
+          <legend class="visually-hidden">Choose how to order the full routine</legend>
+          <label class="mode-opt">
+            <input type="radio" name="aplomb-mode-bundle" value="onetime" checked>
+            <span class="mode-opt-body">
+              <span class="mode-opt-title">The Full Routine · one time · $238</span>
+              <span class="mode-opt-meta">All four, the exact sum of the parts. No markup. Your newsletter code <strong>APLOMB10</strong> takes 10% off your first order, applied for you at checkout ($214.20 first order). Ships free, in 48 hours.</span>
+            </span>
+          </label>
+          <label class="mode-opt mode-opt-sub">
+            <input type="radio" name="aplomb-mode-bundle" value="subscription">
+            <span class="mode-opt-body">
+              <span class="mode-opt-title">The Full Routine · subscribe &amp; save · $208.75</span>
+              <span class="mode-opt-meta">All four on a recurring plan, subscribe &amp; save on every product ($29.25 off, about 12%). Renews every 30 days, cancel any time. Ships in 48 hours.</span>
+            </span>
+          </label>
+        </fieldset>
 
         <button class="btn btn-dark" type="button" data-bundle-add="serum,roots,calm,breath">Add the full routine</button>
         <p class="pdp-trust">15-day returns on every product · Third-party tested · Ships in 48 hours</p>
