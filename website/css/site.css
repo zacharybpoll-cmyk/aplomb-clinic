@@ -2330,16 +2330,46 @@
   }
   /* Founder "why I started APLOMB" video replaces the square portrait.
      Source is 720x1280 (9:16 portrait, stitched clips 08+09). */
+  .founder-video-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+  }
   .about-hero-img video.founder-video {
     width: 100%;
-    max-width: 300px;
+    max-width: 340px;
     height: auto;
-    aspect-ratio: 9 / 16;
+    aspect-ratio: 1 / 1;
     object-fit: cover;
     border: 1px solid var(--rule);
     display: block;
     background: #000;
   }
+  /* Prominent custom play button over the poster */
+  .video-play {
+    position: absolute; inset: 0; margin: auto;
+    width: 136px; height: 136px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 9px;
+    padding: 0; border: 0; border-radius: 50%;
+    background: rgba(26, 29, 33, 0.55);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28), 0 6px 24px rgba(0, 0, 0, 0.28);
+    color: #fff; cursor: pointer;
+    transition: transform .15s ease, background .15s ease;
+  }
+  .video-play:hover,
+  .video-play:focus-visible { transform: scale(1.06); background: rgba(26, 29, 33, 0.72); }
+  .video-play-ico {
+    width: 0; height: 0; margin-left: 7px;
+    border-style: solid;
+    border-width: 18px 0 18px 30px;
+    border-color: transparent transparent transparent #fff;
+  }
+  .video-play-txt {
+    font-family: var(--sans); font-size: 12px; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .founder-video-wrap.is-playing .video-play { display: none; }
   .founder-portrait {
     display: flex; flex-direction: column;
     align-items: center; gap: 14px;
@@ -2423,6 +2453,7 @@
     .about-hero { grid-template-columns: 1fr; }
     .about-hero-img { min-height: 0; padding: 48px; }
     .about-hero-img img { max-width: 280px; }
+    .founder-video-wrap, .about-hero-img video.founder-video { max-width: 280px; }
     .about-hero-body { padding: 56px 48px; }
     .about-why .about-hero-body h1 { font-size: 42px !important; }
     .creds-row { grid-template-columns: repeat(2, 1fr); gap: 32px; }
@@ -2443,6 +2474,7 @@
     .about-hero-body h1 { font-size: 36px !important; }
     .about-hero-img { padding: 36px 22px; }
     .about-hero-img img { max-width: 220px; }
+    .founder-video-wrap, .about-hero-img video.founder-video { max-width: 240px; }
     .about-why .about-hero-body h1 { font-size: 32px !important; }
     .about-why .about-hero-body p { font-size: 15px; }
     .creds-row { grid-template-columns: repeat(2, 1fr); gap: 24px; }

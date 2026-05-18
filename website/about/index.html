@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="/assets/aplomb-mark.svg">
-<link rel="stylesheet" href="/css/site.css?v=20260518e">
+<link rel="stylesheet" href="/css/site.css?v=20260519">
 <script src="/assets/newsletter.js?v=20260518d" defer></script>
 <script src="/assets/analytics.js?v=20260515" defer></script>
 <script src="/assets/motion.js?v=20260518" defer></script>
@@ -118,10 +118,16 @@
   <section class="about-hero about-why">
     <div class="about-hero-img">
       <div class="founder-portrait">
-        <video class="founder-video" controls preload="none" playsinline
-               poster="/assets/founder-why.jpg?v=20260518"
-               src="/assets/founder-why.mp4?v=20260518"></video>
-        <div class="founder-caption">Zachary Poll, MSt</div>
+        <div class="founder-video-wrap">
+          <video class="founder-video" preload="none" playsinline
+                 poster="/assets/founder-why.jpg?v=20260519"
+                 src="/assets/founder-why.mp4?v=20260519"></video>
+          <button type="button" class="video-play" aria-label="Play video: Why I started Aplomb">
+            <span class="video-play-ico" aria-hidden="true"></span>
+            <span class="video-play-txt">Press play</span>
+          </button>
+        </div>
+        <div class="founder-caption">Why I started Aplomb.</div>
       </div>
       <div class="creds">
         <div class="creds-label">Education &amp; clinical research</div>
@@ -231,5 +237,16 @@
     </div>
   </footer>
 </div>
+<script>
+(function(){
+  var w=document.querySelector('.founder-video-wrap');
+  if(!w)return;
+  var v=w.querySelector('video'), b=w.querySelector('.video-play');
+  function play(){w.classList.add('is-playing');v.setAttribute('controls','controls');v.play();}
+  b.addEventListener('click',play);
+  v.addEventListener('play',function(){w.classList.add('is-playing');v.setAttribute('controls','controls');});
+  v.addEventListener('ended',function(){w.classList.remove('is-playing');v.removeAttribute('controls');v.load();});
+})();
+</script>
 </body>
 </html>
