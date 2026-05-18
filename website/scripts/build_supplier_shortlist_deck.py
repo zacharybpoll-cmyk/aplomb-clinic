@@ -2,11 +2,15 @@
 Aplomb — Supplier Shortlist for MVP Market Test
 ================================================
 
-Builds Aplomb_Supplier_Shortlist_v1.pptx (13 slides, 16:9) listing the top 3
+Builds Aplomb_Supplier_Shortlist_v1.pptx (15 slides, 16:9) listing the top
 white-label suppliers for each of 5 GLP-1 side effects Aplomb is targeting:
-Ozempic face, halitosis, hair loss, nausea, nutrient depletion.
+Ozempic face, halitosis, hair loss, nausea, nutrient depletion — plus a
+sixth section covering the universal outer-packaging mailer system (small +
+large folding-carton SKUs, MOQ 200-400, US-only, Musely-style reference).
 
-Hard sourcing gate per supplier: MOQ <= 100 units OR total MOQ cost < $250.
+Hard sourcing gate per supplier (formula sections only): MOQ <= 100 units
+OR total MOQ cost < $250. The packaging section uses its own gates: US
+production, custom interior print, MOQ <= 400 per SKU.
 
 Run: python3 build_supplier_shortlist_deck.py
 """
@@ -435,22 +439,6 @@ SECTIONS = [
                          "publicly stated <100 MOQ for biotin+collagen "
                          "blend. Best-in-class certifications.",
             },
-            {
-                "name": "Custom Nutra",
-                "url": "https://customnutra.com/",
-                "product": "Biotin + collagen capsule (250+ stock "
-                           "blends); custom B-vitamin add-on",
-                "product_name": "Hair, Skin & Nail PL Catalog",
-                "product_url": "https://customnutra.com/product-category/private-label/goal/hair-nails/",
-                "moq": 48,
-                "unit_cost_usd": 2.50,
-                "total_moq_cost_usd": 120,
-                "alleviation_score": 64,
-                "notes": "Florida cGMP, FDA-registered. Lowest published "
-                         "stock-formula MOQ (48). Custom (vs stock) "
-                         "blends jump to 1,000+ MOQ. Stock biotin/"
-                         "collagen blend works for an MVP test.",
-            },
         ],
     },
     {
@@ -499,35 +487,39 @@ SECTIONS = [
                          "FDA-grade softgel.",
             },
             {
-                "name": "Gingerbon (Alibaba sourced)",
-                "url": "https://www.alibaba.com/showroom/gingerbon-candy.html",
-                "product": "Vietnamese ginger candy chew, private-label "
-                           "wrap; B6 add-on possible on custom run",
-                "product_name": "Gingerbon Candy Wholesale",
-                "product_url": "https://www.alibaba.com/showroom/gingerbon-candy.html",
-                "moq": 100,
-                "unit_cost_usd": 2.40,
-                "total_moq_cost_usd": 240,
-                "alleviation_score": 72,
-                "notes": "Vietnam confectioner via Alibaba. Traditional "
-                         "ginger chew; well-tolerated; B6 not in stock "
-                         "blend — request custom for nausea positioning. "
-                         "Confirm specific seller before PO.",
+                "name": "Shaanxi VitaHall Biotechnology",
+                "url": "https://www.alibaba.com/product-detail/VitaHall-OEM-ODM-Private-Label-Bulk_1601750948418.html",
+                "product": "Vegan ginger root extract gummies, "
+                           "private-label OEM/ODM; chewable digestion-"
+                           "support format",
+                "product_name": "VitaHall Ginger Root Extract Gummies",
+                "product_url": "https://www.alibaba.com/product-detail/VitaHall-OEM-ODM-Private-Label-Bulk_1601750948418.html",
+                "moq": 10,
+                "unit_cost_usd": 5.00,
+                "total_moq_cost_usd": 50,
+                "alleviation_score": 70,
+                "notes": "Shaanxi, China. MOQ 10 bottles (verified on "
+                         "product page) — lowest published in category. "
+                         "Unit price uses high-end of observed $1.70–5 "
+                         "range as conservative low-qty tier. Ginger-"
+                         "as-hero stock SKU; B6 add-on via custom run.",
             },
             {
-                "name": "Generic Asian ginger chew (Alibaba)",
-                "url": "https://www.alibaba.com/showroom/ginger-chew.html",
-                "product": "Private-label ginger chew, custom B6 + "
-                           "ginger blend; 66 suppliers in category",
-                "product_name": "Ginger Chew OEM Listings",
-                "product_url": "https://www.alibaba.com/showroom/ginger-chew.html",
+                "name": "Shaanxi Suni Green",
+                "url": "https://www.alibaba.com/product-detail/SUNI-OEM-ODM-Private-Label-Bulk_1601696643918.html",
+                "product": "Organic ginger root extract gummies, "
+                           "private-label OEM/ODM; chewable digestion-"
+                           "support format",
+                "product_name": "SUNI Organic Ginger Root Extract Gummies",
+                "product_url": "https://www.alibaba.com/product-detail/SUNI-OEM-ODM-Private-Label-Bulk_1601696643918.html",
                 "moq": 100,
-                "unit_cost_usd": 2.00,
-                "total_moq_cost_usd": 200,
-                "alleviation_score": 68,
-                "notes": "147 ginger chew SKUs across 66 suppliers (most "
-                         "China). Request RFQ from 3-5 sellers; pick "
-                         "best MOQ + B6 spec. ISO9001 + HACCP common.",
+                "unit_cost_usd": 2.20,
+                "total_moq_cost_usd": 220,
+                "alleviation_score": 66,
+                "notes": "Shaanxi, China. MOQ 100 bottles (verified "
+                         "on product page). Unit price $2.20 is high-"
+                         "end of observed $1.55–2.20 range. Vegan + "
+                         "organic certs. Direct competitor to VitaHall.",
             },
         ],
     },
@@ -576,37 +568,147 @@ SECTIONS = [
                          "spec'd by buyer; 2-4 wk lead. Lab COA per "
                          "batch; ISO + GMP cert.",
             },
+        ],
+    },
+    {
+        "key": "outer_packaging",
+        "title": "Outer Packaging",
+        "eyebrow": "§ 06 · Add-on · Two-SKU folding-mailer system",
+        "gate_skip": True,  # not subject to formula MOQ gate
+        "is_packaging": True,
+        "problem": (
+            "Every Aplomb SKU needs an outer mailer that ships flat, "
+            "weighs almost nothing, and reads editorial — not generic "
+            "corrugated. Reference: Musely's matte mauve folding-carton "
+            "mailer (single-color exterior, branded interior message, "
+            "soft tactile paperboard). Two carton SKUs cover the line: "
+            "a small mailer for the serum, capsule bottles, and "
+            "lozenge tin; a large mailer for the Calm kit."
+        ),
+        "spec": [
+            "Small carton — ~120 × 60 × 60 mm interior · fits Serum, "
+            "Daily, Roots, Composure tin",
+            "Large carton — ~180 × 110 × 50 mm interior · fits Calm "
+            "kit (largest single SKU footprint)",
+            "Style — roll-end tuck-top (RETT) or auto-bottom paperboard "
+            "mailer · matte uncoated · single-color exterior in amber "
+            "#7A3D14 on bone #F7F1E6 · interior message in Cormorant "
+            "Garamond italic",
+            "MOQ band — 200-400 per carton SKU (so 400-800 cartons "
+            "total across both die lines for first run)",
+            "Hard gates — US production · custom interior print · "
+            "MOQ ≤ 400 per SKU · willing to run two die lines on "
+            "same project",
+        ],
+        "rubric": [
+            "30% Customization fidelity — exterior + interior print, "
+            "matte uncoated, finishes (foil/deboss optional) — "
+            "Musely-quality reference match",
+            "25% MOQ fit at 200-400 per SKU",
+            "20% Lead time + reliability — sub-4-week production ideal",
+            "15% Cost at MOQ — combined small + large at 300/300",
+            "10% Sustainability + brand fit — FSC / recycled paperboard "
+            "preferred (not gated)",
+        ],
+        "musely_note": (
+            "Musely (telehealth dermatology, founded 2013) commissioned "
+            "its brand evolution from White and Salt design studio. "
+            "Musely's specific carton vendor is not public; the closest "
+            "production-format match for the same paperboard mailer at "
+            "MOQ 200-400 is Arka or noissue. RFQ both as the path of "
+            "least resistance to a Musely-equivalent first run."
+        ),
+        "suppliers": [
             {
-                "name": "Nutribl",
-                "url": "https://www.nutribl.com/",
-                "product": "Stock multivitamin capsule (120+ blends "
-                           "with B-complex, Mg, D3); private label",
-                "product_name": "Vitamin B-Complex Daily 120ct",
-                "product_url": "https://www.nutribl.com/p-951-vitamin-b-complex-daily-120-capsules-320ml-flat-postal.aspx",
-                "moq": 10,
-                "unit_cost_usd": 3.50,
-                "total_moq_cost_usd": 35,
-                "alleviation_score": 64,
-                "notes": "Lowest MOQ in market (10 units, stock formulas). "
-                         "UK-based; pricing behind login. Custom blends "
-                         "jump to £4-10K formulation cost. Stock blend "
-                         "works for MVP test.",
+                "name": "Arka (Packlane)",
+                "url": "https://packlane.com/",
+                "product": "Custom paperboard mailer · full-color in/out · "
+                           "matte / satin / Dreamcoat finishes · custom dies",
+                "product_name": "Mailer Box (custom)",
+                "product_url": "https://packlane.com/products/mailer-box",
+                "moq": 200,
+                "unit_cost_usd": 3.40,
+                "total_moq_cost_usd": 2040,
+                "alleviation_score": 88,
+                "notes": "San Francisco · MOQ 1+ (so 200/400 trivial) · "
+                         "100% US-made · ~10-day standard lead, 7-day "
+                         "rush · instant online proof · Shopify/WMS "
+                         "integration. Combined cost = 300 small + 300 "
+                         "large @ ~$3.40 weighted avg. RECOMMENDED "
+                         "lead — fastest path to Musely-style sample.",
             },
             {
-                "name": "Custom Nutra",
-                "url": "https://customnutra.com/",
-                "product": "Multivitamin capsule (250+ stock blends "
-                           "incl. B-complex + Mg + electrolytes)",
-                "product_name": "Multivitamins PL Catalog",
-                "product_url": "https://customnutra.com/product-category/private-label/vitamins/multivitamins/",
-                "moq": 48,
-                "unit_cost_usd": 2.25,
-                "total_moq_cost_usd": 108,
-                "alleviation_score": 62,
-                "notes": "Florida cGMP, FDA-registered. Stock blends "
-                         "only at 48 MOQ; custom GLP-1-targeted blend "
-                         "jumps to 1,000+ MOQ. Same supplier as hair-"
-                         "loss section if bundle SKUs.",
+                "name": "EcoEnclose",
+                "url": "https://www.ecoenclose.com/",
+                "product": "Custom shipping box · 100% recycled FSC "
+                           "kraft (95% post-consumer) · multi-panel "
+                           "interior print up to 2 colors",
+                "product_name": "Custom Shipping Box",
+                "product_url": "https://www.ecoenclose.com/shop/custom-shipping-boxes/",
+                "moq": 100,
+                "unit_cost_usd": 3.85,
+                "total_moq_cost_usd": 2310,
+                "alleviation_score": 81,
+                "notes": "Colorado · 100% recycled · FSC SCS-COC-009926 · "
+                         "HydroSoy/Black-Algae inks (no plastic "
+                         "lamination) · made in USA. Best sustainability "
+                         "story; kraft-only exterior reads less "
+                         "Musely-velvet, more clinical/honest.",
+            },
+            {
+                "name": "Refine Packaging",
+                "url": "https://refinepackaging.com/",
+                "product": "Custom mailer box · 10-28pt board (kraft / "
+                           "cardstock / e-flute corrugated) · gloss / "
+                           "matte / spot UV finishes · interior + "
+                           "exterior print",
+                "product_name": "Custom Mailer Box",
+                "product_url": "https://refinepackaging.com/mailer-boxes/",
+                "moq": 100,
+                "unit_cost_usd": 3.20,
+                "total_moq_cost_usd": 1920,
+                "alleviation_score": 80,
+                "notes": "US-based · MOQ 100 · ~$2-5/unit at 100-500 · "
+                         "8-10 day standard, 4-6 day rush · free US "
+                         "shipping · pre-production mockup included. "
+                         "Best $/unit at MOQ 200-400.",
+            },
+            {
+                "name": "noissue",
+                "url": "https://noissue.co/",
+                "product": "Custom mailer box · FSC-certified recycled "
+                           "paperboard · full color in/out · "
+                           "branded-DTC focus",
+                "product_name": "Custom Mailer Box",
+                "product_url": "https://noissue.co/custom-packaging/custom-boxes/",
+                "moq": 100,
+                "unit_cost_usd": 4.10,
+                "total_moq_cost_usd": 2460,
+                "alleviation_score": 78,
+                "notes": "US distribution · MOQ 100 · FSC + carbon-"
+                         "neutral · in-house brand-design support "
+                         "(closest to Musely's White-and-Salt-led "
+                         "aesthetic). 4-6 wk lead is the trade-off vs. "
+                         "Arka. Premium feel.",
+            },
+            {
+                "name": "PakFactory",
+                "url": "https://pakfactory.com/",
+                "product": "Custom folding paperboard carton · premium "
+                           "finishes (soft-touch, foil, emboss, UV) · "
+                           "multiple paperboard substrates",
+                "product_name": "Folding Carton & Paperboard Boxes",
+                "product_url": "https://pakfactory.com/folding-carton-paperboard-boxes.html",
+                "moq": 100,
+                "unit_cost_usd": 2.95,
+                "total_moq_cost_usd": 1770,
+                "alleviation_score": 75,
+                "notes": "HQ Markham, Ontario (Canada — soft-fails the "
+                         "US-only gate; included for cost-comparison). "
+                         "Best premium-finish range (soft-touch matches "
+                         "Musely's tactile feel). 3-4 wk lead. Pakible "
+                         "(US, RFQ-only) is a sixth alternative if "
+                         "needed.",
             },
         ],
     },
@@ -616,7 +718,7 @@ SECTIONS = [
 # ---------------------------------------------------------------------------
 # Slide builders
 # ---------------------------------------------------------------------------
-TOTAL_SLIDES = 13
+TOTAL_SLIDES = 15  # title + sourcing-gate + 5×(overview+suppliers) + packaging×2 + next-steps
 
 
 def slide_01_title():
@@ -629,8 +731,9 @@ def slide_01_title():
         {"t": ".", "font": SERIF, "size": 11, "color": AMBER, "italic": True, "bold": True},
     ]], align=PP_ALIGN.RIGHT)
 
-    add_text(s, Inches(0.6), Inches(2.0), Inches(8), Inches(0.4),
-             ["MVP supplier shortlist · 5 side effects · 12 stock-formula vendors"],
+    add_text(s, Inches(0.6), Inches(2.0), Inches(11), Inches(0.4),
+             ["MVP supplier shortlist · 5 side effects · 12 stock-formula vendors · "
+              "+ outer-packaging mailer system (6 vendors)"],
              font=SANS, size=11, color=MUTED)
 
     add_rich(s, Inches(0.6), Inches(2.4), Inches(11), Inches(2.5), [
@@ -776,6 +879,67 @@ def build_overview_slide(section, page_num):
     add_footer(s, page_num, TOTAL_SLIDES)
 
 
+def build_packaging_overview_slide(section, page_num):
+    """Packaging-specific overview slide.
+    Same chrome as build_overview_slide but card labels + content adapted
+    for the outer-mailer brief (spec, structural style, Musely reference,
+    rubric)."""
+    s = add_blank_slide()
+    add_chapter_chrome(s, section["eyebrow"])
+
+    # Title
+    add_rich(s, Inches(0.6), Inches(0.85), Inches(12), Inches(1.2), [
+        [{"t": section["title"], "font": SERIF, "size": 38, "color": INK}],
+    ], leading=1.05)
+
+    # Two-column layout: BRIEF (left), SPEC + RUBRIC (right)
+    add_rect(s, Inches(0.6), Inches(2.0), Inches(5.85), Inches(4.85), fill=PAPER)
+    add_text(s, Inches(0.85), Inches(2.18), Inches(5.4), Inches(0.4),
+             ["THE BRIEF"], font=SANS, size=8.5, color=AMBER, bold=True)
+    add_hline(s, Inches(0.85), Inches(2.52), Inches(5.4), color=RULE, weight=0.5)
+    add_text(s, Inches(0.85), Inches(2.65), Inches(5.4), Inches(2.6),
+             [section["problem"]],
+             font=SANS, size=11, color=INK, leading=1.45)
+
+    # Musely intelligence callout, in the same left column below the brief
+    add_hline(s, Inches(0.85), Inches(5.30), Inches(5.4), color=RULE, weight=0.5)
+    add_text(s, Inches(0.85), Inches(5.40), Inches(5.4), Inches(0.4),
+             ["MUSELY INTELLIGENCE"], font=SANS, size=8.5, color=AMBER, bold=True)
+    add_text(s, Inches(0.85), Inches(5.72), Inches(5.4), Inches(1.20),
+             [section["musely_note"]],
+             font=SANS, size=9.5, color=INK, leading=1.40)
+
+    # Right top: SPEC bullets
+    add_rect(s, Inches(6.6), Inches(2.0), Inches(6.13), Inches(2.95), fill=PAPER)
+    add_text(s, Inches(6.85), Inches(2.18), Inches(5.7), Inches(0.4),
+             ["CARTON SPEC"], font=SANS, size=8.5, color=AMBER, bold=True)
+    add_hline(s, Inches(6.85), Inches(2.52), Inches(5.7), color=RULE, weight=0.5)
+    spec_paras = []
+    for c in section["spec"]:
+        spec_paras.append([
+            {"t": "•  ", "font": SANS, "size": 10.5, "color": AMBER, "bold": True},
+            {"t": c, "font": SANS, "size": 10.5, "color": INK},
+        ])
+    add_rich(s, Inches(6.85), Inches(2.62), Inches(5.7), Inches(2.32),
+             spec_paras, leading=1.32)
+
+    # Right bottom: SCORING RUBRIC bullets
+    add_rect(s, Inches(6.6), Inches(5.05), Inches(6.13), Inches(1.80), fill=PAPER)
+    add_text(s, Inches(6.85), Inches(5.20), Inches(5.7), Inches(0.4),
+             ["SCORING RUBRIC (0-100)"], font=SANS, size=8.5, color=AMBER, bold=True)
+    add_hline(s, Inches(6.85), Inches(5.52), Inches(5.7), color=RULE, weight=0.5)
+    rubric_paras = []
+    for r in section["rubric"]:
+        rubric_paras.append([
+            {"t": "•  ", "font": SANS, "size": 9, "color": AMBER, "bold": True},
+            {"t": r, "font": SANS, "size": 9, "color": INK},
+        ])
+    add_rich(s, Inches(6.85), Inches(5.60), Inches(5.7), Inches(1.25),
+             rubric_paras, leading=1.30)
+
+    add_footer(s, page_num, TOTAL_SLIDES)
+
+
 def build_supplier_slide(section, page_num):
     s = add_blank_slide()
     add_chapter_chrome(s, section["eyebrow"])
@@ -787,20 +951,34 @@ def build_supplier_slide(section, page_num):
           "font": SERIF, "size": 30, "color": INK}],
     ], leading=1.05)
 
+    if section.get("is_packaging"):
+        subhead = ("US folding-mailer vendors at MOQ 200-400 per SKU. "
+                   "Pricing reflects 300-unit run of EACH die line "
+                   "(small + large) — combined cost of first order.")
+    else:
+        subhead = ("Stock-formula private-label SKUs only. MOQ + total "
+                   "cost verified against each supplier's published page.")
     add_text(s, Inches(0.6), Inches(1.65), Inches(12), Inches(0.4),
-             ["Stock-formula private-label SKUs only. MOQ + total cost "
-              "verified against each supplier's published page."],
-             font=SANS, size=10, color=MUTED)
+             [subhead], font=SANS, size=10, color=MUTED)
 
-    # Matrix
+    # Matrix — height scales with # rows (3 row layout for ≤3 suppliers,
+    # otherwise extend down and tuck the recommendation strip under it)
+    n = len(section["suppliers"])
+    if n <= 3:
+        tbl_h = Inches(3.5)
+        rec_y = Inches(5.95)
+    else:
+        tbl_h = Inches(4.30)
+        rec_y = Inches(6.50)
     add_supplier_matrix(s, Inches(0.6), Inches(2.15),
-                        Inches(12.13), Inches(3.5), section["suppliers"])
+                        Inches(12.13), tbl_h, section["suppliers"])
 
     # Recommendation strip — pick the highest scorer
     if section["suppliers"]:
         best = max(section["suppliers"], key=lambda x: x["alleviation_score"])
-        add_rect(s, Inches(0.6), Inches(5.95), Inches(12.13), Inches(0.95), fill=PAPER)
-        add_rich(s, Inches(0.85), Inches(6.10), Inches(11.6), Inches(0.7), [[
+        rec_h = Inches(0.55) if n > 3 else Inches(0.95)
+        add_rect(s, Inches(0.6), rec_y, Inches(12.13), rec_h, fill=PAPER)
+        add_rich(s, Inches(0.85), rec_y + Inches(0.10), Inches(11.6), Inches(0.7), [[
             {"t": "RECOMMENDED LEAD  ", "font": SANS, "size": 8.5,
              "color": AMBER, "bold": True},
             {"t": f"{best['name']}", "font": SANS, "size": 12,
@@ -815,9 +993,9 @@ def build_supplier_slide(section, page_num):
     add_footer(s, page_num, TOTAL_SLIDES)
 
 
-def slide_13_next_steps():
+def slide_15_next_steps():
     s = add_blank_slide()
-    add_chapter_chrome(s, "§ 06 · Next steps")
+    add_chapter_chrome(s, "§ 07 · Next steps")
 
     add_rich(s, Inches(0.6), Inches(0.85), Inches(12), Inches(1.2), [
         [{"t": "Cross-cutting recommendations.",
@@ -857,9 +1035,14 @@ def slide_13_next_steps():
     add_hline(s, Inches(0.85), Inches(5.45), Inches(11.6), color=RULE, weight=0.5)
     actions = [
         "Send the RFQ template (in AFTER_supplier_directory_v1.xlsx Sheet 5) "
-        "to all 5 lead suppliers this week.",
+        "to all 6 lead suppliers this week — five formula vendors plus "
+        "the packaging lead (Arka).",
+        "Order packaging samples in parallel with formula RFQs: "
+        "one small carton + one large carton from the top two packaging "
+        "vendors (Arka + Refine Packaging) at $0 commitment to validate "
+        "the Musely-style tactile quality.",
         "Negotiate sample units (3–5 per SKU) for in-house QC before "
-        "committing to MOQ runs.",
+        "committing to MOQ runs on the formula side.",
         "Lock packaging + label artwork with the brand designer before "
         "the first PO — fastest path to shippable inventory.",
         "Stand up a single shared Aplomb spec sheet (target ingredients, "
@@ -875,7 +1058,7 @@ def slide_13_next_steps():
     add_rich(s, Inches(0.85), Inches(5.58), Inches(11.6), Inches(1.32),
              action_paras, leading=1.4)
 
-    add_footer(s, 13, TOTAL_SLIDES)
+    add_footer(s, TOTAL_SLIDES, TOTAL_SLIDES)
 
 
 # ---------------------------------------------------------------------------
@@ -886,10 +1069,13 @@ def build():
     slide_02_sourcing_gate()
     page = 3
     for sec in SECTIONS:
-        build_overview_slide(sec, page)
+        if sec.get("is_packaging"):
+            build_packaging_overview_slide(sec, page)
+        else:
+            build_overview_slide(sec, page)
         build_supplier_slide(sec, page + 1)
         page += 2
-    slide_13_next_steps()
+    slide_15_next_steps()
     OUT.parent.mkdir(parents=True, exist_ok=True)
     prs.save(str(OUT))
     print(f"Wrote {OUT.name} ({len(prs.slides)} slides)")
@@ -992,6 +1178,8 @@ def _repair_pass(out_path):
 def validate_moq_gate():
     failures = []
     for sec in SECTIONS:
+        if sec.get("gate_skip"):
+            continue  # packaging vendors use a different rubric
         for sup in sec["suppliers"]:
             moq = sup["moq"]
             unit = sup["unit_cost_usd"]
@@ -1004,7 +1192,8 @@ def validate_moq_gate():
     if failures:
         raise SystemExit(
             "MOQ GATE FAILED:\n  " + "\n  ".join(failures))
-    print("MOQ gate: all suppliers pass.")
+    print("MOQ gate: all formula-section suppliers pass "
+          "(packaging section skipped — different rubric).")
 
 
 # ---------------------------------------------------------------------------
