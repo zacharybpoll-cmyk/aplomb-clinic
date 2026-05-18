@@ -4,6 +4,9 @@ __pycache__/
 .env
 .env.*
 .dev.vars
+scripts/.fb.env
+scripts/.fb.env.*
+!scripts/.fb.env.example
 
 # Cloudflare / Node
 node_modules/

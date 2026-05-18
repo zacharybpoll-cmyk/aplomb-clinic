@@ -9,7 +9,8 @@
     "deploy": "wrangler pages deploy website --project-name=aplomb-clinic",
     "smoke": "bash scripts/smoke.sh",
     "smoke:browser": "playwright test scripts/smoke-browser.spec.mjs",
-    "smoke:webhook": "bash scripts/smoke-webhook.sh"
+    "smoke:webhook": "bash scripts/smoke-webhook.sh",
+    "fb": "node scripts/fb-page.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
