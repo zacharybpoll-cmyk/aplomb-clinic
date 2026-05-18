@@ -412,6 +412,7 @@
     add, setQty, remove, clear,
     getLineItems, getSubtotalCents, getShippingCents, getTotalCents, getTotalQty,
     cartMode,
+    freeShippingThresholdCents: FREE_SHIPPING_THRESHOLD_CENTS,
     open: openDrawer, close: closeDrawer,
     subscribe: (fn) => { subscribers.push(fn); fn(snapshot()); return () => { const i = subscribers.indexOf(fn); if (i >= 0) subscribers.splice(i, 1); }; },
   };

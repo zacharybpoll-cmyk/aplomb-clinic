@@ -108,7 +108,12 @@
           <div><dt>Shipping</dt><dd data-summary-shipping>$0</dd></div>
           <div class="total"><dt>Total</dt><dd data-summary-total>$0</dd></div>
         </dl>
+        <div class="cart-freeship" data-co-freeship hidden style="margin-top:16px;">
+          <div class="cart-freeship-msg" data-co-freeship-msg></div>
+          <div class="cart-freeship-track" aria-hidden="true"><div class="cart-freeship-fill" data-co-freeship-fill></div></div>
+        </div>
         <p class="micro" style="margin-top:18px;color:var(--muted);font-size:11px;line-height:1.6;text-align:center;">
+          Guest checkout &middot; no account required<br>
           Ships in 48 hours &middot; tracked &middot; 15-day returns
         </p>
       </aside>
@@ -187,6 +192,29 @@
     const shipping = window.AplombCart.getShippingCents();
     $('[data-summary-shipping]').textContent = shipping === 0 ? 'Free' : fmt(shipping);
     $('[data-summary-total]').textContent = fmt(window.AplombCart.getTotalCents());
+
+    // #11: free-shipping progress at the highest-intent moment. One-time
+    // only — shipping is not waived for subscriptions, so no claim there.
+    (function () {
+      const wrap = $('[data-co-freeship]');
+      const msg = $('[data-co-freeship-msg]');
+      const fill = $('[data-co-freeship-fill]');
+      if (!wrap || !msg || !fill) return;
+      const sub = window.AplombCart.getSubtotalCents();
+      const thr = window.AplombCart.freeShippingThresholdCents || 7500;
+      const isSub = items.some(li => li.mode === 'subscription');
+      if (isSub || sub <= 0) {
+        wrap.hidden = true;
+      } else if (sub < thr) {
+        wrap.hidden = false;
+        msg.innerHTML = `<strong>${fmt(thr - sub)}</strong> away from free shipping`;
+        fill.style.width = Math.min(100, Math.round((sub / thr) * 100)) + '%';
+      } else {
+        wrap.hidden = false;
+        msg.textContent = 'Free shipping included.';
+        fill.style.width = '100%';
+      }
+    })();
 
     // ROSCA disclosure shows if any item is subscription
     const hasSub = items.some(li => li.mode === 'subscription');
