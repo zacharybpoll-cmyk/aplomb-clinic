@@ -29,8 +29,17 @@
 
   const STORAGE_KEY = 'aplomb-cart-v2';
   const LEGACY_KEY = 'aplomb-serum-cart';
+  const COUPON_KEY = 'aplomb-coupon';
   const SHIPPING_FLAT_CENTS = 799;
   const FREE_SHIPPING_THRESHOLD_CENTS = 7500;
+  // First-order welcome code. This is the code the newsletter welcome series
+  // already promises ("10% off your first order with code APLOMB10"). The
+  // SERVER (functions/api/checkout.js) is the only authority — it re-validates
+  // the code, enforces first-order-only, and discounts the actual charge.
+  // These constants only keep the on-page order summary honest/consistent.
+  // If WELCOME_COUPON_CODE/PCT are overridden server-side, update these too.
+  const WELCOME_CODE = 'APLOMB10';
+  const WELCOME_PCT = 10;
 
   let state = { items: {} };
   const subscribers = [];
@@ -142,6 +151,33 @@
 
   function getTotalQty() {
     return Object.values(state.items).reduce((n, v) => n + v.qty, 0);
+  }
+
+  // ---- First-order coupon (display-side only; server is authoritative) ----
+  function notify() {
+    subscribers.forEach(fn => { try { fn(snapshot()); } catch (_) {} });
+    renderAll();
+  }
+  function getCoupon() {
+    try { return (localStorage.getItem(COUPON_KEY) || '').trim().toUpperCase() || null; }
+    catch (_) { return null; }
+  }
+  function setCoupon(code) {
+    code = (code || '').trim().toUpperCase();
+    try {
+      if (code) localStorage.setItem(COUPON_KEY, code);
+      else localStorage.removeItem(COUPON_KEY);
+    } catch (_) {}
+    notify();
+    return code || null;
+  }
+  function clearCoupon() { return setCoupon(''); }
+  // Estimated first-order discount for the stored welcome code, one-time carts
+  // only (subscription discounts go through Stripe's promotion-code field).
+  function welcomeDiscountCents(subtotalCents) {
+    if (getCoupon() !== WELCOME_CODE) return 0;
+    if (cartMode() === 'subscription') return 0;
+    return Math.round((subtotalCents * WELCOME_PCT) / 100);
   }
 
   // ---- Drawer rendering ----
@@ -316,6 +352,9 @@
       } else {
         disclosure.innerHTML = `Ships in 48 hours · 15-day returns`;
       }
+      if (mode !== 'subscription' && subtotal > 0 && getCoupon() === WELCOME_CODE) {
+        disclosure.innerHTML += ` · <strong>${WELCOME_CODE}</strong> · ${WELCOME_PCT}% off first order at checkout`;
+      }
     }
   }
 
@@ -412,6 +451,8 @@
     add, setQty, remove, clear,
     getLineItems, getSubtotalCents, getShippingCents, getTotalCents, getTotalQty,
     cartMode,
+    getCoupon, setCoupon, clearCoupon, welcomeDiscountCents,
+    WELCOME_CODE, WELCOME_PCT,
     freeShippingThresholdCents: FREE_SHIPPING_THRESHOLD_CENTS,
     open: openDrawer, close: closeDrawer,
     subscribe: (fn) => { subscribers.push(fn); fn(snapshot()); return () => { const i = subscribers.indexOf(fn); if (i >= 0) subscribers.splice(i, 1); }; },

@@ -13,9 +13,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="/assets/aplomb-mark.svg">
 <link rel="stylesheet" href="/css/site.css?v=20260518c">
+<style>
+  .co-coupon { display:flex; gap:8px; margin:14px 0 4px; }
+  .co-coupon input { flex:1; min-width:0; padding:9px 11px; border:1px solid var(--rule,#d9cfbd); border-radius:8px; background:var(--paper); color:var(--ink); font-family:'IBM Plex Sans',sans-serif; font-size:13px; letter-spacing:0.06em; text-transform:uppercase; }
+  .co-coupon button { padding:9px 16px; border:1px solid var(--ink); border-radius:8px; background:transparent; color:var(--ink); font-family:'IBM Plex Sans',sans-serif; font-size:12px; letter-spacing:0.06em; cursor:pointer; transition:background .18s,color .18s; }
+  .co-coupon button:hover { background:var(--ink); color:var(--paper); }
+  .co-coupon-msg { font-family:'IBM Plex Sans',sans-serif; font-size:12px; line-height:1.5; margin:2px 0 0; color:var(--muted); }
+  .co-coupon-msg.is-ok { color:#1c7a14; }
+  .co-coupon-msg.is-err { color:#9a2c14; }
+  .checkout-summary-totals .co-discount dd { color:#1c7a14; }
+</style>
 <script src="https://js.stripe.com/v3/" defer></script>
 <script src="/assets/cart.js" defer></script>
-<script src="/assets/checkout.js?v=20260515" defer></script>
+<script src="/assets/checkout.js?v=20260518" defer></script>
 <script src="/assets/analytics.js?v=20260515" defer></script>
 <!-- Sentry error monitoring (loader, lazy) -->
 <script src="https://js.sentry-cdn.com/92f66e49e02b30407c2ec6d272ab29e5.min.js" crossorigin="anonymous"></script>
@@ -103,8 +113,14 @@
       <aside class="checkout-summary" data-checkout-summary aria-label="Order summary">
         <h3 style="font-family:var(--serif);font-size:22px;font-weight:400;margin:0 0 18px;color:var(--ink);">Your order</h3>
         <div data-summary-items></div>
+        <div class="co-coupon" data-coupon-box>
+          <input type="text" data-coupon-input placeholder="Discount code" autocomplete="off" maxlength="32" aria-label="Discount code">
+          <button type="button" data-coupon-apply>Apply</button>
+        </div>
+        <p class="co-coupon-msg" data-coupon-msg hidden></p>
         <dl class="checkout-summary-totals">
           <div><dt>Subtotal</dt><dd data-summary-subtotal>$0</dd></div>
+          <div class="co-discount" data-summary-discount-row hidden><dt data-summary-discount-label>First-order code</dt><dd data-summary-discount>-$0</dd></div>
           <div><dt>Shipping</dt><dd data-summary-shipping>$0</dd></div>
           <div class="total"><dt>Total</dt><dd data-summary-total>$0</dd></div>
         </dl>
@@ -188,10 +204,28 @@
       `;
     }).join('');
 
-    $('[data-summary-subtotal]').textContent = fmt(window.AplombCart.getSubtotalCents());
+    const sub0 = window.AplombCart.getSubtotalCents();
     const shipping = window.AplombCart.getShippingCents();
+    $('[data-summary-subtotal]').textContent = fmt(sub0);
     $('[data-summary-shipping]').textContent = shipping === 0 ? 'Free' : fmt(shipping);
-    $('[data-summary-total]').textContent = fmt(window.AplombCart.getTotalCents());
+
+    // First-order discount (display only — the server re-validates the code,
+    // enforces first-order-only, and discounts the actual charge; the Stripe
+    // payment step always shows the true amount).
+    const discCents = (window.AplombCart.welcomeDiscountCents)
+      ? window.AplombCart.welcomeDiscountCents(sub0) : 0;
+    const discRow = $('[data-summary-discount-row]');
+    if (discRow) {
+      if (discCents > 0) {
+        discRow.hidden = false;
+        const lbl = $('[data-summary-discount-label]');
+        if (lbl) lbl.textContent = 'First-order code ' + (window.AplombCart.getCoupon() || '');
+        $('[data-summary-discount]').textContent = '-' + fmt(discCents);
+      } else {
+        discRow.hidden = true;
+      }
+    }
+    $('[data-summary-total]').textContent = fmt(Math.max(0, sub0 - discCents) + shipping);
 
     // #11: free-shipping progress at the highest-intent moment. One-time
     // only — shipping is not waived for subscriptions, so no claim there.
@@ -242,10 +276,63 @@
     container.innerHTML = `<div class="cf-turnstile" data-sitekey="${siteKey}" data-theme="light"></div>`;
   }
 
+  function wireCoupon() {
+    const input = $('[data-coupon-input]');
+    const btn = $('[data-coupon-apply]');
+    const msg = $('[data-coupon-msg]');
+    if (!input || !btn) return;
+
+    const WELCOME = (window.AplombCart.WELCOME_CODE || 'APLOMB10');
+    const PCT = (window.AplombCart.WELCOME_PCT || 10);
+
+    function setMsg(text, kind) {
+      if (!msg) return;
+      msg.textContent = text || '';
+      msg.hidden = !text;
+      msg.classList.remove('is-ok', 'is-err');
+      if (kind) msg.classList.add(kind);
+    }
+
+    const stored = window.AplombCart.getCoupon && window.AplombCart.getCoupon();
+    if (stored) {
+      input.value = stored;
+      if (stored === WELCOME) {
+        const isSub = window.AplombCart.cartMode && window.AplombCart.cartMode() === 'subscription';
+        setMsg(isSub
+          ? WELCOME + ' will be applied on the secure payment page.'
+          : PCT + '% off your first order applied.', 'is-ok');
+      }
+    }
+
+    function apply() {
+      const code = (input.value || '').trim().toUpperCase();
+      if (!code) {
+        window.AplombCart.clearCoupon && window.AplombCart.clearCoupon();
+        setMsg('', null);
+        return;
+      }
+      if (code === WELCOME) {
+        window.AplombCart.setCoupon(code); // triggers renderSummary via subscribe
+        const isSub = window.AplombCart.cartMode && window.AplombCart.cartMode() === 'subscription';
+        setMsg(isSub
+          ? WELCOME + ' will be applied on the secure payment page.'
+          : PCT + '% off your first order applied.', 'is-ok');
+      } else {
+        setMsg("That code isn't recognized.", 'is-err');
+      }
+    }
+
+    btn.addEventListener('click', apply);
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); apply(); }
+    });
+  }
+
   whenReady(function () {
     renderSummary();
     window.AplombCart.subscribe(renderSummary);
     maybeRenderTurnstile();
+    wireCoupon();
   });
 })();
 </script>

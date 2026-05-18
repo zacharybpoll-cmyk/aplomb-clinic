@@ -100,6 +100,7 @@
       // Absent/false (e.g. analytics not loaded) → server defaults to no sharing.
       adConsent: !!(window.AplombAnalytics && window.AplombAnalytics.adConsentGranted && window.AplombAnalytics.adConsentGranted()),
       turnstileToken: getTurnstileToken(),
+      couponCode: (window.AplombCart && window.AplombCart.getCoupon && window.AplombCart.getCoupon()) || '',
     };
   }
 

@@ -26,6 +26,7 @@ export const onRequestPost = async ({ request, env }) => {
 
   const email = (body?.email || '').trim().toLowerCase();
   const name = (body?.name || '').trim();
+  const couponCode = (body?.couponCode || '').trim();
   const lineItems = Array.isArray(body?.lineItems) ? body.lineItems : [];
   const shippingAddress = body?.shippingAddress || null;
   // Cross-context ad-sharing opt-in (browser Pixel + server CAPI). Stored on the
@@ -76,13 +77,64 @@ export const onRequestPost = async ({ request, env }) => {
   if (cartMode === 'subscription') {
     return handleSubscriptionCheckout(validated, email, name, customer, env, stripe, adConsent);
   } else {
-    return handleOnetimeCheckout(validated, email, name, customer, env, stripe, shippingAddress, adConsent);
+    return handleOnetimeCheckout(validated, email, name, customer, env, stripe, shippingAddress, adConsent, couponCode);
   }
 };
 
-async function handleOnetimeCheckout(validated, email, name, customer, env, stripe, shippingAddress, adConsent) {
+// First-order welcome discount. The newsletter welcome series has long
+// promised "10% off your first order with code APLOMB10" but no redemption
+// path existed anywhere — this closes that gap. Single fixed code, server is
+// the only authority, capped, first-order-only, every decision logged in
+// order metadata. Env can override the code/percent (CF Pages):
+//   WELCOME_COUPON_CODE  (default 'APLOMB10')
+//   WELCOME_COUPON_PCT   (default '10', clamped 1..50)
+// Shipping/free-ship are intentionally computed on the ORIGINAL subtotal so
+// the free-shipping promise the cart already made to the customer still holds.
+async function resolveWelcomeDiscount({ email, couponCode, subtotalCents, env }) {
+  const none = { pct: 0, discountCents: 0, code: null, reason: 'none' };
+  const configured = (env.WELCOME_COUPON_CODE || 'APLOMB10').trim().toUpperCase();
+  if (!couponCode || couponCode.trim().toUpperCase() !== configured) return none;
+
+  let pct = parseInt(env.WELCOME_COUPON_PCT, 10);
+  if (!Number.isFinite(pct)) pct = 10;
+  pct = Math.max(1, Math.min(50, pct));
+
+  // First-order-only. If we can't reach the DB, honor the code rather than
+  // block a sale over a 10% check — it's a small, single, fixed code.
+  let reason = 'applied';
+  const sb = supabaseAdmin(env);
+  if (sb && email) {
+    try {
+      const { data, error } = await sb
+        .from('orders')
+        .select('id')
+        .eq('email', email)
+        .in('status', ['paid', 'shipped', 'fulfilled'])
+        .limit(1);
+      if (error) {
+        reason = 'applied:db-error';
+      } else if (data && data.length) {
+        return { ...none, reason: 'denied:not-first-order' };
+      }
+    } catch (_) {
+      reason = 'applied:db-exception';
+    }
+  } else {
+    reason = 'applied:no-db';
+  }
+
+  const discountCents = Math.round((subtotalCents * pct) / 100);
+  return { pct, discountCents, code: configured, reason };
+}
+
+async function handleOnetimeCheckout(validated, email, name, customer, env, stripe, shippingAddress, adConsent, couponCode) {
   const subtotalCents = computeSubtotalCents(validated);
   const shippingCents = computeShippingCents(validated, env);
+
+  const discount = await resolveWelcomeDiscount({ email, couponCode, subtotalCents, env });
+  const discountCents = discount.discountCents;
+  const discountedSubtotal = subtotalCents - discountCents;
+  const discountRatio = subtotalCents > 0 ? discountedSubtotal / subtotalCents : 1;
 
   // Compute sales tax via Stripe Tax when we have a shipping address.
   // The address is collected by the client's Stripe Address Element before
@@ -109,7 +161,7 @@ async function handleOnetimeCheckout(validated, email, name, customer, env, stri
           address_source: 'shipping',
         },
         line_items: validated.map(v => ({
-          amount: v.unitPriceCents * v.quantity,
+          amount: Math.round(v.unitPriceCents * v.quantity * discountRatio),
           quantity: v.quantity,
           reference: v.productKey,
           tax_behavior: 'exclusive',
@@ -134,7 +186,7 @@ async function handleOnetimeCheckout(validated, email, name, customer, env, stri
     };
   }
 
-  const chargeAmount = subtotalCents + shippingCents + taxCents;
+  const chargeAmount = discountedSubtotal + shippingCents + taxCents;
 
   let intent;
   try {
@@ -147,10 +199,15 @@ async function handleOnetimeCheckout(validated, email, name, customer, env, stri
       metadata: {
         cart: JSON.stringify(validated.map(v => ({ k: v.productKey, q: v.quantity }))),
         customer_name: name,
-        subtotal_cents: String(subtotalCents),
+        subtotal_cents: String(discountedSubtotal),
+        subtotal_before_discount_cents: String(subtotalCents),
         shipping_cents: String(shippingCents),
         tax_cents: String(taxCents),
         tax_calculation_id: taxCalculationId || '',
+        coupon_code: discount.code || '',
+        coupon_pct: discount.pct ? String(discount.pct) : '',
+        discount_cents: String(discountCents),
+        coupon_reason: discount.reason,
         ad_consent: adConsent ? '1' : '0',
       },
       ...(stripeShipping ? { shipping: stripeShipping } : {}),
@@ -170,13 +227,22 @@ async function handleOnetimeCheckout(validated, email, name, customer, env, stri
         stripe_customer_id: customer.id,
         email,
         customer_name: name,
-        subtotal_cents: subtotalCents,
+        subtotal_cents: discountedSubtotal,
         shipping_cents: shippingCents,
         tax_cents: taxCents,
         currency: 'usd',
         status: 'pending',
         line_items: validated,
         shipping_address: stripeShipping || null,
+        metadata: discountCents > 0
+          ? {
+              coupon_code: discount.code,
+              coupon_pct: discount.pct,
+              discount_cents: discountCents,
+              subtotal_before_discount_cents: subtotalCents,
+              coupon_reason: discount.reason,
+            }
+          : {},
       }).select('id').single();
       if (!error) orderId = data?.id || null;
     } catch (_) {}

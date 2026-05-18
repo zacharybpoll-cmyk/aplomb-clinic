@@ -172,6 +172,16 @@
         const { alreadySubscribed } = await submit(email, isPopup ? 'popup' : ('footer:' + window.location.pathname));
         setSubmitState(form, false);
         try { localStorage.setItem(STORAGE_KEY, '1'); } catch (_) {}
+        // Auto-apply the first-order code the welcome email promises so the
+        // shopper never has to copy it. Server stays authoritative + first-
+        // order-gated, so pre-filling it is safe even if they're a repeat.
+        try {
+          if (window.AplombCart && window.AplombCart.setCoupon) {
+            window.AplombCart.setCoupon(window.AplombCart.WELCOME_CODE || 'APLOMB10');
+          } else {
+            localStorage.setItem('aplomb-coupon', 'APLOMB10');
+          }
+        } catch (_) {}
         if (alreadySubscribed) {
           setStatus(statusEl, "You're already on the list. Thanks.", true);
         } else {
