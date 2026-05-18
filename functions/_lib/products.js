@@ -31,7 +31,7 @@ export const PRODUCTS = {
   calm: {
     name: 'APLOMB. Calm.',
     unitPriceCents: 3500,
-    subscribeDiscountPct: 0,
+    subscribeDiscountPct: 15,
     description: '30-day titration kit — ginger capsules + electrolyte sticks',
     requiresShipping: true,
   },

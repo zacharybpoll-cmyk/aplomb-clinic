@@ -23,7 +23,7 @@
     serum:  { name: 'APLOMB. The Serum.', priceVal: 129, subscribeDiscountPct: 10, img: '/assets/serum-rail.jpg',         freq: '30 mL · 60-day supply',     allowsSubscription: true,  pdp: '/serum/' },
     daily:  { name: 'APLOMB. Daily.',     priceVal: 49,  subscribeDiscountPct: 15, img: '/assets/serum-rail.jpg',         freq: '30-day supply',             allowsSubscription: true,  pdp: '/'      },
     roots:  { name: 'APLOMB. Roots.',     priceVal: 39,  subscribeDiscountPct: 15, img: '/assets/roots-rail.jpg',         freq: '30-day supply · 3 caps/day', allowsSubscription: true,  pdp: '/roots/' },
-    calm:   { name: 'APLOMB. Calm.',      priceVal: 35,  subscribeDiscountPct: 0,  img: '/assets/calm-rail.jpg',          freq: '30-day starter kit',        allowsSubscription: false, pdp: '/calm/'  },
+    calm:   { name: 'APLOMB. Calm.',      priceVal: 35,  subscribeDiscountPct: 15, img: '/assets/calm-rail.jpg',          freq: '30-day starter kit',        allowsSubscription: true,  pdp: '/calm/'  },
     breath: { name: 'APLOMB. Breath.',    priceVal: 35,  subscribeDiscountPct: 15, img: '/assets/pharmaloz-tin-hero.jpg', freq: '30-day tin · 4 loz/day',    allowsSubscription: true,  pdp: '/breath/' },
   };
 
