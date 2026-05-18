@@ -3390,3 +3390,62 @@
     .reviews-inner { padding-top: 36px; }
     .reviews h3 { font-size: 26px; }
   }
+
+  /* ============================================================
+     2026-05-18 enhancements
+     - Concerns page: two-column concern (copy left, image right)
+     - Per-concern buy CTA
+     - Voices: institution-first attribution
+     - Evidence: screenshot figures
+     ============================================================ */
+
+  /* Concern section: copy left, image right */
+  .pp-section .inner.pp-concern {
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(260px, 34%, 420px);
+    gap: 56px;
+    align-items: start;
+  }
+  .pp-concern-text { min-width: 0; }
+  .pp-concern-text p { max-width: none; }
+  .pp-concern-media { margin: 0; }
+  .pp-concern-media picture { display: block; }
+  .pp-concern-media img {
+    width: 100%; height: auto; display: block;
+    border: 1px solid var(--rule);
+  }
+
+  /* Per-concern buy CTA */
+  .pp-buy { margin-top: 36px; }
+  .pp-buy .btn { display: inline-block; }
+
+  /* Voices: institution-first big attribution line */
+  .voice-card .voice-attr {
+    font-family: var(--serif); font-size: 23px; line-height: 1.25;
+    font-weight: 500; color: var(--ink); letter-spacing: -0.01em;
+  }
+  .voice-card > .by-source {
+    font-family: var(--sans); font-size: 12px; color: var(--muted);
+    margin-top: 0; padding-top: 16px; font-style: italic;
+    border-top: 1px solid var(--rule);
+  }
+  .voice-card > .by-source a { color: var(--amber); text-decoration: none; }
+  .voice-card > .by-source a:hover { text-decoration: underline; }
+
+  /* Evidence: per-citation source link */
+  .cite-link {
+    font-family: var(--sans); font-size: 12px; font-weight: 600;
+    letter-spacing: 0.02em; color: var(--amber);
+    text-decoration: none; white-space: nowrap; margin-left: 6px;
+  }
+  .cite-link:hover { text-decoration: underline; }
+
+  @media (max-width: 860px) {
+    .pp-section .inner.pp-concern {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+    .pp-concern-media { order: -1; }
+    .voice-card .voice-attr { font-size: 20px; }
+  }
