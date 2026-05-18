@@ -15,6 +15,7 @@ import { json, badRequest, serverError } from '../_lib/json.js';
 import { stripeClient } from '../_lib/stripe.js';
 import { supabaseAdmin } from '../_lib/supabase.js';
 import { getProduct, computeSubtotalCents, computeShippingCents, getStripePriceIds } from '../_lib/products.js';
+import { verifyTurnstile } from '../_lib/turnstile.js';
 
 export const onRequestPost = async ({ request, env }) => {
   let body;
@@ -37,6 +38,19 @@ export const onRequestPost = async ({ request, env }) => {
   if (!email || !email.includes('@')) return badRequest('A valid email is required.');
   if (!name) return badRequest('Your full name is required.');
   if (!lineItems.length) return badRequest('Your cart is empty.');
+
+  // Verify the Turnstile challenge. No-ops (passes) until TURNSTILE_SECRET_KEY
+  // is configured, and degrades open on a Cloudflare outage — only a definitive
+  // "this token is bad" verdict blocks the request, so a real buyer is never
+  // stopped by an ancillary system.
+  const turnstile = await verifyTurnstile(
+    body?.turnstileToken,
+    env,
+    request.headers.get('CF-Connecting-IP') || undefined
+  );
+  if (!turnstile.ok) {
+    return badRequest('Could not verify you are human. Please retry the challenge.', 403);
+  }
 
   // Validate every line item against the server catalog.
   const validated = [];
