@@ -39,6 +39,31 @@
   .admin-status { padding: 8px 12px; margin: 8px 0; font-family: 'IBM Plex Sans', sans-serif; font-size: 12px; border-radius: 3px; }
   .admin-status.is-ok { background: rgba(52,184,30,0.08); color: #1c7a14; }
   .admin-status.is-err { background: rgba(184,52,30,0.08); color: #b8341e; }
+  /* Command Center — Overview tab */
+  .cc-section { margin: 4px 0 28px; }
+  .cc-section > h2 {
+    font-family: var(--serif); font-weight: 500; font-size: 18px; color: var(--ink);
+    margin: 0 0 12px; padding-bottom: 6px; border-bottom: 1px solid rgba(26,21,18,0.08);
+  }
+  .cc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+  .cc-card {
+    border: 1px solid var(--border, #d8cdb6); border-radius: 4px; padding: 16px 18px;
+    background: var(--paper); display: flex; flex-direction: column; gap: 4px; min-height: 116px;
+  }
+  .cc-card.is-muted { background: transparent; border-style: dashed; }
+  .cc-card h4 {
+    margin: 0; font-family: 'IBM Plex Sans', sans-serif; font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted);
+  }
+  .cc-big { font-family: var(--serif); font-size: 30px; line-height: 1.15; color: var(--ink); }
+  .cc-sub { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; color: var(--muted); line-height: 1.6; }
+  .cc-sub b { color: var(--ink); font-weight: 600; }
+  .cc-spark { margin-top: auto; padding-top: 10px; display: block; width: 100%; height: 40px; }
+  .cc-spark path { stroke: var(--amber); }
+  .cc-mini { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; color: var(--ink); margin-top: 2px; }
+  .cc-mini span { color: var(--muted); float: right; }
+  .cc-flag { font-size: 10px; color: #b8341e; font-family: 'IBM Plex Sans', sans-serif; }
+  .cc-note { font-family: 'IBM Plex Sans', sans-serif; font-size: 11px; color: var(--muted); font-style: italic; line-height: 1.5; }
 </style>
 </head>
 <body>
@@ -47,7 +72,8 @@
   <h1>APLOMB. Operations</h1>
 
   <div class="admin-tabs">
-    <button type="button" data-tab="paid" class="is-active">Awaiting shipment</button>
+    <button type="button" data-tab="overview" class="is-active">Overview</button>
+    <button type="button" data-tab="paid">Awaiting shipment</button>
     <button type="button" data-tab="shipped">Recently shipped</button>
     <button type="button" data-tab="all">All</button>
     <button type="button" data-tab="reviews">Reviews</button>
@@ -55,7 +81,7 @@
 
   <div data-admin-status></div>
 
-  <div data-admin-loading style="color:var(--muted);font-family:'IBM Plex Sans',sans-serif;">Loading orders&hellip;</div>
+  <div data-admin-loading style="color:var(--muted);font-family:'IBM Plex Sans',sans-serif;">Loading&hellip;</div>
 
   <div data-admin-content hidden></div>
 
@@ -163,10 +189,13 @@
     const tab = e.target.closest('[data-tab]');
     if (tab) {
       document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('is-active', b === tab));
-      if (tab.dataset.tab === 'reviews') { loadReviews('pending'); }
+      if (tab.dataset.tab === 'overview') { loadOverview(); }
+      else if (tab.dataset.tab === 'reviews') { loadReviews('pending'); }
       else { load(tab.dataset.tab); }
       return;
     }
+    const ccRefresh = e.target.closest('[data-cc-refresh]');
+    if (ccRefresh) { e.preventDefault(); loadOverview(true); return; }
     const reviewFilter = e.target.closest('[data-review-filter]');
     if (reviewFilter) { loadReviews(reviewFilter.value); return; }
     const rAct = e.target.closest('[data-review-action]');
@@ -272,7 +301,182 @@
       </tr>`;
   }
 
-  document.addEventListener('DOMContentLoaded', () => load('paid'));
+  // ── Command Center (Overview tab) ──────────────────────────────────────
+  function ccMoney(c){ if (c == null) return '—'; const d = c/100; return '$' + d.toLocaleString('en-US', { minimumFractionDigits: (d % 1 ? 2 : 0), maximumFractionDigits: 2 }); }
+  function ccNum(n){ return n == null ? '—' : Number(n).toLocaleString('en-US'); }
+  function ccPct(x){ return x == null ? '—' : x + '%'; }
+  function ccDur(s){ if (!s) return '0s'; s = Math.round(s); const m = Math.floor(s/60); return m ? m + 'm ' + (s % 60) + 's' : s + 's'; }
+
+  function ccSpark(values){
+    const v = (values || []).map(Number);
+    if (v.length < 2) return '';
+    const w = 240, h = 40, p = 3;
+    const max = Math.max.apply(null, v), min = Math.min.apply(null, v), rng = (max - min) || 1;
+    const step = (w - 2*p) / (v.length - 1);
+    const d = v.map((y, i) => {
+      const x = p + i*step, yy = h - p - ((y - min)/rng) * (h - 2*p);
+      return (i ? 'L' : 'M') + x.toFixed(1) + ' ' + yy.toFixed(1);
+    }).join(' ');
+    return '<svg class="cc-spark" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" width="100%" height="40" aria-hidden="true">'
+         + '<path d="' + d + '" fill="none" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>';
+  }
+
+  function ccCard(title, big, subHtml, sparkHtml, muted){
+    return '<div class="cc-card' + (muted ? ' is-muted' : '') + '">'
+         + '<h4>' + escapeHtml(title) + '</h4>'
+         + '<div class="cc-big">' + big + '</div>'
+         + (subHtml ? '<div class="cc-sub">' + subHtml + '</div>' : '')
+         + (sparkHtml || '')
+         + '</div>';
+  }
+  function ccDead(title, msg){
+    return ccCard(title, '<span style="font-size:17px;color:var(--muted);">Not connected</span>',
+      '<span class="cc-note">' + escapeHtml(msg || '') + '</span>', '', true);
+  }
+  function ccGroup(title, cards){
+    return '<div class="cc-section"><h2>' + escapeHtml(title) + '</h2><div class="cc-grid">' + cards.join('') + '</div></div>';
+  }
+
+  function renderOverview(d){
+    $('[data-admin-loading]').hidden = true;
+    const c = $('[data-admin-content]'); c.hidden = false;
+    const S = d.sections || {};
+    let html = '';
+
+    // Money — orders, MRR, Stripe
+    let cards = [];
+    if (S.store && S.store.status === 'ok') {
+      const o = S.store.data.orders, sub = S.store.data.subscriptions;
+      cards.push(ccCard('Revenue · 30 days', ccMoney(o.d30.gross_cents),
+        'Today <b>' + ccMoney(o.today.gross_cents) + '</b> · 7d <b>' + ccMoney(o.d7.gross_cents) + '</b><br>'
+        + 'Net <b>' + ccMoney(o.d30.net_cents) + '</b> · AOV <b>' + ccMoney(o.d30.aov_cents) + '</b>',
+        ccSpark(o.spark30)));
+      cards.push(ccCard('Orders · 30 days', ccNum(o.d30.count),
+        'Today <b>' + ccNum(o.today.count) + '</b> · 7d <b>' + ccNum(o.d7.count) + '</b><br>'
+        + 'All-time <b>' + ccNum(o.all_time_count) + '</b> · Awaiting ship <b>' + ccNum(o.pending_fulfillment) + '</b>'));
+      cards.push(ccCard('MRR', ccMoney(sub.mrr_cents),
+        'Active subs <b>' + ccNum(sub.active) + '</b> · Past due <b>' + ccNum(sub.past_due) + '</b><br>'
+        + 'Churn 30d <b>' + ccNum(sub.churn_30d) + '</b>'
+        + (sub.unknown_price_items ? '<br><span class="cc-flag">' + sub.unknown_price_items + ' sub item(s) with unmapped price id</span>' : '')));
+    } else if (S.store) {
+      cards.push(ccDead('Store metrics', S.store.error || 'Supabase error'));
+    }
+    const f = S.finance;
+    if (f && f.status === 'ok') {
+      const fd = f.data, np = fd.next_payout;
+      cards.push(ccCard('Stripe balance', ccMoney(fd.available_cents),
+        'Pending <b>' + ccMoney(fd.pending_cents) + '</b><br>'
+        + (np ? 'Next payout <b>' + ccMoney(np.amount_cents) + '</b> · ' + fmtDate(new Date(np.arrival_date*1000).toISOString())
+              : 'No payout scheduled')
+        + (fd.volume_30d ? '<br>30d net <b>' + ccMoney(fd.volume_30d.net_cents) + '</b> · fees <b>' + ccMoney(fd.volume_30d.fee_cents) + '</b>' : '')));
+    } else if (f && f.status === 'not_connected') {
+      cards.push(ccDead('Stripe balance', 'STRIPE_SECRET_KEY not configured'));
+    } else if (f) {
+      cards.push(ccDead('Stripe balance', f.error || 'Stripe error'));
+    }
+    html += ccGroup('Money', cards);
+
+    // Traffic & conversion
+    cards = [];
+    const t = S.traffic;
+    if (t && t.status === 'ok') {
+      const td = t.data;
+      cards.push(ccCard('Visitors · 30 days', ccNum(td.d30.visitors),
+        'Today <b>' + ccNum(td.today.visitors) + '</b> · 7d <b>' + ccNum(td.d7.visitors) + '</b><br>'
+        + 'Pageviews 30d <b>' + ccNum(td.d30.pageviews) + '</b>',
+        ccSpark(td.spark30)));
+      cards.push(ccCard('Engagement · 30 days',
+        (td.d30.bounce_rate == null ? '—' : Math.round(td.d30.bounce_rate) + '%'),
+        'Bounce rate · 30d<br>Avg visit <b>' + ccDur(td.d30.visit_duration) + '</b>'));
+      const srcList = (td.top_sources || []).slice(0, 5)
+        .map(s => '<div class="cc-mini">' + escapeHtml(s.source) + '<span>' + ccNum(s.visitors) + '</span></div>').join('')
+        || '<span class="cc-note">No source data</span>';
+      cards.push(ccCard('Sources · 30d', 'Social → site ' + ccNum(td.social_to_site_d30), srcList));
+      const fn = td.onsite_ctr;
+      cards.push(ccCard('On-site click-through', ccPct(fn.cart_to_checkout),
+        'Product → cart <b>' + ccPct(fn.product_to_cart) + '</b><br>'
+        + 'Cart → checkout <b>' + ccPct(fn.cart_to_checkout) + '</b><br>'
+        + 'Checkout → purchase <b>' + ccPct(fn.checkout_to_purchase) + '</b>'));
+    } else if (t && t.status === 'not_connected') {
+      cards.push(ccDead('Website traffic', 'PLAUSIBLE_API_KEY not configured'));
+    } else if (t) {
+      cards.push(ccDead('Website traffic', t.error || 'Plausible error'));
+    }
+    const cv = S.conversion;
+    if (cv && cv.status === 'ok') {
+      cards.push(ccCard('Conversion · 30 days', ccPct(cv.data.order_conversion_pct),
+        'Visitors <b>' + ccNum(cv.data.visitors) + '</b> → orders <b>' + ccNum(cv.data.orders) + '</b><br>'
+        + 'Newsletter signup rate <b>' + ccPct(cv.data.newsletter_conversion_pct) + '</b>'));
+    } else {
+      cards.push(ccDead('Conversion', 'Needs store + Plausible connected'));
+    }
+    cards.push(ccCard('Email click-through', '—',
+      '<span class="cc-note">Resend exposes no broadcast open/click API. List health is under Audience; per-campaign CTR is in the Resend dashboard. Phase 2 wires a Resend events webhook.</span>', '', true));
+    cards.push(ccCard('Ad click-through', '—',
+      '<span class="cc-note">No ad campaigns running. Meta Ads API unavailable (developer-account dead end); activates if paid ads + a Meta token are ever added.</span>', '', true));
+    html += ccGroup('Traffic & conversion', cards);
+
+    // Audience & social
+    cards = [];
+    if (S.store && S.store.status === 'ok') {
+      const nl = S.store.data.newsletter, rv = S.store.data.reviews;
+      const bySrc = (nl.by_source || [])
+        .map(x => '<div class="cc-mini">' + escapeHtml(x.source) + '<span>' + ccNum(x.count) + '</span></div>').join('');
+      cards.push(ccCard('Newsletter', ccNum(nl.total_active),
+        'New 7d <b>' + ccNum(nl.new_d7) + '</b> · 30d <b>' + ccNum(nl.new_d30) + '</b><br>'
+        + 'Unsub 30d <b>' + ccNum(nl.unsub_d30) + '</b> · welcome pending <b>' + ccNum(nl.welcome_pending) + '</b>'
+        + (bySrc ? '<br>' + bySrc : '')));
+      cards.push(ccCard('Reviews', ccNum(rv.published) + ' published',
+        'Pending <b>' + ccNum(rv.pending) + '</b><br>'
+        + 'Avg rating <b>' + (rv.avg_published_rating == null ? '—' : rv.avg_published_rating) + '</b>'));
+    }
+    const yt = S.social && S.social.youtube;
+    if (yt && yt.status === 'ok') {
+      const ch = yt.data.channel;
+      const vids = (yt.data.recent_videos || []).slice(0, 3)
+        .map(v => '<div class="cc-mini">' + escapeHtml((v.title || '').slice(0, 38)) + '<span>' + ccNum(v.views) + '</span></div>').join('');
+      cards.push(ccCard('YouTube', ccNum(ch.subscribers) + ' subs',
+        'Total views <b>' + ccNum(ch.total_views) + '</b> · videos <b>' + ccNum(ch.video_count) + '</b>'
+        + (vids ? '<br>' + vids : '')));
+    } else if (yt && yt.status === 'not_connected') {
+      cards.push(ccDead('YouTube', 'Add YOUTUBE_API_KEY + YOUTUBE_CHANNEL_ID'));
+    } else if (yt) {
+      cards.push(ccDead('YouTube', yt.error || 'YouTube error'));
+    }
+    const ig = S.social && S.social.instagram, fb = S.social && S.social.facebook;
+    cards.push(ccDead('Instagram', ig && ig.note));
+    cards.push(ccDead('Facebook', fb && fb.note));
+    html += ccGroup('Audience & social', cards);
+
+    html += '<div class="cc-sub" style="margin-top:8px;">Generated ' + fmtDate(d.generated_at)
+          + ' · ' + escapeHtml(d.cache || '')
+          + ' · <a href="#" data-cc-refresh style="color:var(--amber);">force refresh</a></div>';
+    c.innerHTML = html;
+  }
+
+  async function loadOverview(fresh){
+    document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('is-active', b.dataset.tab === 'overview'));
+    $('[data-admin-loading]').hidden = false;
+    $('[data-admin-content]').hidden = true;
+    let resp;
+    try { resp = await fetch('/api/admin/overview' + (fresh ? '?fresh=1' : ''), { credentials: 'include' }); }
+    catch(_) { showStatus('Network error.', false); $('[data-admin-loading]').hidden = true; return; }
+    if (!resp.ok) {
+      if (resp.status === 401 || resp.status === 403) {
+        showStatus('Not authorized. Make sure Cloudflare Access has approved your email.', false);
+      } else {
+        showStatus('Could not load dashboard (HTTP ' + resp.status + ').', false);
+      }
+      $('[data-admin-loading]').hidden = true;
+      return;
+    }
+    let data;
+    try { data = await resp.json(); }
+    catch(_) { showStatus('Bad dashboard response.', false); $('[data-admin-loading]').hidden = true; return; }
+    renderOverview(data);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => loadOverview());
 })();
 </script>
 </body>
